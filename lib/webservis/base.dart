@@ -39,27 +39,6 @@ import '../widget/modeller/olcuBirimModel.dart';
 import 'bankaSozlesmeModel.dart';
 import 'package:macadress_gen/macadress_gen.dart';
 
-/*
-/GetirStok(String Sirket,String PlasiyerKod)
-
-/GetirCari(string Sirket, String PlasiyerKod)
-
-/GetirCariAltHesap(string Sirket)
-
-/GetirSubeDepo(string Sirket)
-
-/GetirPlasiyerParam(String Sirket, String PlasiyerKod)
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-GetirStokKosul(String Sirket)
-
-GetirCariKosul(String Sirket)
-
-GetirCariStokKosul(String Sirket)
-
-GetirKur(String Sirket) OLAMADI?
-*/
 class BaseService {
   var _Result;
   String mac = "";
@@ -70,23 +49,7 @@ class BaseService {
     _Result = value;
   }
 
-  String getirBodyforParameters(String sirket, String kullanicikodu) {
-    var envelope = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-        "<soap:Envelope xmlns:xsi=\"http:\/\/www.w3.org\/2001\/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema" +
-        "xmlns:soap=\"http:\/\/schemas.xmlsoap.org\/soap\/envelope\/\">" +
-        " <soap:Body>" +
-        "<GetirPlasiyerParam xmlns=\"http:\/\/tempuri.org\/\">" +
-        " <Sirket>" +
-        sirket +
-        "</Sirket>" +
-        "<PlasiyerKodu>" +
-        kullanicikodu +
-        "</PlasiyerKodu>" +
-        " </GetirPlasiyerParam>" +
-        "</soap:Body>" +
-        "</soap:Envelope>";
-    return envelope;
-  }
+
 
   Future<String?> _getId() async {
     var deviceInfo = DeviceInfoPlugin();
@@ -457,31 +420,6 @@ class BaseService {
           e.toString();
     }
   }
-
-  Future<void> getirLisans(String lisansNumarasi) async {
-    var envelope = getirBodyforParameters("GetirAPKServisIP", lisansNumarasi);
-    var headers = {'Content-Type': 'text/xml'};
-
-    try {
-      http.Response response = await http.post(
-        Uri.parse('http://setuppro.opakyazilim.net/Service1.asmx'),
-        headers: headers,
-        body: envelope,
-      );
-
-      if (response.statusCode == 200) {
-        var rawXmlResponse = response.body;
-        xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
-        List<dynamic> jsonData = jsonDecode(parsedXml.innerText);
-      } else {
-        throw Exception(
-            ' Veri Alınamadı alınamadı. StatusCode: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Hata: $e');
-    }
-  }
-
   Future<String> kullaniciSayisiSorgula({
     required String LisansNo,
   }) async {

@@ -153,27 +153,7 @@ class FisHareket {
     UUID = json['UUID'];
   }
 
-  Future<int?> fisHareketEkle(FisHareket fisHareket) async {
-    if (fisHareket.ID! > 0) {
-      try {
-        var result = await Ctanim.db?.update("TBLFISHAR", fisHareket.toJson(),
-            where: 'ID = ?', whereArgs: [fisHareket.ID]);
-        return result;
-      } on PlatformException catch (e) {
-        return -1;
-      }
-    } else {
-      try {
-        fisHareket.ID = null;
-        var result = await Ctanim.db?.insert("TBLFISHAR", fisHareket.toJson());
-
-        return result;
-      } on PlatformException catch (e) {
-        return -1;
-   
-      }
-    }
-  }
+ // uyak
 
   Future<int> fisHareketSil(int Id) async {
     var result =

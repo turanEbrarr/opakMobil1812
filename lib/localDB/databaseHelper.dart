@@ -66,7 +66,7 @@ class DatabaseHelper {
       }
       if (i == 7) {
         db.execute("ALTER TABLE TBLTAHSILATHAR ADD COLUMN ALTHESAP TEXT");
-        db.execute("""CREATE TABLE IF NOT EXISTS TBLONDALIKSB (
+      db.execute("""CREATE TABLE IF NOT EXISTS TBLONDALIKSB (
       SUBEID INTEGER,
       FIYAT INTEGER,
       MIKTAR INTEGER,

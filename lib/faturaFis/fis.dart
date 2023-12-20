@@ -401,8 +401,8 @@ class Fis {
             Ctanim.db?.update("TBLFISHAR", element.toJson(),
                 where: "ID=?", whereArgs: [element.ID]);
           } else {
-            element.ID = null; 
-            element.ID = await  Ctanim.db?.insert("TBLFISHAR", element.toJson());
+            
+           int gelenID =   await Ctanim.db?.insert("TBLFISHAR", element.toJson()).then((value) => element.ID = value);
           }
         }
         await VeriIslemleri().fiseAitEkParamTemizle(fis.ID!);
@@ -427,9 +427,8 @@ class Fis {
           for (var element in fis.fisStokListesi) {
             element.FIS_ID = result;
             element.ID = null;
-
-            element.ID =
-                await Ctanim.db?.insert("TBLFISHAR", element.toJson());
+            
+              int gelenID =   await Ctanim.db?.insert("TBLFISHAR", element.toJson()).then((value) => element.ID = value);
             
           }
           for (var element in fis.listFisEkParam) {
