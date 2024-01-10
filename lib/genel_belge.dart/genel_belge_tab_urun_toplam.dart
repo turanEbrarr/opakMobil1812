@@ -321,6 +321,7 @@ class _genel_belge_tab_urun_toplamState
         ? islemTipiList.first
         : islemTipiList.firstWhere(
             (element) => element.ID == int.parse(fisEx.fis!.value.ISLEMTIPI!));
+
     seciliFaturaTipYeni = faturaTipList.first;
 
     String? cariKod = fisEx.fis!.value.CARIKOD;
@@ -589,8 +590,8 @@ class _genel_belge_tab_urun_toplamState
                         ),
                       )
                     : Container(),
-                widget.belgeTipi == "Satis_Fatura"
-                    ? Container(
+            
+                    Container(
                         width: MediaQuery.of(context).size.width * .80,
                         height: MediaQuery.of(context).size.height / 15,
                         child: Padding(
@@ -661,8 +662,8 @@ class _genel_belge_tab_urun_toplamState
                       )
                       */
                         ),
-                      )
-                    : Container(),
+                      ),
+                
                 widget.belgeTipi == "Alis_Fatura"
                     ? Column(
                         children: [
@@ -679,6 +680,7 @@ class _genel_belge_tab_urun_toplamState
                                   "Fatura Tipi :",
                                   style: TextStyle(
                                       fontSize: 14,
+                                      
                                       fontWeight: FontWeight.w500),
                                 ),
                               ],

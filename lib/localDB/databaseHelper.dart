@@ -13,7 +13,7 @@ class DatabaseHelper {
     _databaseName = databaseName;
   }
   static String? _databaseName;
-  static final _databaseVersion = 9;
+  static final _databaseVersion = 10;
 
   static Database? _database;
 
@@ -45,10 +45,14 @@ class DatabaseHelper {
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     print(oldVersion);
     print(newVersion);
-    for (int i = oldVersion; i <= newVersion; i++) {
+    for (int i = 0; i <= newVersion; i++) {
+      if(i==9){
+         
+
+      }
       if (i == 8) {
         String sorgu = """
-    CREATE TABLE TBLSTOKDEPOSB (
+    CREATE TABLE IF NOT EXISTS TBLSTOKDEPOSB (
       KOD TEXT,
       DEPOADI TEXT,
       BAKIYE DECIMAL
@@ -271,6 +275,7 @@ class DatabaseHelper {
     CREATE TABLE TBLTAHSILATSB (
       ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
       TIP INTEGER,
+      ISLEMTIPI TEXT,
       UUID TEXT,
       SUBEID INTEGER,
       CARIKOD TEXT ,

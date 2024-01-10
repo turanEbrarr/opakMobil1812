@@ -388,7 +388,7 @@ class _LoginPageState extends State<LoginPage> {
                     kullaniciKodu: Ctanim.kullanici!.KOD!));
                       hatalar.add(
                     await bs.getirStokDepo(sirket: Ctanim.sirket!, plasiyerKod: Ctanim.kullanici!.KOD!));
-                if (hatalar.length > 0) {
+                if (hatalar.   length > 0) {
                   for (var element in hatalar) {
                     if (element != "") {
                       genelHata = genelHata + "\n" + element!;

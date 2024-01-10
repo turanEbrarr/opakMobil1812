@@ -49,8 +49,6 @@ class BaseService {
     _Result = value;
   }
 
-
-
   Future<String?> _getId() async {
     var deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
@@ -420,6 +418,7 @@ class BaseService {
           e.toString();
     }
   }
+
   Future<String> kullaniciSayisiSorgula({
     required String LisansNo,
   }) async {
@@ -604,10 +603,12 @@ class BaseService {
           return gelenHata.HataMesaj!;
         } else {
           String modelNode = gelenHata.HataMesaj!;
-          List<dynamic> parsedList = json.decode(modelNode);
+          List<dynamic> parsedList = json.decode(temizleKontrolKarakterleri(modelNode));
 
           Map<String, dynamic> kullaniciJson = parsedList[0];
           Ctanim.kullanici = KullaniciModel.fromjson(kullaniciJson);
+          await KullaniciModel.saveUser(Ctanim.kullanici!);
+
           return "";
         }
       } else {

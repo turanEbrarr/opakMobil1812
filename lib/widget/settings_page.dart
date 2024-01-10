@@ -718,8 +718,6 @@ class _settings_pageState extends State<settings_page> {
                                                   );
                                                   KullaniciModel.clearUser();
                                                   Ctanim.kullanici = null;
-                                        
-
                                                   if (disardaKullan == false) {
                                                     if (donenAPIler[0] != "") {
                                                       sirketKullaniciDoluMu =

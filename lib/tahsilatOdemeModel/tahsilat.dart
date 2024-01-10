@@ -8,6 +8,7 @@ import 'package:opak_mobil_v2/widget/ctanim.dart';
 class Tahsilat {
   int? ID = 0;
   int? TIP = 0;
+  String? ISLEMTIPI = "";
   String? UUID = "";
   String? CARIKOD = "";
   String? CARIADI = "";
@@ -24,6 +25,7 @@ class Tahsilat {
   Tahsilat(
       this.ID,
       this.TIP,
+      this.ISLEMTIPI,
       this.UUID,
       this.CARIKOD,
       this.GENELTOPLAM,
@@ -40,6 +42,7 @@ class Tahsilat {
             0,
             "",
             "",
+            "",
             0.0,
             "",
             DateFormat("yyyy-MM-dd").format(DateTime.now()),
@@ -52,6 +55,7 @@ class Tahsilat {
       Tahsilat tahsilat, List<TahsilatHareket> tahsilatHareket) {
     this.ID = tahsilat.ID;
     this.TIP = tahsilat.TIP;
+    this.ISLEMTIPI = tahsilat.ISLEMTIPI;
     this.UUID = tahsilat.UUID;
     this.CARIKOD = tahsilat.CARIKOD;
     this.GENELTOPLAM = tahsilat.GENELTOPLAM;
@@ -66,6 +70,7 @@ class Tahsilat {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['ID'] = ID;
     data['TIP'] = TIP;
+    data['ISLEMTIPI'] = ISLEMTIPI;
     data['UUID'] = UUID;
     data['CARIKOD'] = CARIKOD;
     data['CARIADI'] = CARIADI;
@@ -84,6 +89,7 @@ class Tahsilat {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['ID'] = ID;
     data['TIP'] = TIP;
+    data['ISLEMTIPI'] = ISLEMTIPI;
     data['UUID'] = UUID;
     data['CARIKOD'] = CARIKOD;
     data['CARIADI'] = CARIADI;
@@ -102,6 +108,7 @@ class Tahsilat {
   Tahsilat.fromJson(Map<String, dynamic> json) {
     ID = int.parse(json['ID'].toString());
     TIP = int.parse(json['TIP'].toString());
+    ISLEMTIPI = json['ISLEMTIPI'].toString();
     UUID = json['UUID'].toString();
     SUBEID = int.parse(json['SUBEID'].toString());
     CARIKOD = json['CARIKOD'].toString();
@@ -171,4 +178,5 @@ class Tahsilat {
     await Ctanim.db
         ?.delete("TBLTAHSILATSB", where: "ID = ?", whereArgs: [tahsilatID]);
   }
+  
 }

@@ -561,23 +561,7 @@ class _tahsilat_main_pageState extends State<odeme_main_page> {
                                         )
                                       ],
                                     )),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 40,
-                                      left: MediaQuery.of(context).size.width *
-                                          .1),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "Ödeme toplamı",
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            color: Color.fromARGB(
-                                                255, 81, 81, 81)),
-                                      )
-                                    ],
-                                  ),
-                                ),
+                             
                                 Padding(
                                   padding: EdgeInsets.only(
                                     top: 10,
@@ -590,26 +574,18 @@ class _tahsilat_main_pageState extends State<odeme_main_page> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          style: DefaultTextStyle.of(context)
-                                              .style,
-                                          children: [
-                                            TextSpan(
-                                              text: toplamList[0],
-                                              style: TextStyle(
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                            TextSpan(
-                                              text: "," + toplamList[1] + " TL",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          ],
-                                        ),
+                                       Row(
+                                      children: [
+                                         Text("İşlem Tipi : "),
+                                     Text(
+                                      fis.ISLEMTIPI.toString()== "0" ?"Normal":"Açık",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: Color.fromARGB(
+                                                255, 81, 81, 81)),
                                       ),
+                                      ],
+                                     ),
                                       Text(fis.TARIH.toString())
                                     ],
                                   ),

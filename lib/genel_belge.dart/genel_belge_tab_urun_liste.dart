@@ -7,12 +7,15 @@ import 'package:opak_mobil_v2/controllers/stokKartController.dart';
 import 'package:opak_mobil_v2/faturaFis/fisHareket.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_stok_kart_guncelleme.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_tanim.dart';
+import 'package:opak_mobil_v2/widget/veriler/listeler.dart';
+import '../faturaFis/fis.dart';
 import '../localDB/veritabaniIslemleri.dart';
 import '../widget/ctanim.dart';
 
 class genel_belge_tab_urun_liste extends StatefulWidget {
   const genel_belge_tab_urun_liste({
-    super.key, required this.belgeTipi,
+    super.key,
+    required this.belgeTipi,
   });
   final String belgeTipi;
 
@@ -38,19 +41,15 @@ class _genel_belge_tab_urun_listeState
 
   @override
   void initState() {
-       int tip = Ctanim().MapFisTip[widget.belgeTipi]??0;
-         if (tip == 3 ||
-        tip == 12 ||
-        tip== 17) {
+    int tip = Ctanim().MapFisTip[widget.belgeTipi] ?? 0;
+    if (tip == 3 || tip == 12 || tip == 17) {
       Kfiyat = KUSURAT.ALISFIYAT;
       Kmiktar = KUSURAT.ALISMIKTAR;
       Kkur = KUSURAT.ALISKUR;
       KdovizFiyat = KUSURAT.ALISDOVFIYAT;
       Ktutar = KUSURAT.ALISTUTAR;
       KdovTutar = KUSURAT.ALISDOVTUTAR;
-    } else if (tip == 1 ||
-        tip== 4 ||
-        tip == 6) {
+    } else if (tip == 1 || tip == 4 || tip == 6) {
       Kfiyat = KUSURAT.PERFIYAT;
       Kmiktar = KUSURAT.PERMIKTAR;
       Kkur = KUSURAT.PERKUR;
@@ -103,11 +102,33 @@ class _genel_belge_tab_urun_listeState
                       FisHareket? fishareket =
                           fisEx.fis?.value.fisStokListesi[index];
                       var results = stokKartEx.searchList
-                          .where((value) => value.KOD! ==
-                              fisEx.fis?.value.fisStokListesi[index].STOKKOD
-                                 
-                                   )
+                          .where((value) =>
+                              value.KOD! ==
+                                  fisEx.fis?.value.fisStokListesi[index]
+                                      .STOKKOD ||
+                              value.BARKOD1! ==
+                                  fisEx.fis?.value.fisStokListesi[index]
+                                      .STOKKOD ||
+                              value.BARKOD2! ==
+                                  fisEx.fis?.value.fisStokListesi[index]
+                                      .STOKKOD ||
+                              value.BARKOD3! ==
+                                  fisEx.fis?.value.fisStokListesi[index]
+                                      .STOKKOD ||
+                              value.BARKOD4! ==
+                                  fisEx.fis?.value.fisStokListesi[index]
+                                      .STOKKOD ||
+                              value.BARKOD5! ==
+                                  fisEx.fis?.value.fisStokListesi[index]
+                                      .STOKKOD ||
+                              value.BARKOD6! ==
+                                  fisEx
+                                      .fis?.value.fisStokListesi[index].STOKKOD)
                           .toList();
+                         if(results.isEmpty){
+                          listeler.listDahaFazlaBarkod.where((element) => element.KOD == 
+                              fisEx.fis?.value.fisStokListesi[index].STOKKOD);
+                         } 
                       StokKart stokKart = results[0];
 
                       return Padding(
@@ -151,7 +172,8 @@ class _genel_belge_tab_urun_listeState
                                         ),
                                         IconButton(
                                             onPressed: () {
-                                              bottomSheetUrunListe(context, fishareket, stokKart, index);
+                                              bottomSheetUrunListe(context,
+                                                  fishareket, stokKart, index);
                                             },
                                             icon: Icon(Icons.more_vert))
                                       ],
@@ -255,9 +277,13 @@ class _genel_belge_tab_urun_listeState
                                                 child: SizedBox(
                                                     width: x * .15,
                                                     child: Text(
-                                                      Ctanim.noktadanSonraAlinacakParametreli(Kmiktar!,double.tryParse(fishareket.MIKTAR!.toString())??0.0),
-                                                     
-                                                     )),
+                                                      Ctanim.noktadanSonraAlinacakParametreli(
+                                                          Kmiktar!,
+                                                          double.tryParse(fishareket
+                                                                  .MIKTAR!
+                                                                  .toString()) ??
+                                                              0.0),
+                                                    )),
                                               ),
                                               Spacer(),
                                               Padding(
@@ -265,9 +291,12 @@ class _genel_belge_tab_urun_listeState
                                                     left: x * .05),
                                                 child: SizedBox(
                                                     width: x * .15,
-                                                    child: Text(
-                                                        Ctanim.donusturMusteri(
-                                                           Ctanim.noktadanSonraAlinacakParametreli(Kfiyat!, fishareket.BRUTFIYAT!)))),
+                                                    child: Text(Ctanim
+                                                        .donusturMusteri(Ctanim
+                                                            .noktadanSonraAlinacakParametreli(
+                                                                Kfiyat!,
+                                                                fishareket
+                                                                    .BRUTFIYAT!)))),
                                               ),
                                               Spacer(),
                                               Padding(
@@ -275,16 +304,26 @@ class _genel_belge_tab_urun_listeState
                                                     left: x * .05),
                                                 child: SizedBox(
                                                   width: x * .15,
-                                                  child: 
-                                                  fishareket.ISK2!>0?
-                                                  
-                                                  
-                                                  Text(
-                                                      Ctanim.donusturMusteri(
-                                                          Ctanim.noktadanSonraAlinacakParametreli(Kfiyat!,fishareket.ISK!))+" + "+Ctanim.donusturMusteri(
-                                                          Ctanim.noktadanSonraAlinacakParametreli(Kfiyat!,fishareket.ISK2!) ),):Text(
-                                                      Ctanim.donusturMusteri(
-                                                           Ctanim.noktadanSonraAlinacakParametreli(Kfiyat!,fishareket.ISK!))),
+                                                  child: fishareket.ISK2! > 0
+                                                      ? Text(
+                                                          Ctanim.donusturMusteri(
+                                                                  Ctanim.noktadanSonraAlinacakParametreli(
+                                                                      Kfiyat!,
+                                                                      fishareket
+                                                                          .ISK!)) +
+                                                              " + " +
+                                                              Ctanim.donusturMusteri(
+                                                                  Ctanim.noktadanSonraAlinacakParametreli(
+                                                                      Kfiyat!,
+                                                                      fishareket
+                                                                          .ISK2!)),
+                                                        )
+                                                      : Text(Ctanim
+                                                          .donusturMusteri(Ctanim
+                                                              .noktadanSonraAlinacakParametreli(
+                                                                  Kfiyat!,
+                                                                  fishareket
+                                                                      .ISK!))),
                                                 ),
                                               ),
                                             ],
@@ -349,9 +388,12 @@ class _genel_belge_tab_urun_listeState
                                                     left: x * .05),
                                                 child: SizedBox(
                                                     width: x * .15,
-                                                    child: Text(
-                                                        Ctanim.donusturMusteri(
-                                                             Ctanim.noktadanSonraAlinacakParametreli(Kfiyat!,fishareket.KDVDAHILNETFIYAT!)))),
+                                                    child: Text(Ctanim
+                                                        .donusturMusteri(Ctanim
+                                                            .noktadanSonraAlinacakParametreli(
+                                                                Kfiyat!,
+                                                                fishareket
+                                                                    .KDVDAHILNETFIYAT!)))),
                                               ),
                                               Spacer(),
                                               Padding(
@@ -359,9 +401,12 @@ class _genel_belge_tab_urun_listeState
                                                     left: x * .05),
                                                 child: SizedBox(
                                                     width: x * .15,
-                                                    child: Text(
-                                                        Ctanim.donusturMusteri(
-                                                             Ctanim.noktadanSonraAlinacakParametreli(Kfiyat!,fishareket.KDVDAHILNETTOPLAM!)))),
+                                                    child: Text(Ctanim
+                                                        .donusturMusteri(Ctanim
+                                                            .noktadanSonraAlinacakParametreli(
+                                                                Kfiyat!,
+                                                                fishareket
+                                                                    .KDVDAHILNETTOPLAM!)))),
                                               ),
                                               Spacer(),
                                               Padding(
@@ -369,9 +414,12 @@ class _genel_belge_tab_urun_listeState
                                                     left: x * .05),
                                                 child: SizedBox(
                                                   width: x * .15,
-                                                  child: Text(
-                                                      Ctanim.donusturMusteri(
-                                                           Ctanim.noktadanSonraAlinacakParametreli(Kfiyat!,fishareket.KDVORANI!))),
+                                                  child: Text(Ctanim
+                                                      .donusturMusteri(Ctanim
+                                                          .noktadanSonraAlinacakParametreli(
+                                                              Kfiyat!,
+                                                              fishareket
+                                                                  .KDVORANI!))),
                                                 ),
                                               ),
                                             ],
@@ -408,7 +456,8 @@ class _genel_belge_tab_urun_listeState
                 ),
                 Text(
                     Ctanim.donusturMusteri(
-                       Ctanim.noktadanSonraAlinacakParametreli(Ktutar!,  fisEx.fis!.value.GENELTOPLAM!)),
+                        Ctanim.noktadanSonraAlinacakParametreli(
+                            Ktutar!, fisEx.fis!.value.GENELTOPLAM!)),
                     style: const TextStyle(color: Colors.white)),
                 Spacer(),
                 const Text(
@@ -430,28 +479,22 @@ class _genel_belge_tab_urun_listeState
     );
   }
 
-  void bottomSheetUrunListe(BuildContext context, FisHareket fishareket, StokKart stokKart, int index) {
+  void bottomSheetUrunListe(BuildContext context, FisHareket fishareket,
+      StokKart stokKart, int index) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius:
-            BorderRadius.vertical(
+        borderRadius: BorderRadius.vertical(
           top: Radius.circular(16.0),
         ),
       ),
-      builder:
-          (BuildContext context) {
+      builder: (BuildContext context) {
         return Container(
-          padding:
-              EdgeInsets.all(16.0),
-         
+          padding: EdgeInsets.all(16.0),
           child: Column(
-             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment:
-                CrossAxisAlignment
-                    .start,
-
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Divider(
                 thickness: 3,
@@ -460,37 +503,24 @@ class _genel_belge_tab_urun_listeState
                 color: Colors.grey,
               ),
               GestureDetector(
-                onTap: () {
-                  fisEx.fis?.value
-                      .fisStokListesi
-                      .removeWhere((item) =>
-                          item.STOKKOD ==
-                          fishareket
-                              .STOKKOD!);
-    
+                onTap: () async {
+                  fisEx.fis?.value.fisStokListesi.removeWhere(
+                      (item) => item.STOKKOD == fishareket.STOKKOD!);
+                      await Fis.empty().fisHareketSil( fisEx.fis!.value!.ID!,fishareket.STOKKOD!);
+
                   setState(() {});
-                  const snackBar =
-                      SnackBar(
+                  const snackBar = SnackBar(
                     content: Text(
                       'Stok silindi..',
-                      style: TextStyle(
-                          fontSize:
-                              16),
+                      style: TextStyle(fontSize: 16),
                     ),
-                    showCloseIcon:
-                        true,
-                    backgroundColor:
-                        Colors.blue,
-                    closeIconColor:
-                        Colors.white,
+                    showCloseIcon: true,
+                    backgroundColor: Colors.blue,
+                    closeIconColor: Colors.white,
                   );
-                  ScaffoldMessenger
-                          .of(context
-                              as BuildContext)
-                      .showSnackBar(
-                          snackBar);
-                  Navigator.pop(
-                      context);
+                  ScaffoldMessenger.of(context as BuildContext)
+                      .showSnackBar(snackBar);
+                  Navigator.pop(context);
                   setState(() {});
                 },
                 child: ListTile(
@@ -503,63 +533,38 @@ class _genel_belge_tab_urun_listeState
               ),
               GestureDetector(
                 onTap: () async {
-                  var result =
-                      await showDialog(
-                          context:
-                              context,
-                          builder:
-                              (_) {
-                            return genel_belge_stok_kart_guncellemeDialog(
-                              belgeTipi: widget
-                                  .belgeTipi,
-                              stokKartKurAdi: fishareket.DOVIZADI!,
-                              urunListedenMiGeldin:
-                                  true,
-                              stokkart:
-                                  stokKart,
-                              stokAdi:
-                                  fishareket.STOKADI!,
-                              stokKodu:
-                                  fishareket.STOKKOD!,
-                              KDVOrani:
-                                  fishareket.KDVORANI!,
-                              cariKod: fisEx.fis!.value.CARIKOD!, // sjkanka
-                              fiyat: fishareket
-                                  .BRUTFIYAT!,
-                              iskonto:
-                                  fishareket.ISK!,
-                              miktar:
-                                  fishareket.MIKTAR!,
-                            );
-                          });
-                  if (result !=
-                      null) {
-                    fisEx.toplam
-                        .value = 0.0;
-                    fisEx.fis!.value
-                        .fisStokListesi
-                        .forEach(
-                            (element) {
-                      fisEx
-                          .toplam = (fisEx
-                                  .toplam +
-                              (element
-                                  .KDVDAHILNETFIYAT!
-                                  .toDouble()))
-                          as RxDouble;
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return genel_belge_stok_kart_guncellemeDialog(
+                          belgeTipi: widget.belgeTipi,
+                          stokKartKurAdi: fishareket.DOVIZADI!,
+                          urunListedenMiGeldin: true,
+                          stokkart: stokKart,
+                          stokAdi: fishareket.STOKADI!,
+                          stokKodu: fishareket.STOKKOD!,
+                          KDVOrani: fishareket.KDVORANI!,
+                          cariKod: fisEx.fis!.value.CARIKOD!, // sjkanka
+                          fiyat: fishareket.BRUTFIYAT!,
+                          iskonto: fishareket.ISK!,
+                          miktar: fishareket.MIKTAR!,
+                        );
+                      });
+                  if (result != null) {
+                    fisEx.toplam.value = 0.0;
+                    fisEx.fis!.value.fisStokListesi.forEach((element) {
+                      fisEx.toplam = (fisEx.toplam +
+                          (element.KDVDAHILNETFIYAT!.toDouble())) as RxDouble;
                     });
                   }
-                  Navigator.pop(
-                      context);
+                  Navigator.pop(context);
                   setState(() {});
                 },
                 child: ListTile(
-                  title:
-                      Text("Düzenle"),
+                  title: Text("Düzenle"),
                   leading: Icon(
                     Icons.edit,
-                    color:
-                        Colors.green,
+                    color: Colors.green,
                   ),
                 ),
               )

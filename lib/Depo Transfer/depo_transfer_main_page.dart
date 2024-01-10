@@ -72,6 +72,20 @@ class _depo_transfer_main_pageState extends State<depo_transfer_main_page> {
         backgroundColor: Color.fromARGB(255, 30, 38, 45),
         buttonSize: Size(65, 65),
         children: [
+           SpeedDialChild(
+              backgroundColor: Color.fromARGB(255, 70, 89, 105),
+              child: Icon(
+                Icons.refresh,
+                color: Colors.black,
+                size: 32,
+              ),
+              label: "Listeyi Yenile",
+              onTap: () {
+                fisEx.listFisGetir(belgeTip: "Depo_Transfer");
+                setState(() {
+                  
+                });
+              }),
           SpeedDialChild(
               backgroundColor: Color.fromARGB(255, 70, 89, 105),
               child: Icon(
@@ -106,7 +120,9 @@ class _depo_transfer_main_pageState extends State<depo_transfer_main_page> {
               label: "Yeni Belge Oluştur",
               onTap: () {
                 Get.to(() => depo_transfer_depo_secimi());
-              })
+              }),
+             
+            
         ],
       ),
       appBar: MyAppBar(

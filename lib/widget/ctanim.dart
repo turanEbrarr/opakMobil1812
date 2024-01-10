@@ -456,7 +456,7 @@ static dynamic noktadanSonraAlinacakParametreli(
         double.tryParse((fisEx.fis!.value.ISK1.toString())) ?? 0;
     double? controllerDeger2 =
         double.tryParse(fisEx.fis!.value.ISK2.toString()) ?? 0;
-    double nettoplam = (urunToplami - kalemindirimToplami);
+    double nettoplam = (genelUrunToplami - genelKalemIndirimToplami);
 
     double altIndirimToplami =
         double.parse(((nettoplam * controllerDeger / 100)).toStringAsFixed(2));

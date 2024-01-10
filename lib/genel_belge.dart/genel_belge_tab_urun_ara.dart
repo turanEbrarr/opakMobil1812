@@ -789,6 +789,7 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                                     child: Text("Sepete Ekle"),
                                     onPressed: () {
                                       sepeteEkle(stokKart, stokKartKur, miktar);
+                                      editingController.text = "";
                                     },
                                   )),
                             ),

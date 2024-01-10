@@ -9,6 +9,7 @@ import 'package:opak_mobil_v2/tahsilatOdemeModel/tahsilat_pdf_onizleme.dart';
 import 'package:opak_mobil_v2/widget/ctanim.dart';
 
 import '../controllers/tahsilatController.dart';
+import '../genel_belge.dart/genel_belge_tab_urun_toplam.dart';
 import '../localDB/databaseHelper.dart';
 import '../localDB/veritabaniIslemleri.dart';
 import '../stok_kart/Spinkit.dart';
@@ -29,6 +30,11 @@ class tahsilat_toplam extends StatefulWidget {
 }
 
 class _tahsilat_toplamState extends State<tahsilat_toplam> {
+  IslemTipi? seciliFaturaTip;
+  List<IslemTipi> islemTipiList = [
+    IslemTipi(ADI: "Normal", ID: 0),
+    IslemTipi(ADI: "Açık", ID: 1)
+  ];
   BaseService bs = BaseService();
   double genelToplam = 0.0;
   String sonnnnn = "";
@@ -47,6 +53,13 @@ class _tahsilat_toplamState extends State<tahsilat_toplam> {
     for (var element in tahsilatEx.tahsilat!.value.tahsilatHareket) {
       silmeAktifListe.add(false);
     }
+   
+    seciliFaturaTip = tahsilatEx.tahsilat!.value.ISLEMTIPI == null ||
+            tahsilatEx.tahsilat!.value.ISLEMTIPI == ""
+        ? islemTipiList.first
+        : islemTipiList.firstWhere((element) =>
+            element.ID == int.parse(tahsilatEx.tahsilat!.value.ISLEMTIPI!));
+            tahsilatEx.tahsilat!.value.ISLEMTIPI =seciliFaturaTip!.ID.toString();
   }
 
   @override
@@ -198,16 +211,62 @@ class _tahsilat_toplamState extends State<tahsilat_toplam> {
             }
           }),
       body: Container(
-        height: tahsilatEx.tahsilat!.value.tahsilatHareket.length *
-                MediaQuery.of(context).size.height *
-                0.1 +
-            100,
+        
         child: Column(
           children: [
-           tahsilatEx.tahsilat!.value.tahsilatHareket.isNotEmpty ? Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Listeden işlem silmek için işlemin üzerine uzun basınız.",style: TextStyle(fontStyle: FontStyle.italic),),
-            ):Container(),
+            tahsilatEx.tahsilat!.value.tahsilatHareket.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Listeden işlem silmek için işlemin üzerine uzun basınız.",
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                  )
+                : Container(),
+                Padding(
+                        padding:
+                            const EdgeInsets.only(top: 20, bottom: 0, left: 18),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "İşlem Tipi :",
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+            Container(
+              width: MediaQuery.of(context).size.width * .80,
+              height: MediaQuery.of(context).size.height / 15,
+              child: Padding(
+                padding: EdgeInsets.only(top: 15.0),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<IslemTipi>(
+                    value: seciliFaturaTip,
+                    items: islemTipiList.map((IslemTipi banka) {
+                      return DropdownMenuItem<IslemTipi>(
+                        value: banka,
+                        child: Text(
+                          banka.ADI ?? "",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (IslemTipi? selected) {
+                      setState(() {
+                        seciliFaturaTip = selected;
+                      });
+                      tahsilatEx.tahsilat!.value.ISLEMTIPI =
+                          seciliFaturaTip!.ID.toString();
+                    },
+                  ),
+                ),
+                
+              ),
+            ),
+      
             Expanded(
               child: ListView.builder(
                   itemCount: tahsilatEx.tahsilat!.value.tahsilatHareket.length,
@@ -232,7 +291,7 @@ class _tahsilat_toplamState extends State<tahsilat_toplam> {
                           width: silmeAktifListe[index] == false
                               ? MediaQuery.of(context).size.width
                               : MediaQuery.of(context).size.width * .85,
-                          height: MediaQuery.of(context).size.height * .1,
+                  
                           child: GestureDetector(
                             onLongPress: () {
                               silmeAktifListe[index] = true;
@@ -269,16 +328,16 @@ class _tahsilat_toplamState extends State<tahsilat_toplam> {
                                         " " +
                                         tahsilatEx.tahsilat!.value
                                             .tahsilatHareket[index].DOVIZ!),
-                                 subtitle: 
-                                  silmeAktifListe[index] == false ?  
-                                 Text(tahsilatEx
-                                            .tahsilat!.value.CARIADI
-                                            .toString() +
-                                        " / " +
-                                        tahsilatEx.tahsilat!.value
-                                            .tahsilatHareket[index].TAKSIT
-                                            .toString() +
-                                        " Taksit"):Text(""),
+                                    subtitle: silmeAktifListe[index] == false
+                                        ? Text(tahsilatEx
+                                                .tahsilat!.value.CARIADI
+                                                .toString() +
+                                            " / " +
+                                            tahsilatEx.tahsilat!.value
+                                                .tahsilatHareket[index].TAKSIT
+                                                .toString() +
+                                            " Taksit")
+                                        : Text(""),
                                   )),
                             ),
                           ),
@@ -287,9 +346,8 @@ class _tahsilat_toplamState extends State<tahsilat_toplam> {
                             ? SizedBox(
                                 height: MediaQuery.of(context).size.height * .1,
                                 child: Card(
-                                   
                                   child: IconButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         tahsilatEx
                                             .tahsilat?.value.tahsilatHareket
                                             .removeWhere((item) {
@@ -298,6 +356,11 @@ class _tahsilat_toplamState extends State<tahsilat_toplam> {
                                               item.BELGENO ==
                                                   tahsilatHareket.BELGENO!;
                                         });
+                                        /*
+                                        await Tahsilat.empty().tahsilatHareketSil( tahsilatEx
+                                            .tahsilat!.value.ID!);
+                                            */
+                                        
 
                                         setState(() {});
                                         const snackBar = SnackBar(

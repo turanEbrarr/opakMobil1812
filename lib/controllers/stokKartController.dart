@@ -311,7 +311,27 @@ class StokKartController extends GetxController {
             }
           }
         } else if (Ctanim.kullanici!.SATISTIPI == "2") {
-          return [0, 0, seciliCari.FIYAT, false];
+          double sonFiyat = 0.0;
+          if(seciliCari.FIYAT == 1){
+            sonFiyat = Stok.SFIYAT1!;
+
+          }else if (seciliCari.FIYAT == 2){
+            sonFiyat = Stok.SFIYAT2!;
+
+          }else if (seciliCari.FIYAT == 3){
+            sonFiyat = Stok.SFIYAT3!;
+
+          }else if (seciliCari.FIYAT == 4){
+            sonFiyat = Stok.SFIYAT4!;
+
+          }else if (seciliCari.FIYAT == 5){
+            sonFiyat = Stok.SFIYAT5!;
+
+          }else{
+            sonFiyat = 0.0;
+          }
+
+          return [sonFiyat, seciliCari.ISKONTO, seciliCari.FIYAT, false];
         } else if (Ctanim.kullanici!.SATISTIPI == "3") {
           if (Ctanim.seciliStokFiyatListesi.ID != -1) {
             for (var element in listeler.listStokFiyatListesiHar) {
@@ -690,7 +710,7 @@ class StokKartController extends GetxController {
       if (results.length == 0) {
         results = listeler.liststok
             .where((value) =>
-                value.BARKOD1!.toLowerCase().contains(query.toLowerCase()))
+                value.BARKOD1!.toLowerCase() == query.toLowerCase())
             .toList();
         //BARKOD1 İLE BULUNURSA YAPILACAKALAR
         if (results.length > 0) {
@@ -710,6 +730,7 @@ class StokKartController extends GetxController {
               results[0].guncelDegerler!.iskonto = results[0].BARKODISK1;
               results[0].guncelDegerler!.seciliFiyati =
                   "Barkod"; // hata verebilir
+            
               results[0].guncelDegerler!.fiyatDegistirMi = false;
               results[0].guncelDegerler!.netfiyat =
                   results[0].guncelDegerler!.hesaplaNetFiyat();
@@ -750,7 +771,7 @@ class StokKartController extends GetxController {
         if (results.length == 0) {
           results = listeler.liststok
               .where((value) =>
-                  value.BARKOD2!.toLowerCase().contains(query.toLowerCase()))
+                  value.BARKOD2!.toLowerCase() == query.toLowerCase())
               .toList();
           //BARKOD2 İLE BULUNURSA YAPILACAKALAR
           if (results.length > 0) {
@@ -810,7 +831,7 @@ class StokKartController extends GetxController {
         if (results.length == 0) {
           results = listeler.liststok
               .where((value) =>
-                  value.BARKOD3!.toLowerCase().contains(query.toLowerCase()))
+                  value.BARKOD3!.toLowerCase() == query.toLowerCase())
               .toList();
           //BARKOD3 İLE BULUNURSA YAPILACAKALAR
           if (results.length > 0) {
@@ -871,7 +892,7 @@ class StokKartController extends GetxController {
         if (results.length == 0) {
           results = listeler.liststok
               .where((value) =>
-                  value.BARKOD4!.toLowerCase().contains(query.toLowerCase()))
+                  value.BARKOD4!.toLowerCase() == query.toLowerCase())
               .toList();
           //BARKOD4 İLE BULUNURSA YAPILACAKALAR
           if (results.length > 0) {
@@ -932,7 +953,7 @@ class StokKartController extends GetxController {
         if (results.length == 0) {
           results = listeler.liststok
               .where((value) =>
-                  value.BARKOD5!.toLowerCase().contains(query.toLowerCase()))
+                  value.BARKOD5!.toLowerCase() == query.toLowerCase())
               .toList();
           //BARKOD5 İLE BULUNURSA YAPILACAKALAR
           if (results.length > 0) {
@@ -993,7 +1014,7 @@ class StokKartController extends GetxController {
         if (results.length == 0) {
           results = listeler.liststok
               .where((value) =>
-                  value.BARKOD6!.toLowerCase().contains(query.toLowerCase()))
+                  value.BARKOD6!.toLowerCase() == query.toLowerCase())
               .toList();
           //BARKO6 İLE BULUNURSA YAPILACAKALAR
           if (results.length > 0) {

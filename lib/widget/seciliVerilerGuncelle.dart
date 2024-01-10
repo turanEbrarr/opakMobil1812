@@ -26,7 +26,6 @@ class _seciliVerilerWidgetState extends State<seciliVerilerWidget> {
   }
 
   List baslik = [
-
     "Stok Kart", // 0
     "Cari Kart", // 1
     "Raf", // 2
@@ -41,7 +40,7 @@ class _seciliVerilerWidgetState extends State<seciliVerilerWidget> {
     "Plasiyer Banka Sözleşme", // 11
     "Stok Fiyat Listesi", // 12
     "Stok Fiyat Har Listesi", // 13
-     "Plasiyer Yetkileri", // 14
+    "Plasiyer Yetkileri \n(Yeniden başlatma gerekir.)", // 14
     "İşlem Tipleri", // 15
     "Noktadan Sonra Haneler", // 16
     "Şube Depo Bilgileri", // 17
@@ -255,8 +254,8 @@ class _seciliVerilerWidgetState extends State<seciliVerilerWidget> {
                       textAlign: TextAlign.left,
                     )
                   : LinearProgressIndicator(
-                      value: progress,
-                    ),
+                    color: Colors.green,
+                  ),
               SizedBox(
                 height: 10,
               ),
@@ -295,7 +294,11 @@ class _seciliVerilerWidgetState extends State<seciliVerilerWidget> {
                     height: 50,
                     child: Padding(
                       padding: EdgeInsets.only(right: 4),
-                      child: ElevatedButton(
+                      child: 
+                      
+                      loading == false ?
+                      ElevatedButton(
+                        
                           child: Text(
                             "Güncelle",
                             style: TextStyle(fontSize: 15),
@@ -309,6 +312,7 @@ class _seciliVerilerWidgetState extends State<seciliVerilerWidget> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0)),
                               )),
+                              
                           onPressed: () async {
                             bool hataVarMi = await loadData();
                             if (hataVarMi == false) {
@@ -346,7 +350,7 @@ class _seciliVerilerWidgetState extends State<seciliVerilerWidget> {
                             
                             }
                             //Navigator.pop(context);
-                          }),
+                          }):Container(),
                     ),
                   ),
                 ],

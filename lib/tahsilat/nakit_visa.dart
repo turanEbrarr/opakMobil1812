@@ -81,6 +81,8 @@ class _nakit_visaState extends State<nakit_visa> {
       seciliAltHesap = varsayilanAltHesap;
     }else{
       seciliAltHesap = CariAltHesap(KOD: "-1", ALTHESAP: "HATA", DOVIZID: 1, VARSAYILAN: "H");
+      varsayilanAltHesap = CariAltHesap(KOD: "-1", ALTHESAP: "HATA", DOVIZID: 1, VARSAYILAN: "H");
+      althesaplar.add(seciliAltHesap!);
     }
     if(althesaplar.isEmpty){
       varsayilanAltHesap = CariAltHesap(KOD: "0", ALTHESAP: "HATA", DOVIZID: 1, VARSAYILAN: "H");
