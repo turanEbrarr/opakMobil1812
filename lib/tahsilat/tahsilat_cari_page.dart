@@ -100,6 +100,7 @@ class _tahsilat_cari_pageState extends State<tahsilat_cari_page> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
+             
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Color.fromARGB(255, 247, 245, 245),
@@ -151,6 +152,7 @@ class _tahsilat_cari_pageState extends State<tahsilat_cari_page> {
                         harf1 = "A";
                         harf2 = "B";
                       }
+                      
 
                       return Padding(
                         padding: const EdgeInsets.only(

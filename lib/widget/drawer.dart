@@ -1051,7 +1051,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         ),
                       ])
                 : Container(),
-            listeler.plasiyerYetkileri[16] == true ||
+                    listeler.plasiyerYetkileri[16] == true ||
                     listeler.plasiyerYetkileri[17] == true ||
                     listeler.plasiyerYetkileri[18] == true ||
                     listeler.plasiyerYetkileri[19] == true ||
