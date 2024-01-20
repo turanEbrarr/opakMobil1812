@@ -93,24 +93,28 @@ class BaseService {
 
       if (response.statusCode == 200) {
         var rawXmlResponse = response.body;
+        
+        
         xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
-        Map<String, dynamic> jsonData = jsonDecode(parsedXml.innerText);
-        SHataModel gelenHata = SHataModel.fromJson(jsonData);
-        if (gelenHata.Hata == "true") {
-          print(gelenHata.HataMesaj);
-          return gelenHata.HataMesaj!;
-        } else {
-          String modelNode = gelenHata.HataMesaj!;
-          Iterable? l;
+        //Map<String, dynamic> jsonData = jsonDecode(parsedXml.innerText);
+        //SHataModel gelenHata = SHataModel.fromJson(jsonData);
+      //  if (gelenHata.Hata == "true") {
+      //    print(gelenHata.HataMesaj);
+      //    return gelenHata.HataMesaj!;
+     //   } 
+      //  else {
+       
+         var jsonData = [];
           try {
-            l = json.decode(temizleKontrolKarakterleri(modelNode));
+            var tt = temizleKontrolKarakterleri(parsedXml.innerText);
+            jsonData = json.decode(tt);
           } catch (e) {
             print(e);
           }
           List<StokKart> liststokTemp = [];
 
-          liststokTemp =
-              List<StokKart>.from(l!.map((model) => StokKart.fromJson(model)));
+        liststokTemp =
+             List<StokKart>.from(jsonData.map((model) => StokKart.fromJson(model)));
           listeler.liststok.clear();
           await VeriIslemleri().stokTabloTemizle();
 
@@ -120,7 +124,7 @@ class BaseService {
 
           await VeriIslemleri().stokGetir();
           return "";
-        }
+       // }
       } else {
         return " Stok Getirilirken İstek Oluşturulamadı. " +
             response.statusCode.toString();
