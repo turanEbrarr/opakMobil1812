@@ -60,9 +60,10 @@ class CariController extends GetxController {
         ScaffoldMessenger.of(context as BuildContext).showSnackBar(snackBar);
         return 'İnternet bağlantısı yok.';
       } else {
-        String altHesapDon = await bs.getirCariAltHesap(sirket: Ctanim.sirket!);
         String cariDon = await bs.getirCariler(
             sirket: Ctanim.sirket!, kullaniciKodu: Ctanim.kullanici!.KOD);
+        String altHesapDon = await bs.getirCariAltHesap(sirket: Ctanim.sirket!);
+
 
         if (cariDon == "" && altHesapDon == "") {
           return "";

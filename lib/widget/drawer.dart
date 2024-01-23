@@ -445,6 +445,10 @@ class _MyDrawerState extends State<MyDrawer> {
                       "KURUMSAL YAZILIM ÇÖZÜMLERİ",
                       style: TextStyle(color: Colors.white),
                     ),
+                      Text(
+                      "Versiyon: 1.0.0",// ilk versiyon stok çekme değiştirildi web servis değişmeli
+                      style: TextStyle(color: Colors.green,fontSize: 12),
+                    ),
                   ],
                 ),
               ),

@@ -41,12 +41,6 @@ class _cariRaporlarPdfOnizlemeState extends State<cariRaporlarPdfOnizleme> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadImage();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +59,14 @@ class _cariRaporlarPdfOnizlemeState extends State<cariRaporlarPdfOnizleme> {
           backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         ),
         body: PdfPreview(
-          build: (context) => cari_rapor_make_pdf(
+          build: (context) async {
+             await _loadImage();
+            return cari_rapor_make_pdf(
               baslik: widget.baslik!,
               imagePath: _imageData!,
               kolon: widget.kolonlar!,
-              satir: widget.satirlar!),
+              satir: widget.satirlar!);
+          },
         ),
       ),
     );

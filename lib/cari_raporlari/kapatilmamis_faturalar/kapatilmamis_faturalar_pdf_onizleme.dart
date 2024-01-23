@@ -49,12 +49,7 @@ class _kapatilmamisFaturalarPdfOnizlemeState
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadImage();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -73,12 +68,15 @@ class _kapatilmamisFaturalarPdfOnizlemeState
           backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         ),
         body: PdfPreview(
-          build: (context) => kapatilmamis_faturalar_make_pdf(
+          build: (context) async {
+             await _loadImage();
+            return kapatilmamis_faturalar_make_pdf(
               baslik: widget.baslik!,
               carikart: widget.carikart!,
               imagePath: _imageData!,
               kolon: widget.kolonlar!,
-              satir: widget.satirlar!),
+              satir: widget.satirlar!);
+          },
         ),
       ),
     );

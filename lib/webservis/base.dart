@@ -92,10 +92,8 @@ class BaseService {
           await http.post(url, headers: headers, body: body);
 
       if (response.statusCode == 200) {
-        var rawXmlResponse = response.body;
-        
-        
-        xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
+        //var rawXmlResponse = response.body;
+        xml.XmlDocument parsedXml = xml.XmlDocument.parse(response.body);
         //Map<String, dynamic> jsonData = jsonDecode(parsedXml.innerText);
         //SHataModel gelenHata = SHataModel.fromJson(jsonData);
       //  if (gelenHata.Hata == "true") {
@@ -106,7 +104,7 @@ class BaseService {
        
          var jsonData = [];
           try {
-            var tt = temizleKontrolKarakterleri(parsedXml.innerText);
+            var tt = temizleKontrolKarakterleri1(parsedXml.innerText);
             jsonData = json.decode(tt);
           } catch (e) {
             print(e);
@@ -139,6 +137,21 @@ class BaseService {
     final kontrolKarakterleri = RegExp(r'[\x00-\x1F\x7F]');
     return metin.replaceAll(kontrolKarakterleri, '');
   }
+  String temizleKontrolKarakterleri1(String metin) {
+  final kontrolKarakterleri = RegExp(r'[\x00-\x1F\x7F]');
+
+  final int chunkSize = 1024; // Metni kaç karakterlik parçalara böleceğimizi belirtiyoruz.
+  final int length = metin.length;
+  final StringBuffer result = StringBuffer();
+
+  for (int i = 0; i < length; i += chunkSize) {
+    int end = (i + chunkSize < length) ? i + chunkSize : length;
+    String chunk = metin.substring(i, end);
+    result.write(chunk.replaceAll(kontrolKarakterleri, ''));
+  }
+
+  return result.toString();
+}
 
 ////webservisteki carileri getirir
   Future<String> getirCariler({required sirket, required kullaniciKodu}) async {
@@ -270,6 +283,79 @@ class BaseService {
           e.toString();
     }
   }
+    Future<String> getirCariAltHesap({required String sirket}) async {
+    var url = Uri.parse(
+        Ctanim.IP); // dış ve iç denecek;
+    var headers = {
+      'Content-Type': 'text/xml; charset=utf-8',
+      'SOAPAction': 'http://tempuri.org/GetirAltHesap'
+    };
+
+    String body = '''
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <GetirAltHesap xmlns="http://tempuri.org/">
+      <Sirket>$sirket</Sirket>
+    </GetirAltHesap>
+  </soap:Body>
+</soap:Envelope>
+''';
+
+    try {
+      http.Response response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        var rawXmlResponse = response.body;
+        xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
+        Map<String, dynamic> jsonData =
+            jsonDecode(temizleKontrolKarakterleri(parsedXml.innerText));
+        SHataModel gelenHata = SHataModel.fromJson(jsonData);
+        if (gelenHata.Hata == "true") {
+          return gelenHata.HataMesaj!;
+        } else {
+         String modelNode = gelenHata.HataMesaj!;
+
+          Iterable? l;
+          String temizJson = temizleKontrolKarakterleri(modelNode);
+          try {
+            l = json.decode(temizJson);
+          } catch (e) {
+            print(e);
+          }
+  
+          List<CariAltHesap> listcariTemp = [];
+          listcariTemp =
+              List<CariAltHesap>.from(l!.map((model) => CariAltHesap.fromJson(model)));
+
+          listeler.listCariAltHesap.clear();
+          await VeriIslemleri().cariAltHesapTabloTemizle();
+
+          listcariTemp.forEach((webservisCari) async {
+           
+            await VeriIslemleri().cariAltHesapEkle(webservisCari);
+          });
+          await VeriIslemleri().cariAltHesapGetir();
+
+          return "";
+        }
+      } else {
+        Exception('Alt Hesaplar Alınamadı. StatusCode: ${response.statusCode}');
+        return " Cari Alt Hesaplar Getirilirken İstek Oluşturulamadı. " +
+            response.statusCode.toString();
+      }
+    } catch (e) {
+      Exception('Hata: $e');
+      return " Cari Alt Hesaplar için Webservisten veri çekilemedi. Hata Mesajı : " +
+          e.toString();
+    }
+  }
+
+  /*
 
   Future<String> getirCariAltHesap({required String sirket}) async {
     var url = Uri.parse(Ctanim.IP); // dış ve iç denecek;
@@ -342,6 +428,7 @@ class BaseService {
           e.toString();
     }
   }
+  */
 
   Future<String> getirSubeDepo({required String sirket}) async {
     var url = Uri.parse(Ctanim.IP); // dış ve iç denecek;

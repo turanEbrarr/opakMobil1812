@@ -69,6 +69,16 @@ class _nakit_visaState extends State<nakit_visa> {
     // TODO: implement initState
     super.initState();
     althesaplar.clear();
+     List<String> altListe = tahsilatEx.tahsilat!.value!.cariKart.ALTHESAPLAR!.split(",");
+    for (var elemnt in listeler.listCariAltHesap) {
+      if (altListe.contains(elemnt.ALTHESAPID.toString())) {
+        althesaplar.add(elemnt);
+      }
+      if (elemnt.VARSAYILAN == "E") {
+        varsayilanAltHesap = elemnt;
+      }
+    }
+    /*
     for (var element in listeler.listCariAltHesap) {
       if (element.KOD == tahsilatEx.tahsilat!.value.CARIKOD){
         althesaplar.add(element);
@@ -77,6 +87,7 @@ class _nakit_visaState extends State<nakit_visa> {
         }
       }
     }
+    */
     if(varsayilanAltHesap != null){
       seciliAltHesap = varsayilanAltHesap;
     }else{

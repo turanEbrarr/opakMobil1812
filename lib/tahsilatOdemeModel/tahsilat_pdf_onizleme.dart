@@ -41,12 +41,7 @@ class _TahsilatPdfOnizlemeState extends State<TahsilatPdfOnizleme> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadImage();
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +58,10 @@ class _TahsilatPdfOnizlemeState extends State<TahsilatPdfOnizleme> {
         ),
         backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         body: PdfPreview(
-          build: (context) =>
-              TahsilatMakePdf(widget.m, _imageData!, widget.belgeTipi),
+          build: (context) async {
+             await _loadImage();
+            return TahsilatMakePdf(widget.m, _imageData!, widget.belgeTipi);
+          },
         ),
       ),
     );

@@ -13,7 +13,7 @@ class DatabaseHelper {
     _databaseName = databaseName;
   }
   static String? _databaseName;
-  static final _databaseVersion = 10;
+  static final _databaseVersion = 11;
 
   static Database? _database;
 
@@ -45,10 +45,20 @@ class DatabaseHelper {
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     print(oldVersion);
     print(newVersion);
-    for (int i = 0; i <= newVersion; i++) {
-      if(i==9){
-         
-
+    for (int i = oldVersion; i <= newVersion; i++) {
+      if (i == 11) {
+        String sorgu = """ 
+        ALTER TABLE TBLCARIALTHESAPSB ADD COLUMN ALTHESAPID INTEGER;
+        """;
+        db.execute(sorgu);
+        sorgu = """
+              ALTER TABLE TBLCARIALTHESAPSB ADD COLUMN ZORUNLU TEXT;
+        """;
+        db.execute(sorgu);
+       sorgu = """
+              ALTER TABLE TBLCARISB ADD COLUMN ALTHESAPLAR TEXT;
+        """;
+        db.execute(sorgu);
       }
       if (i == 8) {
         String sorgu = """
@@ -58,7 +68,7 @@ class DatabaseHelper {
       BAKIYE DECIMAL
     )""";
         db.execute(sorgu);
-      db.execute("""CREATE TABLE IF NOT EXISTS TBLFISEKPARAM(
+        db.execute("""CREATE TABLE IF NOT EXISTS TBLFISEKPARAM(
       FISID INTEGER,  
       ID INTEGER,
       DEGER TEXT,
@@ -70,7 +80,7 @@ class DatabaseHelper {
       }
       if (i == 7) {
         db.execute("ALTER TABLE TBLTAHSILATHAR ADD COLUMN ALTHESAP TEXT");
-      db.execute("""CREATE TABLE IF NOT EXISTS TBLONDALIKSB (
+        db.execute("""CREATE TABLE IF NOT EXISTS TBLONDALIKSB (
       SUBEID INTEGER,
       FIYAT INTEGER,
       MIKTAR INTEGER,
@@ -99,9 +109,7 @@ class DatabaseHelper {
     if (oldVersion < newVersion) {
       //    db.execute("ALTER TABLE TBLCARIALTHESAPSB ADD COLUMN  INTEGER;");
 
-      if (newVersion == 7) {
-    
-      }
+      if (newVersion == 7) {}
       // db.execute("ALTER TABLE tabEmployee ADD COLUMN newCol TEXT;");
     }
   }
@@ -263,7 +271,8 @@ class DatabaseHelper {
       ISKONTO DECIMAL ,
       EFATURAMI TEXT ,
       VADEGUNU TEXT ,
-      BAKIYE DECIMAL 
+      BAKIYE DECIMAL,
+      ALTHESAPLAR TEXT
       )""";
       await db.execute(Sorgu);
     } on PlatformException catch (e) {
@@ -410,7 +419,9 @@ class DatabaseHelper {
       KOD TEXT ,
       ALTHESAP TEXT,
       DOVIZID INTEGER,
-      VARSAYILAN TEXT
+      VARSAYILAN TEXT,
+      ZORUNLU TEXT,
+      ALTHESAPID INTEGER
     )""";
       await db.execute(Sorgu);
     } on PlatformException catch (e) {
@@ -686,7 +697,7 @@ class DatabaseHelper {
     } on PlatformException catch (e) {
       print(e);
     }
-   
+
     try {
       String sorgu = """
     CREATE TABLE TBLSTOKDEPOSB (
@@ -698,8 +709,8 @@ class DatabaseHelper {
     } on PlatformException catch (e) {
       print(e);
     }
-    
-      try {
+
+    try {
       String sorgu = """
     CREATE TABLE TBLFISEKPARAM(
       FISID INTEGER,  

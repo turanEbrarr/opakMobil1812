@@ -44,12 +44,6 @@ class _valorRaporuPdfOnizlemeState extends State<valorRaporuPdfOnizleme> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadImage();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +62,14 @@ class _valorRaporuPdfOnizlemeState extends State<valorRaporuPdfOnizleme> {
           backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         ),
         body: PdfPreview(
-          build: (context) => valor_raporu_make_pdf(
+          build: (context) async {
+             await _loadImage();
+            return valor_raporu_make_pdf(
             cariKart: widget.caraiKart!,
               imagePath: _imageData!,
               kolon: widget.kolonlar!,
-              satir: widget.satirlar!),
+              satir: widget.satirlar!);
+          },
         ),
       ),
     );

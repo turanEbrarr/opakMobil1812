@@ -58,6 +58,16 @@ class _cek_senetState extends State<cek_senet> {
     DateTime dt = DateTime.now();
     vadeTarihi.text = '${dt.year}-${dt.month}-${dt.day}';
       althesaplar.clear();
+    List<String> altListe = tahsilatEx.tahsilat!.value!.cariKart.ALTHESAPLAR!.split(",");
+    for (var elemnt in listeler.listCariAltHesap) {
+      if (altListe.contains(elemnt.ALTHESAPID.toString())) {
+        althesaplar.add(elemnt);
+      }
+      if (elemnt.VARSAYILAN == "E") {
+        varsayilanAltHesap = elemnt;
+      }
+    }
+      /*
     for (var element in listeler.listCariAltHesap) {
       if (element.KOD == tahsilatEx.tahsilat!.value.CARIKOD){
         althesaplar.add(element);
@@ -66,6 +76,7 @@ class _cek_senetState extends State<cek_senet> {
         }
       }
     }
+    */
     if(varsayilanAltHesap != null){
       seciliAltHesap = varsayilanAltHesap;
     }else{

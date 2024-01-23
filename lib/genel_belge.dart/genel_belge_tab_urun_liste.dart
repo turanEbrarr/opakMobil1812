@@ -91,6 +91,26 @@ class _genel_belge_tab_urun_listeState
     return Scaffold(
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0, top: 4.0),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * .95,
+             // height: MediaQuery.of(context).size.height * .07,
+              child: TextField(
+                controller: editingController,
+                decoration: const InputDecoration(
+                  // labelText: "Listeyi ara",
+                  hintText: "Sepette ara (Ad/Kod/Barkod)",
+                  prefixIcon: Icon(Icons.search, color: Colors.black),
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+                onChanged: ((value) => setState(() {})),
+              ),
+            ),
+          ),
           Expanded(
             child: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -125,318 +145,31 @@ class _genel_belge_tab_urun_listeState
                                   fisEx
                                       .fis?.value.fisStokListesi[index].STOKKOD)
                           .toList();
-                         if(results.isEmpty){
-                          listeler.listDahaFazlaBarkod.where((element) => element.KOD == 
-                              fisEx.fis?.value.fisStokListesi[index].STOKKOD);
-                         } 
+                      if (results.isEmpty) {
+                        listeler.listDahaFazlaBarkod.where((element) =>
+                            element.KOD ==
+                            fisEx.fis?.value.fisStokListesi[index].STOKKOD);
+                      }
                       StokKart stokKart = results[0];
-
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 5.0, right: 5),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          elevation: 10,
-                          child: Column(
-                            children: [
-                              Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      top: y * .01,
-                                      left: x * .07,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(
-                                            width: x * .22,
-                                            child: Text("Ürün Kodu:",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w700))),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.only(left: x * .05),
-                                          child: SizedBox(
-                                              width: x * .4,
-                                              child: Text(
-                                                maxLines: 2,
-                                                fishareket!.STOKKOD.toString(),
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              )),
-                                        ),
-                                        IconButton(
-                                            onPressed: () {
-                                              bottomSheetUrunListe(context,
-                                                  fishareket, stokKart, index);
-                                            },
-                                            icon: Icon(Icons.more_vert))
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      top: y * .01,
-                                      left: x * .07,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                            width: x * .22,
-                                            child: Text("Ürün Adı",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w700))),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.only(left: x * .1),
-                                          child: SizedBox(
-                                              width: x * .5,
-                                              child: Text(
-                                                fishareket.STOKADI.toString(),
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w700),
-                                              )),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      top: x * .1,
-                                      //left: x * .07,
-                                    ),
-                                    child: Container(
-                                      height: y * .15,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                  width: x * .15,
-                                                  child: Text(
-                                                    "Miktar :",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                ),
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                    width: x * .15,
-                                                    child: Text("Fiyat    :",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500))),
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                    width: x * .15,
-                                                    child: Text("İSK       :",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500))),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                    width: x * .15,
-                                                    child: Text(
-                                                      Ctanim.noktadanSonraAlinacakParametreli(
-                                                          Kmiktar!,
-                                                          double.tryParse(fishareket
-                                                                  .MIKTAR!
-                                                                  .toString()) ??
-                                                              0.0),
-                                                    )),
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                    width: x * .15,
-                                                    child: Text(Ctanim
-                                                        .donusturMusteri(Ctanim
-                                                            .noktadanSonraAlinacakParametreli(
-                                                                Kfiyat!,
-                                                                fishareket
-                                                                    .BRUTFIYAT!)))),
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                  width: x * .15,
-                                                  child: fishareket.ISK2! > 0
-                                                      ? Text(
-                                                          Ctanim.donusturMusteri(
-                                                                  Ctanim.noktadanSonraAlinacakParametreli(
-                                                                      Kfiyat!,
-                                                                      fishareket
-                                                                          .ISK!)) +
-                                                              " + " +
-                                                              Ctanim.donusturMusteri(
-                                                                  Ctanim.noktadanSonraAlinacakParametreli(
-                                                                      Kfiyat!,
-                                                                      fishareket
-                                                                          .ISK2!)),
-                                                        )
-                                                      : Text(Ctanim
-                                                          .donusturMusteri(Ctanim
-                                                              .noktadanSonraAlinacakParametreli(
-                                                                  Kfiyat!,
-                                                                  fishareket
-                                                                      .ISK!))),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          VerticalDivider(
-                                            thickness: 2,
-                                            color: Colors.green,
-                                          ),
-                                          //turan
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                  width: x * .2,
-                                                  child: Text(
-                                                    "Net Fiyat :",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                ),
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                    width: x * .2,
-                                                    child: Text("T.Fiyat     :",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500))),
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                    width: x * .2,
-                                                    child: Text("KDV         :",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500))),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                    width: x * .15,
-                                                    child: Text(Ctanim
-                                                        .donusturMusteri(Ctanim
-                                                            .noktadanSonraAlinacakParametreli(
-                                                                Kfiyat!,
-                                                                fishareket
-                                                                    .KDVDAHILNETFIYAT!)))),
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                    width: x * .15,
-                                                    child: Text(Ctanim
-                                                        .donusturMusteri(Ctanim
-                                                            .noktadanSonraAlinacakParametreli(
-                                                                Kfiyat!,
-                                                                fishareket
-                                                                    .KDVDAHILNETTOPLAM!)))),
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: x * .05),
-                                                child: SizedBox(
-                                                  width: x * .15,
-                                                  child: Text(Ctanim
-                                                      .donusturMusteri(Ctanim
-                                                          .noktadanSonraAlinacakParametreli(
-                                                              Kfiyat!,
-                                                              fishareket
-                                                                  .KDVORANI!))),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                              )
-                            ],
-                          ),
-                        ),
-                      );
+                      if (editingController.text != "") {
+                        if (stokKart.KOD! == editingController.text ||
+                            stokKart.BARKOD1! == editingController.text ||
+                            stokKart.BARKOD2! == editingController.text ||
+                            stokKart.BARKOD3! == editingController.text ||
+                            stokKart.BARKOD4! == editingController.text ||
+                            stokKart.BARKOD5! == editingController.text ||
+                            stokKart.BARKOD6! == editingController.text ||
+                            stokKart.ADI!.toLowerCase().contains(
+                                editingController.text.toLowerCase())) {
+                          return urunListeWidget(
+                              y, x, fishareket, context, stokKart, index);
+                        } else {
+                          return Container();
+                        }
+                      } else {
+                        return urunListeWidget(
+                            y, x, fishareket, context, stokKart, index);
+                      }
                     }),
               ),
             ),
@@ -479,6 +212,258 @@ class _genel_belge_tab_urun_listeState
     );
   }
 
+  Padding urunListeWidget(double y, double x, FisHareket? fishareket,
+      BuildContext context, StokKart stokKart, int index) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 5.0, right: 5),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 10,
+        child: Column(
+          children: [
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: y * .01,
+                    left: x * .07,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                          width: x * .22,
+                          child: Text("Ürün Kodu:",
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w700))),
+                      Padding(
+                        padding: EdgeInsets.only(left: x * .05),
+                        child: SizedBox(
+                            width: x * .4,
+                            child: Text(
+                              maxLines: 2,
+                              fishareket!.STOKKOD.toString(),
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            )),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            bottomSheetUrunListe(
+                                context, fishareket, stokKart, index);
+                          },
+                          icon: Icon(Icons.more_vert))
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: y * .01,
+                    left: x * .07,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          width: x * .22,
+                          child: Text("Ürün Adı",
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.w700))),
+                      Padding(
+                        padding: EdgeInsets.only(left: x * .1),
+                        child: SizedBox(
+                            width: x * .5,
+                            child: Text(
+                              fishareket.STOKADI.toString(),
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: x * .1,
+                    //left: x * .07,
+                  ),
+                  child: Container(
+                    height: y * .15,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                width: x * .15,
+                                child: Text(
+                                  "Miktar :",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                  width: x * .15,
+                                  child: Text("Fiyat    :",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500))),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                  width: x * .15,
+                                  child: Text("İSK       :",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500))),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                  width: x * .15,
+                                  child: Text(
+                                    Ctanim.noktadanSonraAlinacakParametreli(
+                                        Kmiktar!,
+                                        double.tryParse(fishareket.MIKTAR!
+                                                .toString()) ??
+                                            0.0),
+                                  )),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                  width: x * .15,
+                                  child: Text(Ctanim.donusturMusteri(
+                                      Ctanim.noktadanSonraAlinacakParametreli(
+                                          Kfiyat!, fishareket.BRUTFIYAT!)))),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                width: x * .15,
+                                child: fishareket.ISK2! > 0
+                                    ? Text(
+                                        Ctanim.donusturMusteri(Ctanim
+                                                .noktadanSonraAlinacakParametreli(
+                                                    Kfiyat!, fishareket.ISK!)) +
+                                            " + " +
+                                            Ctanim.donusturMusteri(Ctanim
+                                                .noktadanSonraAlinacakParametreli(
+                                                    Kfiyat!, fishareket.ISK2!)),
+                                      )
+                                    : Text(Ctanim.donusturMusteri(
+                                        Ctanim.noktadanSonraAlinacakParametreli(
+                                            Kfiyat!, fishareket.ISK!))),
+                              ),
+                            ),
+                          ],
+                        ),
+                        VerticalDivider(
+                          thickness: 2,
+                          color: Colors.green,
+                        ),
+                        //turan
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                width: x * .2,
+                                child: Text(
+                                  "Net Fiyat :",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                  width: x * .2,
+                                  child: Text("T.Fiyat     :",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500))),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                  width: x * .2,
+                                  child: Text("KDV         :",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500))),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                  width: x * .15,
+                                  child: Text(Ctanim.donusturMusteri(
+                                      Ctanim.noktadanSonraAlinacakParametreli(
+                                          Kfiyat!,
+                                          fishareket.KDVDAHILNETFIYAT!)))),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                  width: x * .15,
+                                  child: Text(Ctanim.donusturMusteri(
+                                      Ctanim.noktadanSonraAlinacakParametreli(
+                                          Kfiyat!,
+                                          fishareket.KDVDAHILNETTOPLAM!)))),
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(left: x * .05),
+                              child: SizedBox(
+                                width: x * .15,
+                                child: Text(Ctanim.donusturMusteri(
+                                    Ctanim.noktadanSonraAlinacakParametreli(
+                                        Kfiyat!, fishareket.KDVORANI!))),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   void bottomSheetUrunListe(BuildContext context, FisHareket fishareket,
       StokKart stokKart, int index) {
     showModalBottomSheet(
@@ -506,7 +491,8 @@ class _genel_belge_tab_urun_listeState
                 onTap: () async {
                   fisEx.fis?.value.fisStokListesi.removeWhere(
                       (item) => item.STOKKOD == fishareket.STOKKOD!);
-                      await Fis.empty().fisHareketSil( fisEx.fis!.value!.ID!,fishareket.STOKKOD!);
+                  await Fis.empty().fisHareketSil(
+                      fisEx.fis!.value!.ID!, fishareket.STOKKOD!);
 
                   setState(() {});
                   const snackBar = SnackBar(

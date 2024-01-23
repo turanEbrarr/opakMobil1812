@@ -37,12 +37,7 @@ class _DepoTransferPdfOnizlemeState extends State<DepoTransferPdfOnizleme> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadImage();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +56,10 @@ class _DepoTransferPdfOnizlemeState extends State<DepoTransferPdfOnizleme> {
           backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         ),
         body: PdfPreview(
-          build: (context) => depo_transfer_make_pdf(widget.m, _imageData!),
+          build: (context) async {
+             await _loadImage();
+            return depo_transfer_make_pdf(widget.m, _imageData!);
+          },
         ),
       ),
     );

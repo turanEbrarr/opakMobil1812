@@ -51,12 +51,6 @@ class _CariEkstreRaporPDfOnizlemeState
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadImage();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,13 +69,16 @@ class _CariEkstreRaporPDfOnizlemeState
           backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         ),
         body: PdfPreview(
-          build: (context) => cariEkstreRaporMakePdf(
+          build: (context) async {
+            await _loadImage();
+            return cariEkstreRaporMakePdf(
               cariKart: widget.caraiKart!,
               imagePath: _imageData!,
               kolon: widget.kolonlar!,
               satir: widget.satirlar!,
               faturaID: widget.faturaID!,
-              baslik: widget.baslik!),
+              baslik: widget.baslik!);
+          },
         ),
       ),
     );

@@ -44,7 +44,7 @@ class _PdfOnizlemeState extends State<PdfOnizleme> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _loadImage();
+  
   }
 
   Future<Uint8List> pdfGetirFastReport() async {
@@ -75,8 +75,9 @@ class _PdfOnizlemeState extends State<PdfOnizleme> {
         ),
         backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         body: PdfPreview(
-          build: (context) {
-            if (widget.fastReporttanMiGelsin == false) {
+          build: (context) async {
+            if (widget.fastReporttanMiGelsin == true) {
+              await _loadImage();
               return makePdf(widget.m, _imageData!);
             } else {
               return pdfGetirFastReport();

@@ -212,7 +212,7 @@ class VeriIslemleri {
         List.generate(maps.length, (i) => Cari.fromJson(maps[i]));
     cariEx.searchCariList.assignAll(listeler.listCari);
 
-    await cariAltHesapGetir();
+   // await cariAltHesapGetir();
 
     return listeler.listCari;
   }
@@ -267,7 +267,8 @@ class VeriIslemleri {
       ISKONTO DECIMAL ,
       EFATURAMI TEXT ,
       VADEGUNU TEXT ,
-      BAKIYE DECIMAL 
+      BAKIYE DECIMAL,
+      ALTHESAPLAR TEXT
       )""");
 
       print("TBLCARISB tablosu temizlendi ve yeniden oluşturuldu.");
@@ -289,8 +290,10 @@ class VeriIslemleri {
       await Ctanim.db?.execute(""" CREATE TABLE TBLCARIALTHESAPSB (
       KOD TEXT ,
       ALTHESAP TEXT,
+      ALTHESAPID INTEGER,
       DOVIZID INTEGER,
-      VARSAYILAN TEXT
+      VARSAYILAN TEXT,
+      ZORUNLU TEXT
     )""");
 
       print("TBLCARIALTHESAPSB tablosu temizlendi ve yeniden oluşturuldu.");
@@ -306,15 +309,18 @@ class VeriIslemleri {
 
     listeler.listCariAltHesap =
         List.generate(maps.length, (i) => CariAltHesap.fromJson(maps[i]));
-
+    /*
     for (int i = 0; i < listeler.listCari.length; i++) {
       for (var element2 in listeler.listCariAltHesap) {
         if (listeler.listCari[i].KOD == element2.KOD) {
-          listeler.listCari[i].cariAltHesaplar.add(element2);
+          //listeler.listCari[i].cariAltHesaplar.add(element2);
         }
       }
     }
-    cariEx.searchCariList.assignAll(listeler.listCari);
+    */
+
+    //BURASI DEĞİŞECEK
+    //cariEx.searchCariList.assignAll(listeler.listCari);
 
     return listeler.listCariAltHesap;
   }
@@ -1020,6 +1026,7 @@ class VeriIslemleri {
     await stokGetir(); // BUNLAR AŞAĞIDA DEĞİŞRİ TEMOE BAKILIYODU ARTK BÖYLE BAKIILIRO
     await cariGetir();
     await subeDepoGetir();
+    await cariAltHesapGetir();
     await fisEkParamGetir();
     await ondalikGetir();
     await islemTipiGetir();

@@ -327,6 +327,16 @@ class _genel_belge_tab_urun_toplamState
     String? cariKod = fisEx.fis!.value.CARIKOD;
     //ALT HESAP GUNCELLEMESI PUSHLANMADI
     altHesaplar.clear();
+    List<String> altListe = fisEx.fis!.value!.cariKart.ALTHESAPLAR!.split(",");
+    for (var elemnt in listeler.listCariAltHesap) {
+      if (altListe.contains(elemnt.ALTHESAPID.toString())) {
+        altHesaplar.add(elemnt);
+      }
+      if (elemnt.VARSAYILAN == "E") {
+        varsayilanAltHesap = elemnt;
+      }
+    }
+    /*
     for (var element in listeler.listCariAltHesap) {
       if (element.KOD == cariKod) {
         altHesaplar.add(element);
@@ -335,6 +345,7 @@ class _genel_belge_tab_urun_toplamState
         }
       }
     }
+    */
     if (altHesaplar.isNotEmpty) {
       if (varsayilanAltHesap == null) {
         varsayilanAltHesap = altHesaplar.first;
@@ -590,54 +601,53 @@ class _genel_belge_tab_urun_toplamState
                         ),
                       )
                     : Container(),
-            
-                    Container(
-                        width: MediaQuery.of(context).size.width * .80,
-                        height: MediaQuery.of(context).size.height / 15,
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 15.0),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<IslemTipi>(
-                              value: seciliFaturaTip,
-                              items: islemTipiList.map((IslemTipi banka) {
-                                return DropdownMenuItem<IslemTipi>(
-                                  value: banka,
-                                  child: Text(
-                                    banka.ADI ?? "",
-                                    style: TextStyle(fontSize: 14),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (IslemTipi? selected) {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return CustomAlertDialog(
-                                        pdfSimgesi: false,
-                                        align: TextAlign.left,
-                                        title: 'İşlem Onayı',
-                                        message:
-                                            'İşlem tipi değiştirildiğinde belgenin seri numarası değişecektir. Onaylıyor musunuz?',
-                                        onPres: () async {
-                                          setState(() {
-                                            seciliFaturaTip = selected;
-                                          });
-                                          fisEx.fis!.value.ISLEMTIPI =
-                                              seciliFaturaTip!.ID.toString();
-
-                                          Navigator.pop(context);
-                                        },
-                                        secondButtonText: "İptal",
-                                        onSecondPress: () {
-                                          Navigator.pop(context);
-                                        },
-                                        buttonText: 'Onay',
-                                      );
-                                    });
-                              },
+                Container(
+                  width: MediaQuery.of(context).size.width * .80,
+                  height: MediaQuery.of(context).size.height / 15,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 15.0),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<IslemTipi>(
+                        value: seciliFaturaTip,
+                        items: islemTipiList.map((IslemTipi banka) {
+                          return DropdownMenuItem<IslemTipi>(
+                            value: banka,
+                            child: Text(
+                              banka.ADI ?? "",
+                              style: TextStyle(fontSize: 14),
                             ),
-                          ),
-                          /* DropdownButtonHideUnderline(
+                          );
+                        }).toList(),
+                        onChanged: (IslemTipi? selected) {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return CustomAlertDialog(
+                                  pdfSimgesi: false,
+                                  align: TextAlign.left,
+                                  title: 'İşlem Onayı',
+                                  message:
+                                      'İşlem tipi değiştirildiğinde belgenin seri numarası değişecektir. Onaylıyor musunuz?',
+                                  onPres: () async {
+                                    setState(() {
+                                      seciliFaturaTip = selected;
+                                    });
+                                    fisEx.fis!.value.ISLEMTIPI =
+                                        seciliFaturaTip!.ID.toString();
+
+                                    Navigator.pop(context);
+                                  },
+                                  secondButtonText: "İptal",
+                                  onSecondPress: () {
+                                    Navigator.pop(context);
+                                  },
+                                  buttonText: 'Onay',
+                                );
+                              });
+                        },
+                      ),
+                    ),
+                    /* DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: selectedAltHesap,
                           onChanged: (String? newValue) {
@@ -661,9 +671,8 @@ class _genel_belge_tab_urun_toplamState
                         ),
                       )
                       */
-                        ),
-                      ),
-                
+                  ),
+                ),
                 widget.belgeTipi == "Alis_Fatura"
                     ? Column(
                         children: [
@@ -680,7 +689,6 @@ class _genel_belge_tab_urun_toplamState
                                   "Fatura Tipi :",
                                   style: TextStyle(
                                       fontSize: 14,
-                                      
                                       fontWeight: FontWeight.w500),
                                 ),
                               ],
@@ -1213,7 +1221,6 @@ class _genel_belge_tab_urun_toplamState
                                             DragStartBehavior.start,
                                         clipBehavior: Clip.hardEdge,
                                         child: Column(
-                                          
                                           children: [
                                             SizedBox(
                                               width: MediaQuery.of(context)
@@ -1239,10 +1246,12 @@ class _genel_belge_tab_urun_toplamState
                                               ),
                                             ),
                                             Padding(
-                                              padding:  EdgeInsets.only(top : MediaQuery.of(context)
+                                              padding: EdgeInsets.only(
+                                                top: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    .05,),
+                                                    .05,
+                                              ),
                                               child: SizedBox(
                                                 height: MediaQuery.of(context)
                                                         .size
@@ -1253,7 +1262,8 @@ class _genel_belge_tab_urun_toplamState
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
-                                                    child: Text("Kaydet ve Çık")),
+                                                    child:
+                                                        Text("Kaydet ve Çık")),
                                               ),
                                             )
                                           ],

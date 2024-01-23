@@ -41,12 +41,7 @@ class _bakiyeRaporuPdfOnizlemeState extends State<bakiyeRaporuPdfOnizleme> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _loadImage();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +60,13 @@ class _bakiyeRaporuPdfOnizlemeState extends State<bakiyeRaporuPdfOnizleme> {
           backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         ),
         body: PdfPreview(
-          build: (context) => bakiye_raporu_make_pdf(
+          build: (context) async {
+             await _loadImage();
+            return bakiye_raporu_make_pdf(
               imagePath: _imageData!,
               kolon: widget.kolonlar!,
-              satir: widget.satirlar!),
+              satir: widget.satirlar!);
+          },
         ),
       ),
     );
