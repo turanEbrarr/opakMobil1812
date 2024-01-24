@@ -247,7 +247,7 @@ class _stok_depo_bakiye_rapor_pageState
           ),
           ustfiltre == true
               ? Container(
-                  height: MediaQuery.of(context).size.height * .4,
+                  height: MediaQuery.of(context).size.height * .35,
                   child: Column(
                     children: [
                       Expanded(

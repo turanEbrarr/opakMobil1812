@@ -15,7 +15,7 @@ import '../widget/modeller/sharedPreferences.dart';
 import '../widget/veriler/listeler.dart';
 import '../cari_kart/yeni_cari_olustur.dart';
 
-enum SampleItem { itemOne, itemTwo,itemThere,itemFour ,itemFife}
+enum SampleItem { itemOne, itemTwo, itemThere, itemFour, itemFife }
 
 class cari_islemler_page extends StatefulWidget {
   const cari_islemler_page({required this.widgetListBelgeSira});
@@ -168,10 +168,9 @@ class _cari_islemler_pageState extends State<cari_islemler_page> {
                       PopupMenuItem<SampleItem>(
                         value: SampleItem.itemOne,
                         onTap: () {
-                          cariEx.searchCariList.sort((a, b) => b.BAKIYE!.compareTo(a.BAKIYE!));
-                          setState(() {
-                            
-                          });
+                          cariEx.searchCariList
+                              .sort((a, b) => b.BAKIYE!.compareTo(a.BAKIYE!));
+                          setState(() {});
                         },
                         child: Text('Bakiye Azalan'),
                       ),
@@ -179,7 +178,8 @@ class _cari_islemler_pageState extends State<cari_islemler_page> {
                         value: SampleItem.itemTwo,
                         child: Text('Bakiye Artan'),
                         onTap: () {
-                            cariEx.searchCariList..sort((a, b) => a.BAKIYE!.compareTo(b.BAKIYE!));
+                          cariEx.searchCariList
+                            ..sort((a, b) => a.BAKIYE!.compareTo(b.BAKIYE!));
                         },
                       ),
                       PopupMenuItem<SampleItem>(
@@ -188,31 +188,28 @@ class _cari_islemler_pageState extends State<cari_islemler_page> {
                         onTap: () {
                           cariEx.searchCariList.clear();
                           cariEx.searchCariList.addAll(listeler.listCari);
-                           cariEx.searchCariList.removeWhere((cari) => cari.BAKIYE! >= 0);
-                           setState(() {
-                             
-                           });
+                          cariEx.searchCariList
+                              .removeWhere((cari) => cari.BAKIYE! >= 0);
+                          setState(() {});
                         },
                       ),
                       PopupMenuItem<SampleItem>(
                         value: SampleItem.itemFour,
                         child: Text('Bakiyesi Artı Olanlar'),
                         onTap: () {
-                             cariEx.searchCariList.clear();
+                          cariEx.searchCariList.clear();
                           cariEx.searchCariList.addAll(listeler.listCari);
-                          cariEx.searchCariList.removeWhere((cari) => cari.BAKIYE! < 0);
-                           setState(() {
-                             
-                           });
+                          cariEx.searchCariList
+                              .removeWhere((cari) => cari.BAKIYE! < 0);
+                          setState(() {});
                         },
                       ),
                       PopupMenuItem<SampleItem>(
                         value: SampleItem.itemFife,
                         child: Text('Filtreyi Temizle'),
                         onTap: () {
-                             cariEx.searchCariList.clear();
+                          cariEx.searchCariList.clear();
                           cariEx.searchCariList.addAll(listeler.listCari);
-                          
                         },
                       ),
                     ],
@@ -221,13 +218,12 @@ class _cari_islemler_pageState extends State<cari_islemler_page> {
               ),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height * .90,
+              height: MediaQuery.of(context).size.height * .70,
               child: Obx(() => ListView.builder(
                     itemCount: cariEx.searchCariList.length,
                     itemBuilder: (context, index) {
                       Cari cariKart = cariEx.searchCariList[index];
-                       String trim =
-                          cariKart.ADI!.trim(); // bu ifade cariler eklenecek
+                      String trim = cariKart.ADI!.trim();
                       String harf1 = "";
                       String harf2 = "";
                       if (trim.length > 0) {

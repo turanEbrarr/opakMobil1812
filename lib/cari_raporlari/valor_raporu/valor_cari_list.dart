@@ -134,9 +134,20 @@ class _valor_cari_list_pageState extends State<valor_cari_list_page> {
                     itemCount: cariEx.searchCariList.length,
                     itemBuilder: (context, index) {
                       Cari cariKart = cariEx.searchCariList[index];
-                      List<String> temp1 = cariKart.ADI!.split(" ");
-                      String harf1 = temp1[0][0];
-                      String harf2 = temp1[1][0];
+                      String trim = cariKart.ADI!.trim();
+                      String harf1 = "";
+                      String harf2 = "";
+                      if (trim.length > 0) {
+                        harf1 = trim[0];
+                        if (trim.length == 1) {
+                          harf2 = "K";
+                        } else {
+                          harf2 = trim[1];
+                        }
+                      } else {
+                        harf1 = "A";
+                        harf2 = "B";
+                      }
 
                       return Padding(
                         padding: const EdgeInsets.only(
@@ -190,28 +201,9 @@ class _valor_cari_list_pageState extends State<valor_cari_list_page> {
 
                                       if (gelen[0].length == 1 &&
                                           gelen[1].length == 0) {
-                                        await showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return CustomAlertDialog(
-                                              align: TextAlign.left,
-                                              title: gelen[0][0] ==
-                                                      "Veri Bulunamadı"
-                                                  ? "Kayıtlı Belge Yok"
-                                                  : "Hata",
-                                              message: gelen[0][0] ==
-                                                      "Veri Bulunamadı"
-                                                  ? 'İstenilen Belge Mevcut Değil'
-                                                  : 'Web Servisten Veri Alınırken Bazı Hatalar İle Karşılaşıldı:\n' +
-                                                      gelen[0][0],
-                                              onPres: () {
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                              },
-                                              buttonText: 'Geri',
-                                            );
-                                          },
-                                        );
+                                        await Ctanim.hata_popup(gelen, context)
+                                            .then((value) =>
+                                                Navigator.pop(context));
                                       } else {
                                         // gelenlerden colon kaldırıldıysa veya eklendiyse favorileri temizle
                                         if (gelen[1].length != cek.length) {

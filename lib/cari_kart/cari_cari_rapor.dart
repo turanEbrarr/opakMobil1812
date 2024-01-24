@@ -111,7 +111,8 @@ class _cari_cari_raporState extends State<cari_cari_rapor> {
                                   cariKodu: widget.cariKart.KOD!);
                               if (donen[0].length == 1 &&
                                   donen[1].length == 0) {
-                                hataGoster(donen);
+                                Ctanim.hata_popup(donen, context)
+                                    .then((value) => Navigator.pop(context));
                               } else {
                                 // gelenlerden colon kaldırıldıysa veya eklendiyse favorileri temizle
                                 if (donen[1].length != cek.length) {

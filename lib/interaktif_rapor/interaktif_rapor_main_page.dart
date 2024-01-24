@@ -237,12 +237,11 @@ class _interaktif_rapor_main_pageState
                                 } else if (element.COLTYPE ==
                                     "System.Decimal") {
                                   TextEditingController s1 =
-                                      TextEditingController(); 
+                                      TextEditingController();
                                   Map<String, dynamic> data = {
                                     "degiskenAdi": element.COLNAME,
                                     "obje": element,
                                     "controller": s1
-
                                   };
                                   params.add(data);
                                   widgetList.add(decimalWidgetOlustur(data));
@@ -264,7 +263,6 @@ class _interaktif_rapor_main_pageState
                                 showDialog(
                                     context: context,
                                     builder: (context) {
-                                      
                                       return SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
@@ -431,35 +429,13 @@ class _interaktif_rapor_main_pageState
                                                                     1 &&
                                                                 gelen[1].length ==
                                                                     0) {
-                                                              await showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return CustomAlertDialog(
-                                                                    align:
-                                                                        TextAlign
-                                                                            .left,
-                                                                    title: gelen[0][0] ==
-                                                                            "Veri Bulunamadı"
-                                                                        ? "Kayıtlı Belge Yok"
-                                                                        : "Hata",
-                                                                    message: gelen[0][0] ==
-                                                                            "Veri Bulunamadı"
-                                                                        ? 'İstenilen Belge Mevcut Değil'
-                                                                        : 'Web Servisten Veri Alınırken Bazı Hatalar İle Karşılaşıldı:\n' +
-                                                                            gelen[0][0],
-                                                                    onPres: () {
+                                                              await Ctanim
+                                                                      .hata_popup(
+                                                                          gelen,
+                                                                          context)
+                                                                  .then((value) =>
                                                                       Navigator.pop(
-                                                                          context);
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    },
-                                                                    buttonText:
-                                                                        'Geri',
-                                                                  );
-                                                                },
-                                                              );
+                                                                          context));
                                                             } else {
                                                               Navigator.pop(
                                                                   context);

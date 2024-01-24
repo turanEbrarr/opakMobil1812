@@ -92,139 +92,161 @@ class Ctanim {
     }
   }
 
-static dynamic noktadanSonraAlinacakParametreli(
-    KUSURAT kusurat, double veri, {bool doubleMiDonsun = false}) {
-    Ctanim.ondalikModel!.ALISDOVFIYAT;  
-  switch (kusurat) {
-    case KUSURAT.FIYAT:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.FIYAT!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.FIYAT!);
-      }
+  static dynamic noktadanSonraAlinacakParametreli(KUSURAT kusurat, double veri,
+      {bool doubleMiDonsun = false}) {
+    Ctanim.ondalikModel!.ALISDOVFIYAT;
+    switch (kusurat) {
+      case KUSURAT.FIYAT:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.FIYAT!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.FIYAT!);
+        }
 
-    case KUSURAT.MIKTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.MIKTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.MIKTAR!);
-      }
-    case KUSURAT.KUR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.KUR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.KUR!);
-      }
-    case KUSURAT.DOVFIYAT:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.DOVFIYAT!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.DOVFIYAT!);
-      }
-    case KUSURAT.TUTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.TUTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.TUTAR!);
-      }
-    case KUSURAT.DOVTUTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.DOVTUTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.DOVTUTAR!);
-      }
-    case KUSURAT.ALISFIYAT:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.ALISFIYAT!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISFIYAT!);
-      }
-    case KUSURAT.ALISMIKTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.ALISMIKTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISMIKTAR!);
-      }
-    case KUSURAT.ALISKUR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.ALISKUR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISKUR!);
-      }
-    case KUSURAT.ALISDOVFIYAT:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.ALISDOVFIYAT!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISDOVFIYAT!);
-      }
-    case KUSURAT.ALISTUTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.ALISTUTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISTUTAR!);
-      }
-    case KUSURAT.ALISDOVTUTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.ALISDOVTUTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISDOVTUTAR!);
-      }
-    case KUSURAT.PERFIYAT:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.PERFIYAT!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.PERFIYAT!);
-      }
-    case KUSURAT.PERMIKTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.PERMIKTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.PERMIKTAR!);
-      }
-    case KUSURAT.PERKUR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.PERKUR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.PERKUR!);
-      }
-    case KUSURAT.PERDOVFIYAT:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.PERDOVFIYAT!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.PERDOVFIYAT!);
-      }
-    case KUSURAT.PERTUTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.PERTUTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.PERTUTAR!);
-      }
-    case KUSURAT.PERDOVTUTAR:
-      if (doubleMiDonsun == true) {
-        return double.parse(
-            veri.toStringAsFixed(Ctanim.ondalikModel!.PERDOVTUTAR!));
-      } else {
-        return veri.toStringAsFixed(Ctanim.ondalikModel!.PERDOVTUTAR!);
-      }
+      case KUSURAT.MIKTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.MIKTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.MIKTAR!);
+        }
+      case KUSURAT.KUR:
+        if (doubleMiDonsun == true) {
+          return double.parse(veri.toStringAsFixed(Ctanim.ondalikModel!.KUR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.KUR!);
+        }
+      case KUSURAT.DOVFIYAT:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.DOVFIYAT!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.DOVFIYAT!);
+        }
+      case KUSURAT.TUTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.TUTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.TUTAR!);
+        }
+      case KUSURAT.DOVTUTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.DOVTUTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.DOVTUTAR!);
+        }
+      case KUSURAT.ALISFIYAT:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.ALISFIYAT!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISFIYAT!);
+        }
+      case KUSURAT.ALISMIKTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.ALISMIKTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISMIKTAR!);
+        }
+      case KUSURAT.ALISKUR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.ALISKUR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISKUR!);
+        }
+      case KUSURAT.ALISDOVFIYAT:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.ALISDOVFIYAT!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISDOVFIYAT!);
+        }
+      case KUSURAT.ALISTUTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.ALISTUTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISTUTAR!);
+        }
+      case KUSURAT.ALISDOVTUTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.ALISDOVTUTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.ALISDOVTUTAR!);
+        }
+      case KUSURAT.PERFIYAT:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.PERFIYAT!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.PERFIYAT!);
+        }
+      case KUSURAT.PERMIKTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.PERMIKTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.PERMIKTAR!);
+        }
+      case KUSURAT.PERKUR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.PERKUR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.PERKUR!);
+        }
+      case KUSURAT.PERDOVFIYAT:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.PERDOVFIYAT!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.PERDOVFIYAT!);
+        }
+      case KUSURAT.PERTUTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.PERTUTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.PERTUTAR!);
+        }
+      case KUSURAT.PERDOVTUTAR:
+        if (doubleMiDonsun == true) {
+          return double.parse(
+              veri.toStringAsFixed(Ctanim.ondalikModel!.PERDOVTUTAR!));
+        } else {
+          return veri.toStringAsFixed(Ctanim.ondalikModel!.PERDOVTUTAR!);
+        }
+    }
   }
-}
+
+  static Future<dynamic> hata_popup(
+      List<List<dynamic>> gelen, BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return CustomAlertDialog(
+          align: TextAlign.left,
+          title:
+              gelen[0][0] == "Veri Bulunamadı" ? "Kayıtlı Belge Yok" : "Hata",
+          message: gelen[0][0] == "Veri Bulunamadı"
+              ? 'İstenilen Belge Mevcut Değil'
+              : 'Web Servisten Veri Alınırken Bazı Hatalar İle Karşılaşıldı:\n' +
+                  gelen[0][0],
+          onPres: () {
+            Navigator.pop(context);
+         //   Navigator.pop(context);
+          },
+          buttonText: 'Geri',
+        );
+      },
+    );
+  }
 
   static Widget tarihAraligiSecim(
       BuildContext context,
@@ -442,7 +464,8 @@ static dynamic noktadanSonraAlinacakParametreli(
       // (urunToplami - (((element.ISK! / 100) * urunToplami)));
       kalemindirimToplami = tt + tt2;
       if (KDVtipDegisti == true) {
-        KDVTutari = KDVTutari + ((urunToplami - kalemindirimToplami) * kdvOrani);
+        KDVTutari =
+            KDVTutari + ((urunToplami - kalemindirimToplami) * kdvOrani);
       } else {
         KDVTutari =
             KDVTutari + ((urunToplami - kalemindirimToplami) * kdvOrani);

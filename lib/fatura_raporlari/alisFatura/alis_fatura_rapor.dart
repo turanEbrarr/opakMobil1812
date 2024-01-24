@@ -93,26 +93,8 @@ class _alis_fatura_rapor_pageState extends State<alis_fatura_rapor_page> {
               faturaID: (donecekDataCell[0].child as Text).data!);
 
           if (gelen[0].length == 1 && gelen[1].length == 0) {
-            await showDialog(
-              context: context,
-              builder: (context) {
-                return CustomAlertDialog(
-                  align: TextAlign.left,
-                  title: gelen[0][0] == "Veri Bulunamadı"
-                      ? "Kayıtlı Belge Yok"
-                      : "Hata",
-                  message: gelen[0][0] == "Veri Bulunamadı"
-                      ? 'İstenilen Belge Mevcut Değil'
-                      : 'Web Servisten Veri Alınırken Bazı Hatalar İle Karşılaşıldı:\n' +
-                          gelen[0][0],
-                  onPres: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
-                  buttonText: 'Geri',
-                );
-              },
-            );
+            await Ctanim.hata_popup(gelen, context)
+                .then((value) => Navigator.pop(context));
           } else {
             // gelenlerden colon kaldırıldıysa veya eklendiyse favorileri temizle
             if (gelen[1].length != cek.length) {
@@ -310,26 +292,8 @@ class _alis_fatura_rapor_pageState extends State<alis_fatura_rapor_page> {
                             );
 
                             if (gelen[0].length == 1 && gelen[1].length == 0) {
-                              await showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return CustomAlertDialog(
-                                    align: TextAlign.left,
-                                    title: gelen[0][0] == "Veri Bulunamadı"
-                                        ? 'Kayıtlı Belge Yok'
-                                        : "Hata",
-                                    message: gelen[0][0] == "Veri Bulunamadı"
-                                        ? 'İstenilen Belge Mevcut Değil'
-                                        : 'Web Servisten Veri Alınırken Bazı Hatalar İle Karşılaşıldı:\n' +
-                                            gelen[0][0],
-                                    onPres: () {
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                    },
-                                    buttonText: 'Geri',
-                                  );
-                                },
-                              );
+                              await Ctanim.hata_popup(gelen, context)
+                                  .then((value) => Navigator.pop(context));
                             } else {
                               // gelenlerden colon kaldırıldıysa veya eklendiyse favorileri temizle
                               if (gelen[1].length != cek.length) {

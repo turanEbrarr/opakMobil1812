@@ -236,7 +236,7 @@ class _bakiye_raporu_pageState extends State<bakiye_raporu_page> {
           ),
           ustfiltre == true
               ? Container(
-                  height: MediaQuery.of(context).size.height * .4,
+                  height: MediaQuery.of(context).size.height * .2,
                   child: Column(
                     children: [
                       Expanded(

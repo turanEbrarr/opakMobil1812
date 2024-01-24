@@ -123,26 +123,8 @@ class _stok_raporlari_main_pageState extends State<stok_raporlari_main_page> {
                         kullaniciKodu: Ctanim.kullanici!.KOD!,
                         fonksiyonAdi: "RaporStokBakiye");
                     if (gelen[0].length == 1 && gelen[1].length == 0) {
-                      await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return CustomAlertDialog(
-                            align: TextAlign.left,
-                            title: gelen[0][0] == "Veri Bulunamadı"
-                                ? "Kayıtlı Belge Yok"
-                                : "Hata",
-                            message: gelen[0][0] == "Veri Bulunamadı"
-                                ? 'İstenilen Belge Mevcut Değil'
-                                : 'Web Servisten Veri Alınırken Bazı Hatalar İle Karşılaşıldı:\n' +
-                                    gelen[0][0],
-                            onPres: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            buttonText: 'Geri',
-                          );
-                        },
-                      );
+                      await Ctanim.hata_popup(gelen, context)
+                          .then((value) => Navigator.pop(context));
                     } else {
                       Navigator.pop(context);
                       Navigator.push(
@@ -193,24 +175,8 @@ class _stok_raporlari_main_pageState extends State<stok_raporlari_main_page> {
                         kullaniciKodu: Ctanim.kullanici!.KOD!,
                         fonksiyonAdi: "RaporStokDepoBakiye");
                     if (gelen[0].length == 1 && gelen[1].length == 0) {
-                      await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return CustomAlertDialog(
-                            align: TextAlign.left,
-                            title: 'Hata',
-                            message: gelen[0][0] == "Veri Bulunamadı"
-                                ? 'İstenilen Belge Mevcut Değil'
-                                : 'Web Servisten Veri Alınırken Bazı Hatalar İle Karşılaşıldı:\n' +
-                                    gelen[0][0],
-                            onPres: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            buttonText: 'Geri',
-                          );
-                        },
-                      );
+                      await Ctanim.hata_popup(gelen, context)
+                          .then((value) => Navigator.pop(context));
                     } else {
                       Navigator.pop(context);
                       Navigator.push(

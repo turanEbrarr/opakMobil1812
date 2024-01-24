@@ -409,6 +409,7 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
     );
   }
 
+  //! Tabletler için
   SizedBox urunAraYatayTasarim(BuildContext context, double y, double x) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
@@ -817,6 +818,7 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
     );
   }
 
+  //! küçük ekranlar için
   SizedBox urunAraDikeyTasarim(BuildContext context, double y, double x) {
     ScrollController _scrollController = ScrollController();
 
@@ -828,11 +830,10 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
           itemCount: stokKartEx.tempList.length,
           itemBuilder: (context, index) {
             StokKart stokKart = stokKartEx.tempList[index];
-            TextEditingController t1 = TextEditingController();
+         //   TextEditingController t1 = TextEditingController();
+         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!aaaaaaaaaaa
             var miktar = stokKart.guncelDegerler!.carpan.obs;
-
-            t1.text = stokKart.guncelDegerler!.carpan.toString();
-
+            //     t1.text = stokKart.guncelDegerler!.carpan.toString();
             KurModel stokKartKur =
                 KurModel(ID: -1, ACIKLAMA: "-", KUR: 1, ANABIRIM: "H");
             if (Ctanim.seciliStokFiyatListesi.ID == -1) {
@@ -1220,6 +1221,10 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                                             controller: t1,
                                             onEditingComplete: () {},
                                             onTap: () {
+                                              t1.selection = TextSelection(
+                                                  baseOffset: 0,
+                                                  extentOffset:
+                                                      t1.value.text.length);
                                               _scrollController.animateTo(
                                                 _scrollController.offset + 50,
                                                 duration:
