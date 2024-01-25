@@ -93,9 +93,4 @@ class SayimHareket {
     }
   }
 
-  Future<int> sayimHareketSil(int Id) async {
-    var result = await Ctanim.db
-        ?.delete("TBLSAYIMHAR", where: 'ID = ?', whereArgs: [Id]);
-    return result;
-  }
 }

@@ -1,3 +1,5 @@
+
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -252,33 +254,6 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            /*
-            Container(
-              color: const Color.fromARGB(255, 121, 184, 240),
-              width: MediaQuery.of(context).size.width,
-              height: 40,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(children: [
-                  Obx(
-                    () => Text(
-                      "Listelenen Stok:   ${stokKartEx.searchList.length}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, color: Colors.white),
-                    ),
-                  ),
-                  const Spacer(),
-                  const Padding(
-                    padding: EdgeInsets.only(right: 8.0),
-                    child: Icon(
-                      Icons.refresh_outlined,
-                      color: Colors.white,
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-            */
             Row(
               children: [
                 Expanded(
@@ -826,14 +801,14 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * .70,
       child: Obx(() => ListView.builder(
-          controller: _scrollController,
+          controller: _scrollController, 
           itemCount: stokKartEx.tempList.length,
           itemBuilder: (context, index) {
             StokKart stokKart = stokKartEx.tempList[index];
-         //   TextEditingController t1 = TextEditingController();
+           TextEditingController t1 = TextEditingController();
          //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!aaaaaaaaaaa
             var miktar = stokKart.guncelDegerler!.carpan.obs;
-            //     t1.text = stokKart.guncelDegerler!.carpan.toString();
+               t1.text = stokKart.guncelDegerler!.carpan.toString();
             KurModel stokKartKur =
                 KurModel(ID: -1, ACIKLAMA: "-", KUR: 1, ANABIRIM: "H");
             if (Ctanim.seciliStokFiyatListesi.ID == -1) {
@@ -1225,12 +1200,16 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                                                   baseOffset: 0,
                                                   extentOffset:
                                                       t1.value.text.length);
+                                                   
                                               _scrollController.animateTo(
                                                 _scrollController.offset + 50,
                                                 duration:
                                                     Duration(milliseconds: 500),
                                                 curve: Curves.easeInOut,
+                                               
                                               );
+                                        
+                                               
                                             },
                                             textAlign: TextAlign.right,
                                             decoration: InputDecoration(
@@ -1788,3 +1767,5 @@ class _markaFiltreState extends State<markaFiltre> {
     );
   }
 }
+
+

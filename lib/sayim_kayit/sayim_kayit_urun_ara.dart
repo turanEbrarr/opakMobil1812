@@ -70,13 +70,10 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
     stokKartEx.searchList.forEach((element) {
       conList.add(TextEditingController(text: "1"));
     });
-    if (stokKartEx.searchList.length > 100) {
-      for (int i = 0; i < 100; i++) {
-        stokKartEx.tempList.add(stokKartEx.searchList[i]);
-      }
-    } else {
+
+      stokKartEx.tempList.clear();
       stokKartEx.tempList.addAll(stokKartEx.searchList);
-    }
+
   }
 
   @override
@@ -107,7 +104,7 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
                 child: Row(children: [
                   Obx(
                     () => Text(
-                      "Listelenen Stok:   ${stokKartEx.searchList.length}",
+                      "Listelenen Stok:   ${stokKartEx.tempList.length}",
                       style: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.white),
                     ),
@@ -271,7 +268,7 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
                                     padding: const EdgeInsets.only(
                                         top: 8, left: 20.0),
                                     child: Text(
-                                      stokKart.ADI!,
+                                    stokKart.ADI!,
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -556,13 +553,8 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
                                                         int.parse(olcuAdet);
                                                   }
 
-                                                  double KDVTUtarTemp = stokKart
-                                                          .guncelDegerler!
-                                                          .fiyat! *
-                                                      (1 +
-                                                          (stokKart
-                                                              .SATIS_KDV!));
-                                                  {
+                                           
+                                                 
                                                     fisEx.DepoaHareketEkle(
                                                       ACIKLAMA: fisEx.sayim!
                                                               .value.ACIKLAMA ??
@@ -595,7 +587,7 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
                                                       colorText: Colors.white,
                                                     );
                                                     conList[index].text = "1";
-                                                  }
+                                                  
                                                 },
                                               )),
                                         ),

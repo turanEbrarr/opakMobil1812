@@ -396,16 +396,19 @@ class Fis {
         await Ctanim.db?.update("TBLFISSB", fis.toJson(),
             where: 'ID = ?',
             whereArgs: [fis.ID]).then((value) => result = value);
+
         for (var element in fis.fisStokListesi) {
           if (element.ID! > 0) {
-           await Ctanim.db?.update("TBLFISHAR", element.toJson(),
+            await Ctanim.db?.update("TBLFISHAR", element.toJson(),
                 where: "ID=?", whereArgs: [element.ID]);
           } else {
             element.ID = null;
-         await Ctanim.db?.insert("TBLFISHAR", element.toJson()).then((value) {
-           return element.ID = value;
-         });
-           print("OLAN FİŞE YENİ EKLENEN STOK ID : "+element.ID.toString());
+            await Ctanim.db
+                ?.insert("TBLFISHAR", element.toJson())
+                .then((value) {
+              return element.ID = value;
+            });
+            print("OLAN FİŞE YENİ EKLENEN STOK ID : " + element.ID.toString());
           }
         }
         await VeriIslemleri().fiseAitEkParamTemizle(fis.ID!);
@@ -430,9 +433,10 @@ class Fis {
           for (var element in fis.fisStokListesi) {
             element.FIS_ID = result;
             element.ID = null;
-            
-              int gelenID =   await Ctanim.db?.insert("TBLFISHAR", element.toJson()).then((value) => element.ID = value);
-            
+
+            int gelenID = await Ctanim.db
+                ?.insert("TBLFISHAR", element.toJson())
+                .then((value) => element.ID = value);
           }
           for (var element in fis.listFisEkParam) {
             element.FISID = result;
@@ -459,12 +463,10 @@ class Fis {
     //fisleri sil
     await Ctanim.db?.delete("TBLFISSB", where: "ID = ?", whereArgs: [fisId]);
   }
-  Future<void> fisHareketSil(int fisId,String stokKodu) async {
-    //FisHareket idsi fiş id te eşitleri sil
 
-    await Ctanim.db
-        ?.delete("TBLFISHAR", where: "FIS_ID = ? AND STOKKOD = ? ", whereArgs: [fisId,stokKodu]);
-    
+  Future<void> fisHareketSil(int fisId, String stokKodu) async {
+    await Ctanim.db?.delete("TBLFISHAR",
+        where: "FIS_ID = ? AND STOKKOD = ? ", whereArgs: [fisId, stokKodu]);
   }
 
   static bool zorunluEkParametrelerDoluMu(List<FisEkParam> fisEkparam) {

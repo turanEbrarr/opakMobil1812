@@ -196,7 +196,8 @@ class _sayim_kayit_depo_secimiState extends State<sayim_kayit_depo_secimi> {
                 print(selectedNereden);
 
                 if (selectedNeredenID != -1 && selectedNereyeID != -1) {
-                 // fisEx.sayim?.value = Sayim.empty();
+
+                  fisEx.sayim?.value = Sayim.empty();
 
                   fisEx.sayim!.value.DEPOID = selectedNereyeID; // gidecek depo
                   fisEx.sayim!.value.SUBEID = selectedNeredenID!;

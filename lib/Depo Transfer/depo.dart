@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
+import '../widget/veriler/listeler.dart';
 
 import '../widget/ctanim.dart';
 import 'depoHareket.dart';
@@ -87,6 +88,7 @@ class Sayim {
     var result;
     //fis.TIP = Ctanim().MapFisTip[belgeTipi];
 
+
     if (sayim.ID != 0) {
       try {
         await Ctanim.db?.update("TBLSAYIMSB", sayim.toJson(),
@@ -99,7 +101,7 @@ class Sayim {
                 where: "ID=?", whereArgs: [element.ID]);
           } else {
             element.ID = null;
-            Ctanim.db?.insert("TBLSAYIMHAR", element.toJson());
+            await Ctanim.db?.insert("TBLSAYIMHAR", element.toJson()).then((value) => element.ID = value);
           }
         }
 
@@ -112,7 +114,7 @@ class Sayim {
       try {
         sayim.ID = null;
         print("DEPOID BOŞ OLMAMALI!!!!!!!!!!!!!!!!!!!");
-        if (sayim.DEPOID != "") {
+        if (sayim.DEPOID! > 0) {
           //CARİKODDU?
           result = await Ctanim.db
               ?.insert("TBLSAYIMSB", sayim.toJson())
@@ -121,7 +123,7 @@ class Sayim {
           for (var element in sayim.sayimStokListesi) {
             element.SAYIMID = result;
             element.ID = null;
-            Ctanim.db?.insert("TBLSAYIMHAR", element.toJson());
+          await   Ctanim.db?.insert("TBLSAYIMHAR", element.toJson()).then((value) => element.ID = value);
           }
 
           return result;
@@ -140,5 +142,10 @@ class Sayim {
         ?.delete("TBLSAYIMHAR", where: "SAYIMID = ?", whereArgs: [fisId]);
     //fisleri sil
     await Ctanim.db?.delete("TBLSAYIMSB", where: "ID = ?", whereArgs: [fisId]);
+  }
+  
+  Future<void> sayimHareketSil(int sayimID,String stokKodu) async {
+    await Ctanim.db
+        ?.delete("TBLSAYIMHAR", where: "SAYIMID = ? AND STOKKOD = ? ", whereArgs: [sayimID,stokKodu]);
   }
 }

@@ -767,6 +767,13 @@ class _genel_belge_stok_kart_guncellemeDialogState
                                             "dovizFiyatController");
                                     setState(() {});
                                   },
+                                  onTap: () {
+                                         dovizFiyatController.selection = TextSelection(
+                                                  baseOffset: 0,
+                                                  extentOffset:
+                                                      dovizFiyatController.value.text.length);
+                                  },
+                                  
                                   controller: dovizFiyatController,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
@@ -885,6 +892,12 @@ class _genel_belge_stok_kart_guncellemeDialogState
                                            //   fiyatController.text = ((double.tryParse(value)??(widget.stokkart.guncelDegerler!.fiyat!*stokKur!.KUR!)*iskonto1Gec)/100).toString();
                                       setState(() {});
                                     },
+                                          onTap: () {
+                                         brutFiyatController.selection = TextSelection(
+                                                  baseOffset: 0,
+                                                  extentOffset:
+                                                      brutFiyatController.value.text.length);
+                                  },
                                     controller: brutFiyatController,
                                     keyboardType: TextInputType.number,
                                     inputFormatters: [
@@ -987,6 +1000,12 @@ class _genel_belge_stok_kart_guncellemeDialogState
                                 onChanged: (value) {
                                   iskontoluFiyatHesapla();
                                 },
+                                        onTap: () {
+                                         isk1Controller.selection = TextSelection(
+                                                  baseOffset: 0,
+                                                  extentOffset:
+                                                      isk1Controller.value.text.length);
+                                  },
                                 enabled:
                                     Ctanim.kullanici!.SISKDEGISTIRILSIN1 == "E"
                                         ? true
@@ -1044,11 +1063,12 @@ class _genel_belge_stok_kart_guncellemeDialogState
                              
                                   },
                                   onTap: () {
-                                    if (_focusNode.hasFocus) {
+                                    
                                       isk2Controller.selection = TextSelection(
-                                          baseOffset: 0,
+                                        baseOffset: 0,
                                           extentOffset: isk2Controller.text.length);
-                                    }
+                                    
+                                  
                                   },
                                   enabled:
                                       Ctanim.kullanici!.SISKDEGISTIRILSIN2 ==

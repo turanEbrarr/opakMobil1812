@@ -446,7 +446,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       style: TextStyle(color: Colors.white),
                     ),
                       Text(
-                      "Versiyon: 1.0.0",// ilk versiyon stok çekme değiştirildi web servis değişmeli
+                      //"Versiyon: 1.0.0",// ilk versiyon stok çekme değiştirildi web servis değişmeli
+                      "Versiyon: 1.0.1",// sayim düzeldi,genelBelgeUrun ara textfield seçimleri düzedi
                       style: TextStyle(color: Colors.green,fontSize: 12),
                     ),
                   ],

@@ -985,6 +985,7 @@ class _genel_belge_main_pageState extends State<genel_belge_main_page> {
         try {
           fisEx.fis?.value = fisEx.list_fis[index];
           print(fisEx.fis?.value.ID);
+          
           Fis.empty().fisVeHareketSil(fisEx.fis!.value.ID!);
           fisEx.list_fis.removeWhere((item) => item.ID == fisEx.fis!.value.ID!);
           const snackBar = SnackBar(

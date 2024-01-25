@@ -94,6 +94,7 @@ class BaseService {
       if (response.statusCode == 200) {
         //var rawXmlResponse = response.body;
         xml.XmlDocument parsedXml = xml.XmlDocument.parse(response.body);
+        //printWrapped(response.body);
         //Map<String, dynamic> jsonData = jsonDecode(parsedXml.innerText);
         //SHataModel gelenHata = SHataModel.fromJson(jsonData);
       //  if (gelenHata.Hata == "true") {

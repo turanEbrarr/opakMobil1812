@@ -10,6 +10,7 @@ import 'package:opak_mobil_v2/faturaFis/fisHareket.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_stok_kart_guncelleme.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_tab_cari_bilgi.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_tanim.dart';
+import '../Depo Transfer/depo.dart';
 import '../localDB/veritabaniIslemleri.dart';
 //16-05-2023.3
 
@@ -165,7 +166,7 @@ class _sayim_kayit_urun_listeState extends State<sayim_kayit_urun_liste> {
                                                           color: Colors.grey,
                                                         ),
                                                         GestureDetector(
-                                                          onTap: () {
+                                                          onTap: () async {
                                                             sayimEx.sayim?.value
                                                                 .sayimStokListesi
                                                                 .removeWhere((item) =>
@@ -173,6 +174,14 @@ class _sayim_kayit_urun_listeState extends State<sayim_kayit_urun_liste> {
                                                                     fishareket
                                                                         .STOKKOD!);
                                                                         miktarGuncellemeList.removeAt(index);
+
+                                                            await Sayim.empty().sayimHareketSil(
+                                                                sayimEx.sayim!
+                                                                    .value
+                                                                    .ID!,
+                                                                fishareket
+                                                                    .STOKKOD!
+                                                            );
 
                                                             setState(() {});
                                                             const snackBar =

@@ -77,7 +77,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           );
         },
       );
-      listeler.listKur.clear();
+
+      // iş
       await bs.getirKur(sirket: Ctanim.sirket!);
 
       Navigator.of(context).pop();
