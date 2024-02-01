@@ -57,6 +57,7 @@ class _PdfOnizlemeState extends State<PdfOnizleme> {
     var pdfData = response.bodyBytes;
     donecek = pdfData;
     if(response.statusCode != 200){
+      await _loadImage();
       donecek = await makePdf(widget.m, _imageData!);
     }
     return donecek;
@@ -76,7 +77,7 @@ class _PdfOnizlemeState extends State<PdfOnizleme> {
         backgroundColor: const Color.fromARGB(255, 80, 79, 79),
         body: PdfPreview(
           build: (context) async {
-            if (widget.fastReporttanMiGelsin == true) {
+            if (widget.fastReporttanMiGelsin == false) {
               await _loadImage();
               return makePdf(widget.m, _imageData!);
             } else {

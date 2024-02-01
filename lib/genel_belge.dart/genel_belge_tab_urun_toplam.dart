@@ -23,6 +23,7 @@ import '../faturaFis/fis.dart';
 import '../stok_kart/Spinkit.dart';
 import '../widget/modeller/sHataModel.dart';
 import '../widget/modeller/sharedPreferences.dart';
+import 'genel_belge_gecmis_satis_bilgileri.dart';
 import 'genel_belge_pdf_onizleme.dart';
 
 class genel_belge_tab_urun_toplam extends StatefulWidget {
@@ -61,6 +62,8 @@ class _genel_belge_tab_urun_toplamState
   TextEditingController aciklama4Controller = TextEditingController();
   TextEditingController aciklama5Controller = TextEditingController();
   TextEditingController aciklama6Controller = TextEditingController();
+    TextEditingController ozelKod1Controller = TextEditingController();
+  TextEditingController ozelKod2Controller = TextEditingController();
   TextEditingController depoController = TextEditingController();
   TextEditingController subeController = TextEditingController();
 
@@ -329,7 +332,7 @@ class _genel_belge_tab_urun_toplamState
     altHesaplar.clear();
     List<String> altListe = fisEx.fis!.value!.cariKart.ALTHESAPLAR!.split(",");
     for (var elemnt in listeler.listCariAltHesap) {
-      if (altListe.contains(elemnt.ALTHESAPID.toString())) {
+      if (altListe.contains(elemnt.ALTHESAPID.toString()) || elemnt.VARSAYILAN == "E") {
         altHesaplar.add(elemnt);
       }
       if (elemnt.VARSAYILAN == "E") {
@@ -361,6 +364,12 @@ class _genel_belge_tab_urun_toplamState
         }
       }
 
+      aciklama1Controller.text = fisEx.fis!.value.ACIKLAMA1!;
+      aciklama2Controller.text = fisEx.fis!.value.ACIKLAMA2!;
+      aciklama3Controller.text = fisEx.fis!.value.ACIKLAMA3!;
+      aciklama4Controller.text = fisEx.fis!.value.ACIKLAMA4!;
+      aciklama5Controller.text = fisEx.fis!.value.ACIKLAMA5!;
+      
       fisEx.fis!.value.DOVIZ = altHesaptanGelen!.ACIKLAMA;
       fisEx.fis!.value.KUR = altHesaptanGelen!.KUR;
       fisEx.fis!.value.DOVIZID = altHesaptanGelen!.ID;
@@ -1500,31 +1509,31 @@ class _genel_belge_tab_urun_toplamState
                 ],
               ),
             ),
-            Satir(labelText: "AÇIKLAMA 1"),
+            Satir(labelText: "AÇIKLAMA 1",controller: aciklama1Controller,),
             Divider(
               thickness: 1,
             ),
-            Satir(labelText: "AÇIKLAMA 2"),
+            Satir(labelText: "AÇIKLAMA 2",controller: aciklama2Controller,),
             Divider(
               thickness: 1,
             ),
-            Satir(labelText: "AÇIKLAMA 3"),
+            Satir(labelText: "AÇIKLAMA 3",controller: aciklama3Controller,),
             Divider(
               thickness: 1,
             ),
-            Satir(labelText: "AÇIKLAMA 4"),
+            Satir(labelText: "AÇIKLAMA 4",controller: aciklama4Controller,),
             Divider(
               thickness: 1,
             ),
-            Satir(labelText: "AÇIKLAMA 5"),
+            Satir(labelText: "AÇIKLAMA 5",controller: aciklama5Controller,),
             Divider(
               thickness: 1,
             ),
-            Satir(labelText: "ÖZEL KOD 1"),
+            Satir(labelText: "ÖZEL KOD 1",controller: ozelKod1Controller,),
             Divider(
               thickness: 1,
             ),
-            Satir(labelText: "ÖZEL KOD 2"),
+            Satir(labelText: "ÖZEL KOD 2",controller: ozelKod2Controller,),
             Divider(
               thickness: 1,
             ),
@@ -1536,6 +1545,12 @@ class _genel_belge_tab_urun_toplamState
         onPressed: () async {
           if (fisEx.fis!.value.fisStokListesi.length != 0) {
             Fis fiss = fisEx.fis!.value;
+              fisEx.fis!.value!.ACIKLAMA1 = aciklama1Controller.text;
+              fisEx.fis!.value!.ACIKLAMA2 = aciklama2Controller.text;
+              fisEx.fis!.value!.ACIKLAMA3 = aciklama3Controller.text;
+              fisEx.fis!.value!.ACIKLAMA4 = aciklama4Controller.text;
+              fisEx.fis!.value!.ACIKLAMA5 = aciklama5Controller.text;
+              
             if (widget.belgeTipi == "Satis_Fatura") {
               if (seciliFaturaTip!.ID == 1) {
                 // acik islem tipi seçili
@@ -1664,6 +1679,7 @@ class _genel_belge_tab_urun_toplamState
               final now = DateTime.now();
               final formatter = DateFormat('HH:mm');
               String saat = formatter.format(now);
+      
               fisEx.fis!.value.SAAT = saat;
               fisEx.fis!.value.DURUM = true;
               fisEx.fis!.value.AKTARILDIMI = true;
@@ -1826,12 +1842,15 @@ class IslemTipi {
   IslemTipi({required this.ADI, required this.ID});
 }
 
+
 class Satir extends StatelessWidget {
-  const Satir({
+   Satir({
     super.key,
     required this.labelText,
+   required this.controller
   });
   final String labelText;
+  final TextEditingController controller ;
 
   @override
   Widget build(BuildContext context) {
@@ -1847,6 +1866,21 @@ class Satir extends StatelessWidget {
             borderRadius: BorderRadius.circular(5), // Köşe yarıçapını ayarlayın
           ),
           child: TextFormField(
+            onChanged: (value) {
+              if(labelText == "AÇIKLAMA 1"){
+                fisEx.fis!.value.ACIKLAMA1 = controller.text;
+              }else if (labelText == "AÇIKLAMA 2") {
+                fisEx.fis!.value.ACIKLAMA2 = controller.text;
+              }else if (labelText == "AÇIKLAMA 3") {
+                fisEx.fis!.value.ACIKLAMA3 = controller.text;
+              }else if (labelText == "AÇIKLAMA 4") {
+                fisEx.fis!.value.ACIKLAMA4 = controller.text;
+              }else if (labelText == "AÇIKLAMA 5") {
+                fisEx.fis!.value.ACIKLAMA5 = controller.text;
+              }
+
+            },
+            controller: controller,
             cursorColor: Color.fromARGB(255, 60, 59, 59),
             decoration: InputDecoration(
                 label: Text(

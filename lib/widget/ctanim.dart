@@ -50,6 +50,7 @@ class Ctanim {
   static String seciliCariKodu = "";
   static List<String> fiyatListesiKosul = [];
 
+
   static var db;
 
   static KullaniciModel? kullanici;

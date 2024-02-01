@@ -326,11 +326,9 @@ class StokKartController extends GetxController {
 
           }else if (seciliCari.FIYAT == 5){
             sonFiyat = Stok.SFIYAT5!;
-
           }else{
             sonFiyat = 0.0;
           }
-
           return [sonFiyat, seciliCari.ISKONTO, seciliCari.FIYAT, false];
         } else if (Ctanim.kullanici!.SATISTIPI == "3") {
           if (Ctanim.seciliStokFiyatListesi.ID != -1) {

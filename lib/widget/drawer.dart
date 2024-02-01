@@ -447,7 +447,10 @@ class _MyDrawerState extends State<MyDrawer> {
                     ),
                       Text(
                       //"Versiyon: 1.0.0",// ilk versiyon stok çekme değiştirildi web servis değişmeli
-                      "Versiyon: 1.0.1",// sayim düzeldi,genelBelgeUrun ara textfield seçimleri düzedi
+                      //"Versiyon: 1.0.1",// sayim düzeldi,genelBelgeUrun ara textfield seçimleri düzedi
+                      //  "Versiyon: 1.0.2" ,// gönderilen fiş tekrar gönder hata logla
+                      // "Versiyon : 1.0.3", // pdf görüntüleme null hatası (FASTEN ÇEKİNCE NULL DI YA)
+                      "Versiyon: 1.0.4", // fise açıklama eklendi
                       style: TextStyle(color: Colors.green,fontSize: 12),
                     ),
                   ],

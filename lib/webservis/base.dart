@@ -97,33 +97,34 @@ class BaseService {
         //printWrapped(response.body);
         //Map<String, dynamic> jsonData = jsonDecode(parsedXml.innerText);
         //SHataModel gelenHata = SHataModel.fromJson(jsonData);
-      //  if (gelenHata.Hata == "true") {
-      //    print(gelenHata.HataMesaj);
-      //    return gelenHata.HataMesaj!;
-     //   } 
-      //  else {
-       
-         var jsonData = [];
-          try {
-            var tt = temizleKontrolKarakterleri1(parsedXml.innerText);
-            jsonData = json.decode(tt);
-          } catch (e) {
-            print(e);
-          }
-          List<StokKart> liststokTemp = [];
+        //  if (gelenHata.Hata == "true") {
+        //    print(gelenHata.HataMesaj);
+        //    return gelenHata.HataMesaj!;
+        //   }
+        //  else {
 
-        liststokTemp =
-             List<StokKart>.from(jsonData.map((model) => StokKart.fromJson(model)));
-          listeler.liststok.clear();
-          await VeriIslemleri().stokTabloTemizle();
+        var jsonData = [];
+        try {
+          var tt = temizleKontrolKarakterleri1(parsedXml.innerText);
+          jsonData = json.decode(tt);
+        } catch (e) {
+          await ekleHata(sirket: Ctanim.sirket!, hata: parsedXml.innerText);
+          print(e);
+        }
+        List<StokKart> liststokTemp = [];
 
-          liststokTemp.forEach((webservisStok) async {
-            await VeriIslemleri().stokEkle(webservisStok);
-          });
+        liststokTemp = List<StokKart>.from(
+            jsonData.map((model) => StokKart.fromJson(model)));
+        listeler.liststok.clear();
+        await VeriIslemleri().stokTabloTemizle();
 
-          await VeriIslemleri().stokGetir();
-          return "";
-       // }
+        liststokTemp.forEach((webservisStok) async {
+          await VeriIslemleri().stokEkle(webservisStok);
+        });
+
+        await VeriIslemleri().stokGetir();
+        return "";
+        // }
       } else {
         return " Stok Getirilirken İstek Oluşturulamadı. " +
             response.statusCode.toString();
@@ -138,24 +139,27 @@ class BaseService {
     final kontrolKarakterleri = RegExp(r'[\x00-\x1F\x7F]');
     return metin.replaceAll(kontrolKarakterleri, '');
   }
+
   String temizleKontrolKarakterleri1(String metin) {
-  final kontrolKarakterleri = RegExp(r'[\x00-\x1F\x7F]');
+    final kontrolKarakterleri = RegExp(r'[\x00-\x1F\x7F]');
 
-  final int chunkSize = 1024; // Metni kaç karakterlik parçalara böleceğimizi belirtiyoruz.
-  final int length = metin.length;
-  final StringBuffer result = StringBuffer();
+    final int chunkSize =
+        1024; // Metni kaç karakterlik parçalara böleceğimizi belirtiyoruz.
+    final int length = metin.length;
+    final StringBuffer result = StringBuffer();
 
-  for (int i = 0; i < length; i += chunkSize) {
-    int end = (i + chunkSize < length) ? i + chunkSize : length;
-    String chunk = metin.substring(i, end);
-    result.write(chunk.replaceAll(kontrolKarakterleri, ''));
+    for (int i = 0; i < length; i += chunkSize) {
+      int end = (i + chunkSize < length) ? i + chunkSize : length;
+      String chunk = metin.substring(i, end);
+      result.write(chunk.replaceAll(kontrolKarakterleri, ''));
+    }
+
+    return result.toString();
   }
-
-  return result.toString();
-}
 
 ////webservisteki carileri getirir
   Future<String> getirCariler({required sirket, required kullaniciKodu}) async {
+     SHataModel gelenHata  = SHataModel();
     var url = Uri.parse(Ctanim.IP);
     var headers = {
       'Content-Type': 'text/xml; charset=utf-8',
@@ -184,19 +188,30 @@ class BaseService {
       if (response.statusCode == 200) {
         var rawXmlResponse = response.body;
         xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
-        Map<String, dynamic> jsonData =
+        
+            try{
+              Map<String, dynamic> jsonData =
             jsonDecode(temizleKontrolKarakterleri(parsedXml.innerText));
-        SHataModel gelenHata = SHataModel.fromJson(jsonData);
+             gelenHata = SHataModel.fromJson(jsonData);
+
+            }catch(e){
+              await ekleHata(sirket: Ctanim.sirket!, hata: parsedXml.innerText);
+              
+
+
+            }
+    
         if (gelenHata.Hata == "true") {
           return gelenHata.HataMesaj!;
         } else {
           String modelNode = gelenHata.HataMesaj!;
-
           Iterable? l;
-          String temizJson = temizleKontrolKarakterleri(modelNode);
           try {
+            String temizJson = temizleKontrolKarakterleri(modelNode);
+
             l = json.decode(temizJson);
           } catch (e) {
+            await ekleHata(sirket: Ctanim.sirket!, hata: modelNode);
             print(e);
           }
 
@@ -284,9 +299,9 @@ class BaseService {
           e.toString();
     }
   }
-    Future<String> getirCariAltHesap({required String sirket}) async {
-    var url = Uri.parse(
-        Ctanim.IP); // dış ve iç denecek;
+
+  Future<String> getirCariAltHesap({required String sirket}) async {
+    var url = Uri.parse(Ctanim.IP); // dış ve iç denecek;
     var headers = {
       'Content-Type': 'text/xml; charset=utf-8',
       'SOAPAction': 'http://tempuri.org/GetirAltHesap'
@@ -319,7 +334,7 @@ class BaseService {
         if (gelenHata.Hata == "true") {
           return gelenHata.HataMesaj!;
         } else {
-         String modelNode = gelenHata.HataMesaj!;
+          String modelNode = gelenHata.HataMesaj!;
 
           Iterable? l;
           String temizJson = temizleKontrolKarakterleri(modelNode);
@@ -328,16 +343,15 @@ class BaseService {
           } catch (e) {
             print(e);
           }
-  
+
           List<CariAltHesap> listcariTemp = [];
-          listcariTemp =
-              List<CariAltHesap>.from(l!.map((model) => CariAltHesap.fromJson(model)));
+          listcariTemp = List<CariAltHesap>.from(
+              l!.map((model) => CariAltHesap.fromJson(model)));
 
           listeler.listCariAltHesap.clear();
           await VeriIslemleri().cariAltHesapTabloTemizle();
 
           listcariTemp.forEach((webservisCari) async {
-           
             await VeriIslemleri().cariAltHesapEkle(webservisCari);
           });
           await VeriIslemleri().cariAltHesapGetir();
@@ -695,7 +709,8 @@ class BaseService {
           return gelenHata.HataMesaj!;
         } else {
           String modelNode = gelenHata.HataMesaj!;
-          List<dynamic> parsedList = json.decode(temizleKontrolKarakterleri(modelNode));
+          List<dynamic> parsedList =
+              json.decode(temizleKontrolKarakterleri(modelNode));
 
           Map<String, dynamic> kullaniciJson = parsedList[0];
           Ctanim.kullanici = KullaniciModel.fromjson(kullaniciJson);
@@ -3801,6 +3816,7 @@ c
       }
     } catch (e) {
       Exception('Hata: $e');
+
       return hata;
     }
   }
@@ -4182,6 +4198,55 @@ c
         "Stok resim için Webservisten veri çekilemedi. Hata Mesajı : " +
             e.toString()
       ];
+    }
+  }
+
+  Future<String> ekleHata(
+      {required String sirket, required String hata}) async {
+    var url = Uri.parse(Ctanim.IP); // dış ve iç denecek;
+    var headers = {
+      'Content-Type': 'text/xml; charset=utf-8',
+      'SOAPAction': 'http://tempuri.org/EkleHata'
+    };
+
+    String body = '''
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <EkleHata xmlns="http://tempuri.org/">
+      <Sirket>$sirket</Sirket>
+      <Hata>$hata</Hata>
+    </EkleHata>
+  </soap:Body>
+</soap:Envelope>
+''';
+    try {
+      http.Response response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        var rawXmlResponse = response.body;
+        xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
+
+        Map<String, dynamic> jsonData =
+            jsonDecode(temizleKontrolKarakterleri(parsedXml.innerText));
+        SHataModel gelenHata = SHataModel.fromJson(jsonData);
+        if (gelenHata.Hata == "true") {
+          return gelenHata.HataMesaj!;
+        } else {
+          return "";
+        }
+      } else {
+        Exception('Log Kaydı Yapılamadı. StatusCode: ${response.statusCode}');
+        return 'Log Kaydı Yapılamadı. StatusCode: ${response.statusCode}';
+      }
+    } catch (e) {
+      Exception('Hata: $e');
+      return "Log için Webserviste Bağlantı Kurulamadı. Hata Mesajı : " +
+          e.toString();
     }
   }
 
