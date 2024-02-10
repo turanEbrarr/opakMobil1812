@@ -311,25 +311,32 @@ class StokKartController extends GetxController {
             }
           }
         } else if (Ctanim.kullanici!.SATISTIPI == "2") {
+          String fiyatTipSon = "";
           double sonFiyat = 0.0;
           if(seciliCari.FIYAT == 1){
             sonFiyat = Stok.SFIYAT1!;
+            fiyatTipSon = "Fiyat1";
 
           }else if (seciliCari.FIYAT == 2){
             sonFiyat = Stok.SFIYAT2!;
+            fiyatTipSon = "Fiyat2";
 
           }else if (seciliCari.FIYAT == 3){
             sonFiyat = Stok.SFIYAT3!;
+            fiyatTipSon = "Fiyat3";
 
           }else if (seciliCari.FIYAT == 4){
             sonFiyat = Stok.SFIYAT4!;
+            fiyatTipSon = "Fiyat4";
 
           }else if (seciliCari.FIYAT == 5){
             sonFiyat = Stok.SFIYAT5!;
+            fiyatTipSon = "Fiyat5";
           }else{
             sonFiyat = 0.0;
+            fiyatTipSon = "Fiyat1";
           }
-          return [sonFiyat, seciliCari.ISKONTO, seciliCari.FIYAT, false];
+          return [sonFiyat, Stok.SATISISK, fiyatTipSon, false];
         } else if (Ctanim.kullanici!.SATISTIPI == "3") {
           if (Ctanim.seciliStokFiyatListesi.ID != -1) {
             for (var element in listeler.listStokFiyatListesiHar) {

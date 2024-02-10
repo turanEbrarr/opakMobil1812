@@ -375,9 +375,14 @@ class _genel_belge_tab_urun_toplamState
       fisEx.fis!.value.DOVIZID = altHesaptanGelen!.ID;
       if (fisEx.fis!.value.cariKart.ISKONTO != 0.0) {
         fisEx.fis!.value.ISK1 = fisEx.fis!.value.cariKart.ISKONTO;
-        genelIskonto1Controller.text =
+        if(Ctanim.kullanici!.SATISTIPI == "2"){
+            genelIskonto1Controller.text =
             fisEx.fis!.value.cariKart.ISKONTO.toString();
-        gen1Bas = true;
+               gen1Bas = true;
+        }
+
+      
+     
       }
 
       Ctanim.genelToplamHesapla(fisEx);
