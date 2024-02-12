@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:opak_mobil_v2/dekontKayit/dekontKayitMain.dart';
 import 'package:opak_mobil_v2/stok_kart/stokEtiket.dart';
 import '../widget/customAlertDialog.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -103,6 +104,8 @@ class _MainPageState extends State<MainPage> {
             color: 0xFF4D6275,
             widgetBelgeSira: 0,
           )),
+          
+          
       GestureDetector(
           onTap: () {
             if (boolController.ust.value == false) {
@@ -610,18 +613,34 @@ class _MainPageState extends State<MainPage> {
             }
           },
           child: widgetTasarim(
-              widgetBelgeSira: 23,
+              widgetBelgeSira: 24,
               title: "Stok Etiket",
               belgeTipi: "sa",
               icon:   Icons.crop_sharp,
               color: 0xFFF29638)),
+              GestureDetector(
+          onTap: () {
+            if (boolController.ust.value == false) {
+              int widgetListBelgeSira = 25;
+              Get.to(() => DekontKayitMain(
+                    widgetListBelgeSira: widgetListBelgeSira,
+                  ));
+            }
+          },
+          child: widgetTasarim(
+            title: "Dekont Kayıt",
+            icon: Icons.swap_calls_outlined,
+            color: 0xFF4D6275,
+            widgetBelgeSira: 25,
+          )),
     ];
+
     print("abcde" + listeler.sayfaDurum.length.toString());
     for (int i = 0; i < listeler.sayfaDurum.length; i++) {
-      print(w[i].toString());
       if (listeler.sayfaDurum[i] == true) {
         son.add(w[i]);
       }
+     
     }
   }
 
@@ -1188,7 +1207,6 @@ class _widgetTasarimState extends State<widgetTasarim> {
                       child: IconButton(
                           icon: Icon(Icons.clear),
                           onPressed: () async {
-                            print("dsf");
                             setState(() {
                               isRemoved = true;
                               //boolController.updateBoolLong(false);

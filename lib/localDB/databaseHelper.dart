@@ -13,7 +13,7 @@ class DatabaseHelper {
     _databaseName = databaseName;
   }
   static String? _databaseName;
-  static final _databaseVersion = 11;
+  static final _databaseVersion = 12;
 
   static Database? _database;
 
@@ -46,6 +46,96 @@ class DatabaseHelper {
     print(oldVersion);
     print(newVersion);
     for (int i = oldVersion; i <= newVersion; i++) {
+      //! Mahsup işlemleri için tablolar oluşturuldu
+      if (i == 12) {
+        String sorgu = """
+          CREATE TABLE IF NOT EXISTS TBLMAHSUPSB (
+          ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          UUID TEXT,
+          SUBEID INTEGER,
+          TARIH TEXT,
+          FISNO INTEGER,
+          SERI TEXT,
+          ACIKLAMA1 TEXT,
+          ACIKLAMA2 TEXT,
+          ACIKLAMA3 TEXT,
+          PLASIYERID INTEGER,
+          PROJEID INTEGER,
+          MUHASEBEID INTEGER,
+          TEXTYEDEK1 TEXT,
+          TEXTYEDEK2 TEXT,
+          SAYISALYEDEK1 DECIMAL,
+          SAYISALYEDEK2 DECIMAL,
+          TARIHYEDEK1 TEXT,
+          TARIHYEDEK2 TEXT,
+          DOVIZID INTEGER,
+          KUR DECIMAL,
+          KAYITTIPI INTEGER,
+          ESKIID INTEGER,
+          BELGENO TEXT,
+          DONEM INTEGER,
+          TIP INTEGER,
+          ISLEMTIPI INTEGER,
+          GUID TEXT,
+          AKTARILDIMI BOOLEAN,
+          DURUM BOOLEAN
+        )""";
+        String sorgu1 = """
+        CREATE TABLE IF NOT EXISTS  TBLMAHSUPHARSB (
+        ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        UUID TEXT,
+        MAHSUPID INTEGER,
+        SIRA INTEGER,
+        BELGENO TEXT,
+        TARIH TEXT,
+        TIP INTEGER,
+        CARIID INTEGER,
+        BANKAID INTEGER,
+        STOKID INTEGER,
+        MUHASEBEKODID INTEGER,
+        PERSONELID INTEGER,
+        MASRAFID INTEGER,
+        ACIKLAMA1 TEXT,
+        ACIKLAMA2 TEXT,
+        ACIKLAMA3 TEXT,
+        DOVIZID INTEGER,
+        KUR DECIMAL,
+        BORC DECIMAL,
+        ALACAK DECIMAL,
+        DOVIZBORC DECIMAL,
+        DOVIZALACAK DECIMAL,
+        MIKTAR INTEGER,
+        KDVVARMI TEXT,
+        KDVDAHILMI TEXT,
+        KDVORAN DECIMAL,
+        KDVTUTAR DECIMAL,
+        BFORMU TEXT,
+        DEPOID INTEGER,
+        MUHASEBEID INTEGER,
+        TEXTYEDEK1 TEXT,
+        TEXTYEDEK2 TEXT,
+        SAYISALYEDEK1 DECIMAL,
+        SAYISALYEDEK2 DECIMAL,
+        TARIHYEDEK1 TEXT,
+        TARIHYEDEK2 TEXT,
+        KARTID INTEGER,
+        HIZMETID INTEGER,
+        KAYITTIPI INTEGER,
+        ALTHESAPID INTEGER,
+        DONEM INTEGER,
+        PROJEID INTEGER,
+        TAKSIT INTEGER,
+        HIZMETKATEGORIID INTEGER,
+        ISLEMTIPI INTEGER,
+        GUID TEXT,
+        BANKAHESAPTIP TEXT,
+        VADETARIHI TEXT,
+        KASAID INTEGER,
+        CARIKARTID INTEGER
+      )""";
+        db.execute(sorgu);
+        db.execute(sorgu1);
+      }
       if (i == 11) {
         String sorgu = """ 
         ALTER TABLE TBLCARIALTHESAPSB ADD COLUMN ALTHESAPID INTEGER;
@@ -55,7 +145,7 @@ class DatabaseHelper {
               ALTER TABLE TBLCARIALTHESAPSB ADD COLUMN ZORUNLU TEXT;
         """;
         db.execute(sorgu);
-       sorgu = """
+        sorgu = """
               ALTER TABLE TBLCARISB ADD COLUMN ALTHESAPLAR TEXT;
         """;
         db.execute(sorgu);
@@ -722,6 +812,104 @@ class DatabaseHelper {
       VERITIP TEXT 
     )""";
       await db.execute(sorgu);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    //! MAHSUPSB
+    try {
+      String Sorgu = """
+    CREATE TABLE TBLMAHSUPSB (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    UUID TEXT,
+	  SUBEID INTEGER,
+    TARIH TEXT,
+    FISNO INTEGER,
+    SERI TEXT,
+    ACIKLAMA1 TEXT,
+    ACIKLAMA2 TEXT,
+    ACIKLAMA3 TEXT,
+    PLASIYERID INTEGER,
+    PROJEID INTEGER,
+    MUHASEBEID INTEGER,
+    TEXTYEDEK1 TEXT,
+    TEXTYEDEK2 TEXT,
+    SAYISALYEDEK1 DECIMAL,
+    SAYISALYEDEK2 DECIMAL,
+    TARIHYEDEK1 TEXT,
+    TARIHYEDEK2 TEXT,
+    DOVIZID INTEGER,
+    KUR DECIMAL,
+    KAYITTIPI INTEGER,
+    ESKIID INTEGER,
+    BELGENO TEXT,
+    DONEM INTEGER,
+    TIP INTEGER,
+    ISLEMTIPI INTEGER,
+    GUID TEXT,
+    AKTARILDIMI BOOLEAN,
+    DURUM BOOLEAN
+
+   )""";
+      await db.execute(Sorgu);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    //! MAHSUPHARSB
+    try {
+      String Sorgu = """
+    CREATE TABLE TBLMAHSUPHARSB (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    UUID TEXT,
+    MAHSUPID INTEGER,
+    SIRA INTEGER,
+    BELGENO TEXT,
+    TARIH TEXT,
+    TIP INTEGER,
+    CARIID INTEGER,
+    BANKAID INTEGER,
+    STOKID INTEGER,
+    MUHASEBEKODID INTEGER,
+    PERSONELID INTEGER,
+    MASRAFID INTEGER,
+    ACIKLAMA1 TEXT,
+    ACIKLAMA2 TEXT,
+    ACIKLAMA3 TEXT,
+    DOVIZID INTEGER,
+    KUR DECIMAL,
+    BORC DECIMAL,
+    ALACAK DECIMAL,
+    DOVIZBORC DECIMAL,
+    DOVIZALACAK DECIMAL,
+    MIKTAR INTEGER,
+    KDVVARMI TEXT,
+    KDVDAHILMI TEXT,
+    KDVORAN DECIMAL,
+    KDVTUTAR DECIMAL,
+    BFORMU TEXT,
+    DEPOID INTEGER,
+    MUHASEBEID INTEGER,
+    TEXTYEDEK1 TEXT,
+    TEXTYEDEK2 TEXT,
+    SAYISALYEDEK1 DECIMAL,
+    SAYISALYEDEK2 DECIMAL,
+    TARIHYEDEK1 TEXT,
+    TARIHYEDEK2 TEXT,
+    KARTID INTEGER,
+    HIZMETID INTEGER,
+    KAYITTIPI INTEGER,
+    ALTHESAPID INTEGER,
+    DONEM INTEGER,
+    PROJEID INTEGER,
+    TAKSIT INTEGER,
+    HIZMETKATEGORIID INTEGER,
+    ISLEMTIPI INTEGER,
+    GUID TEXT,
+    BANKAHESAPTIP TEXT,
+    VADETARIHI TEXT,
+    KASAID INTEGER,
+    CARIKARTID INTEGER
+   )""";
+      await db.execute(Sorgu);
     } on PlatformException catch (e) {
       print(e);
     }

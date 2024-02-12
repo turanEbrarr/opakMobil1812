@@ -73,6 +73,7 @@ class listeler {
     false,
     false,
     false,
+    false,
     false
   ];
   static bool ust = false;

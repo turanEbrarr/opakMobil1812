@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:get/get.dart';
+import 'package:opak_mobil_v2/controllers/dekontController.dart';
 
 import 'package:opak_mobil_v2/controllers/tahsilatController.dart';
 import 'package:opak_mobil_v2/localDB/databaseHelper.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
   final tahsilatEx = Get.put(TahsilatController());
   final turaEx = Get.put(FisController());
   final sayimEx = Get.put(SayimController());
+  final dekontEx = Get.put(DekontController());
 
   @override
   Widget build(BuildContext context) {

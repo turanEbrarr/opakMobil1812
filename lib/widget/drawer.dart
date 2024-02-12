@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:opak_mobil_v2/dekontKayit/dekontKayitMain.dart';
 import 'package:opak_mobil_v2/stok_kart/stokEtiket.dart';
 import 'package:opak_mobil_v2/widget/seciliVerilerGuncelle.dart';
 import '../controllers/tahsilatController.dart';
@@ -458,7 +459,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
               ),
             ),
-            listeler.plasiyerYetkileri[0] == true
+            listeler.plasiyerYetkileri[0] == true || listeler.plasiyerYetkileri[25] == true
                 ? ExpansionTile(
                     leading: Icon(Icons.group),
                     title: Text(
@@ -468,7 +469,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     iconColor: Colors.white,
                     collapsedIconColor: Colors.white,
                     children: [
-                      Padding(
+                   listeler.plasiyerYetkileri[0] == true ?   Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: ListTile(
                           leading: Icon(
@@ -490,7 +491,30 @@ class _MyDrawerState extends State<MyDrawer> {
                             //MaterialPageRoute(builder: (context) => cari_islemler_page());
                           },
                         ),
-                      ),
+                      ):Container(),
+                       listeler.plasiyerYetkileri[25] == true ?  Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.swap_calls_outlined,
+                            color: Colors.white,
+                            size: 19,
+                          ),
+                          title: Padding(
+                            padding: EdgeInsets.only(left: ekranGenisligi / 50),
+                            child: Text("Dekont Kayıt",
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white)),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => DekontKayitMain(
+                                      widgetListBelgeSira: 25,
+                                    )));
+                            //MaterialPageRoute(builder: (context) => cari_islemler_page());
+                          },
+                        ),
+                      ):Container(),
                     ],
                   )
                 : Container(),

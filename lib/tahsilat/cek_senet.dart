@@ -27,8 +27,9 @@ class _cek_senetState extends State<cek_senet> {
   TextEditingController seriNo = new TextEditingController();
   TextEditingController tutar = new TextEditingController();
   TextEditingController vadeTarihi = new TextEditingController();
-  TextEditingController kurController= new TextEditingController();
 
+
+  TextEditingController kurController= new TextEditingController();
   final TahsilatController tahsilatEx = Get.find();
   List<String> evrak_tipi = ["ÇEK", "SENET"];
   List<KurModel> doviz = [];
@@ -57,7 +58,10 @@ class _cek_senetState extends State<cek_senet> {
     super.initState();
     DateTime dt = DateTime.now();
     vadeTarihi.text = '${dt.year}-${dt.month}-${dt.day}';
-      althesaplar.clear();
+
+
+
+   althesaplar.clear();
     List<String> altListe = tahsilatEx.tahsilat!.value!.cariKart.ALTHESAPLAR!.split(",");
     for (var elemnt in listeler.listCariAltHesap) {
       if (altListe.contains(elemnt.ALTHESAPID.toString())) {
@@ -67,16 +71,6 @@ class _cek_senetState extends State<cek_senet> {
         varsayilanAltHesap = elemnt;
       }
     }
-      /*
-    for (var element in listeler.listCariAltHesap) {
-      if (element.KOD == tahsilatEx.tahsilat!.value.CARIKOD){
-        althesaplar.add(element);
-        if(element.VARSAYILAN=="E"){
-          varsayilanAltHesap=element;
-        }
-      }
-    }
-    */
     if(varsayilanAltHesap != null){
       seciliAltHesap = varsayilanAltHesap;
     }else{
@@ -88,7 +82,7 @@ class _cek_senetState extends State<cek_senet> {
       s_doviz = listeler.listKur.first;
       kurController.text = s_doviz!.KUR.toString();
     }else{
-         for (var element in listeler.listKur) {
+      for (var element in listeler.listKur) {
       doviz.add(element);
       if (element.ID == varsayilanAltHesap!.DOVIZID) {
         s_doviz = element;
