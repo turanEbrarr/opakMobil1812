@@ -1544,8 +1544,6 @@ class BaseService {
   </soap:Body>
 </soap:Envelope>
 ''';
-
-    printWrapped(jsonString);
     try {
       http.Response response = await http.post(
         url,
@@ -4574,7 +4572,6 @@ c
       {required String sirket,
       required Map<String, dynamic> jsonDataList}) async {
     SHataModel hata = SHataModel(Hata: "true", HataMesaj: "Veri Gönderilemedi");
-
     var jsonString;
     var url = Uri.parse(Ctanim.IP); // dış ve iç denecek;
 
@@ -4607,7 +4604,6 @@ c
       if (response.statusCode == 200) {
         var rawXmlResponse = response.body;
         xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
-
         Map<String, dynamic> jsonData = jsonDecode(parsedXml.innerText);
         SHataModel gelenHata = SHataModel.fromJson(jsonData);
         return gelenHata;

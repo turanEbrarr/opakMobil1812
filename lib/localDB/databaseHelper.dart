@@ -72,7 +72,7 @@ class DatabaseHelper {
           KUR DECIMAL,
           KAYITTIPI INTEGER,
           ESKIID INTEGER,
-          BELGENO TEXT,
+          BELGE_NO TEXT,
           DONEM INTEGER,
           TIP INTEGER,
           ISLEMTIPI INTEGER,
@@ -83,10 +83,11 @@ class DatabaseHelper {
         String sorgu1 = """
         CREATE TABLE IF NOT EXISTS  TBLMAHSUPHARSB (
         ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        USTUUID TEXT,
         UUID TEXT,
         MAHSUPID INTEGER,
         SIRA INTEGER,
-        BELGENO TEXT,
+        BELGE_NO TEXT,
         TARIH TEXT,
         TIP INTEGER,
         CARIID INTEGER,
@@ -841,7 +842,7 @@ class DatabaseHelper {
     KUR DECIMAL,
     KAYITTIPI INTEGER,
     ESKIID INTEGER,
-    BELGENO TEXT,
+    BELGE_NO TEXT,
     DONEM INTEGER,
     TIP INTEGER,
     ISLEMTIPI INTEGER,
@@ -859,10 +860,11 @@ class DatabaseHelper {
       String Sorgu = """
     CREATE TABLE TBLMAHSUPHARSB (
     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    USTUUID TEXT,
     UUID TEXT,
     MAHSUPID INTEGER,
     SIRA INTEGER,
-    BELGENO TEXT,
+    BELGE_NO TEXT,
     TARIH TEXT,
     TIP INTEGER,
     CARIID INTEGER,

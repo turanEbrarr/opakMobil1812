@@ -3,15 +3,22 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:opak_mobil_v2/controllers/dekontController.dart';
-import 'package:opak_mobil_v2/controllers/fisController.dart';
+import 'package:opak_mobil_v2/controllers/dekontController.dart';
 import 'package:opak_mobil_v2/controllers/stokKartController.dart';
+import 'package:opak_mobil_v2/dekontKayit/dekontKayitHareketGiris.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKatirHarModel.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
-import 'package:opak_mobil_v2/faturaFis/fisHareket.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_stok_kart_guncelleme.dart';
+import 'package:opak_mobil_v2/stok_kart/Spinkit.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_tanim.dart';
+import 'package:opak_mobil_v2/webservis/base.dart';
+import 'package:opak_mobil_v2/widget/cari.dart';
+import 'package:opak_mobil_v2/widget/customAlertDialog.dart';
+import 'package:opak_mobil_v2/widget/main_page.dart';
+import 'package:opak_mobil_v2/widget/modeller/logModel.dart';
+import 'package:opak_mobil_v2/widget/modeller/sHataModel.dart';
 import 'package:opak_mobil_v2/widget/veriler/listeler.dart';
-import '../faturaFis/fis.dart';
+import 'package:path/path.dart';
 import '../localDB/veritabaniIslemleri.dart';
 import '../widget/ctanim.dart';
 
@@ -21,36 +28,31 @@ class DekontKayitListe extends StatefulWidget {
   });
 
   @override
-  State<DekontKayitListe> createState() =>
-      _DekontKayitListeState();
+  State<DekontKayitListe> createState() => _DekontKayitListeState();
 }
 
-class _DekontKayitListeState
-    extends State<DekontKayitListe> {
+class _DekontKayitListeState extends State<DekontKayitListe> {
+  BaseService bs = BaseService();
   TextEditingController editingController = TextEditingController();
   final StokKartController StokKartEx = Get.find();
   final DekontController dekontEx = Get.find();
   TextStyle boldBlack =
       TextStyle(color: Colors.black, fontWeight: FontWeight.bold);
 
-
   @override
   void initState() {
-  
-  
-
     super.initState();
   }
 
 /*void toplamIskontoHesapla () {
-  fisEx.toplam_iskonto.value =0.0;
-    fisEx.fis!.value.fisStokListesi.forEach((element) {
-     fisEx.toplam_iskonto = (fisEx.toplam_iskonto + ( element.ISK!.toDouble())) as RxDouble;
+  dekontEx.toplam_iskonto.value =0.0;
+    dekontEx.dekont!.value.dekontStokListesi.forEach((element) {
+     dekontEx.toplam_iskonto = (dekontEx.toplam_iskonto + ( element.ISK!.toDouble())) as RxDouble;
     });
 }*/
 
 /*void araToplamHesapla () {
-  fisEx.toplam
+  dekontEx.toplam
 }*/
 
   @override
@@ -58,28 +60,166 @@ class _DekontKayitListeState
     double x = MediaQuery.of(context).size.width;
     double y = MediaQuery.of(context).size.height;
     return Scaffold(
+      floatingActionButton:  
+      dekontEx.dekont!.value.dekontKayitList!.isNotEmpty?
+      Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).size.height * .05),
+        child: FloatingActionButton.extended(
+          onPressed: () async {
+            DekontKayitModel fiss = dekontEx.dekont!.value;
+            if(dekontEx.dekontKontrol(fiss)){
+            if (Ctanim.kullanici!.ISLEMAKTARILSIN == "H") {
+              dekontEx.dekont!.value.DURUM = true;
+              await DekontKayitModel.empty()
+                  .dekontEkle(dekont: dekontEx.dekont!.value);
+              dekontEx.dekont!.value = DekontKayitModel.empty();
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CustomAlertDialog(
+                      secondButtonText: "Tamam",
+                      onSecondPress: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      pdfSimgesi: true,
+                      align: TextAlign.center,
+                      title: 'Kayıt Başarılı',
+                      message:
+                          'Dekont Kaydedildi. PDF Dosyasını Görüntülemek İster misiniz?',
+                      onPres: () async {
+                        /*
+                          Navigator.pop(context);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => PdfOnizleme(
+                                      m: dekonts,
+                                      fastReporttanMiGelsin: false,
+                                    )),
+                          );
+                          */
+                      },
+                      buttonText: 'Pdf\'i\ Gör',
+                    );
+                  });
+            } else {
+              dekontEx.dekont!.value.DURUM = true;
+              dekontEx.dekont!.value.AKTARILDIMI = true;
+
+              await DekontKayitModel.empty().dekontEkle(
+                dekont: dekontEx.dekont!.value,
+              );
+
+              int tempID = dekontEx.dekont!.value.ID!;
+
+              // await dekontEx.listdekontGetir(belgeTip: widget.belgeTipi);
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return LoadingSpinner(
+                      color: Colors.black,
+                      message:
+                          "Online Aktarım Aktif. Dekont Merkeze Gönderiliyor..");
+                },
+              );
+              await dekontEx.listGidecekTekDekontGetir(fisID: tempID);
+
+              Map<String, dynamic> jsonListesi =
+                  dekontEx.list_dekont_gidecek[0].toJson2();
+
+              setState(() {});
+              SHataModel gelenHata = await bs.ekleDekont(
+                  jsonDataList: jsonListesi, sirket: Ctanim.sirket!);
+              if (gelenHata.Hata == "true") {
+                dekontEx.dekont!.value.DURUM = false;
+                dekontEx.dekont!.value.AKTARILDIMI = false;
+                LogModel logModel = LogModel(
+                  TABLOADI: "TBLdekontSB",
+                  FISID: dekontEx.list_dekont_gidecek[0].ID,
+                  HATAACIKLAMA: gelenHata.HataMesaj,
+                  UUID: dekontEx.list_dekont_gidecek[0].UUID,
+                  CARIADI: dekontEx.list_dekont_gidecek[0].BELGE_NO,
+                );
+
+                await VeriIslemleri().logKayitEkle(logModel);
+                print("GÖNDERİM HATASI");
+                await Ctanim.showHataDialog(
+                    context, gelenHata.HataMesaj.toString(),
+                    ikinciGeriOlsunMu: true);
+              } else {
+                dekontEx.dekont!.value = DekontKayitModel.empty();
+
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainPage(),
+                  ),
+                  (Route<dynamic> route) => false,
+                );
+
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CustomAlertDialog(
+                        pdfSimgesi: true,
+                        secondButtonText: "Geri",
+                        onSecondPress: () {
+                          Navigator.pop(context);
+                        },
+                        align: TextAlign.left,
+                        title: 'Başarılı',
+                        message:
+                            'Dekont merkeze başarıyla gönderildi. PDF dosyasını görmek ister misiniz ?',
+                        onPres: () async {
+                          /*xczc1 <1<1<
+                              Navigator.pop(context);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => PdfOnizleme(
+                                          m: dekonts,
+                                          fastReporttanMiGelsin: true,
+                                        )),
+                              );
+                              */
+                        },
+                        buttonText: 'Pdf\'i\ Gör',
+                      );
+                    });
+                setState(() {});
+                dekontEx.list_dekont_gidecek.clear();
+
+                print("ONLİNE AKRARIM AKTİF EDİLECEK");
+              }
+            }
+          
+            }else{
+                 showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CustomAlertDialog(
+                        align: TextAlign.left,
+                        title: 'Hata',
+                        message: 'Dekonta ait borç ve alacak toplamları eşit olmalıdır.',
+                        onPres: () async {
+                          Navigator.pop(context);
+                          setState(() {});
+                        },
+                        buttonText: 'Geri',
+                      );
+                    });
+
+            }
+
+
+          },
+          label: Text("Belgeyi Kaydet"),
+          icon: Icon(Icons.data_saver_off),
+        ),
+      ):Container(),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4.0, top: 4.0),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * .95,
-             // height: MediaQuery.of(context).size.height * .07,
-              child: TextField(
-                controller: editingController,
-                decoration: const InputDecoration(
-                  // labelText: "Listeyi ara",
-                  hintText: "Sepette ara (Ad/Kod/Barkod)",
-                  prefixIcon: Icon(Icons.search, color: Colors.black),
-
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                ),
-                onChanged: ((value) => setState(() {})),
-              ),
-            ),
-          ),
           Expanded(
             child: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -88,12 +228,15 @@ class _DekontKayitListeState
                 () => ListView.builder(
                     itemCount: dekontEx.dekont?.value.dekontKayitList!.length,
                     itemBuilder: (context, index) {
-                      DekontKayitHarModel? fishareket =
+                      DekontKayitHarModel? dekonthareket =
                           dekontEx.dekont!.value.dekontKayitList![index];
-         
-                        return urunListeWidget(
-                            y, x, fishareket, context, index);
-                      
+                      List<Cari> tt = cariEx.searchCariList
+                          .where((p0) => p0.ID == dekonthareket.CARIID)
+                          .toList();
+                      Cari cari = tt.first;
+
+                      return urunListeWidget(
+                          y, x, dekonthareket, context, index, cari);
                     }),
               ),
             ),
@@ -102,30 +245,22 @@ class _DekontKayitListeState
             height: MediaQuery.of(context).size.height * .05,
             color: Color.fromARGB(255, 66, 82, 97),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 60),
-                  child: Text(
-                    "TOPLAM : ",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Text(
-                    "top",
-                    style: const TextStyle(color: Colors.white)),
                 Spacer(),
-                const Text(
+                Text(
                   "SATIR-ADET : ",
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 Padding(
-                    padding: const EdgeInsets.only(right: 60),
+                    padding: const EdgeInsets.only(right: 0),
                     child: Text(
-                      "sata",
+                      dekontEx.dekont!.value.dekontKayitList!.length!
+                          .toString(),
                       style: const TextStyle(color: Colors.white),
                     )),
+                Spacer(),
               ],
             ),
           ),
@@ -134,8 +269,13 @@ class _DekontKayitListeState
     );
   }
 
-  Padding urunListeWidget(double y, double x, DekontKayitHarModel? fishareket,
-      BuildContext context, int index) {
+  Padding urunListeWidget(
+      double y,
+      double x,
+      DekontKayitHarModel? dekonthareket,
+      BuildContext context,
+      int index,
+      Cari cari) {
     return Padding(
       padding: const EdgeInsets.only(left: 5.0, right: 5),
       child: Card(
@@ -155,7 +295,7 @@ class _DekontKayitListeState
                     children: [
                       SizedBox(
                           width: x * .22,
-                          child: Text("Ürün Kodu:",
+                          child: Text("Cari Kodu:",
                               style: TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w700))),
                       Padding(
@@ -164,14 +304,14 @@ class _DekontKayitListeState
                             width: x * .4,
                             child: Text(
                               maxLines: 2,
-                              fishareket!.BELGENO.toString(),
+                              cari.KOD.toString(),
                               style: TextStyle(fontWeight: FontWeight.w700),
                             )),
                       ),
                       IconButton(
                           onPressed: () {
                             bottomSheetUrunListe(
-                                context, fishareket,index);
+                                context, dekonthareket!, index);
                           },
                           icon: Icon(Icons.more_vert))
                     ],
@@ -187,7 +327,7 @@ class _DekontKayitListeState
                     children: [
                       SizedBox(
                           width: x * .22,
-                          child: Text("Ürün Adı",
+                          child: Text("Cari Adı",
                               style: TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.w700))),
                       Padding(
@@ -195,7 +335,7 @@ class _DekontKayitListeState
                         child: SizedBox(
                             width: x * .5,
                             child: Text(
-                              fishareket.BELGENO.toString(),
+                              cari.ADI.toString(),
                               style: TextStyle(fontWeight: FontWeight.w700),
                             )),
                       ),
@@ -220,7 +360,7 @@ class _DekontKayitListeState
                               child: SizedBox(
                                 width: x * .15,
                                 child: Text(
-                                  "Miktar :",
+                                  "Alacak :",
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500),
@@ -232,7 +372,7 @@ class _DekontKayitListeState
                               padding: EdgeInsets.only(left: x * .05),
                               child: SizedBox(
                                   width: x * .15,
-                                  child: Text("Fiyat    :",
+                                  child: Text("D.Alacak:",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500))),
@@ -242,7 +382,7 @@ class _DekontKayitListeState
                               padding: EdgeInsets.only(left: x * .05),
                               child: SizedBox(
                                   width: x * .15,
-                                  child: Text("İSK       :",
+                                  child: Text("İ.Tipi:",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500))),
@@ -257,8 +397,7 @@ class _DekontKayitListeState
                               child: SizedBox(
                                   width: x * .15,
                                   child: Text(
-                                   fishareket.MIKTAR!.toString(
-                                                ),
+                                    dekonthareket!.ALACAK!.toString(),
                                   )),
                             ),
                             Spacer(),
@@ -267,22 +406,17 @@ class _DekontKayitListeState
                               child: SizedBox(
                                   width: x * .15,
                                   child: Text(
-                                   fishareket.MIKTAR!.toString(
-                                                ),
+                                    dekonthareket.DOVIZALACAK!.toString(),
                                   )),
                             ),
                             Spacer(),
                             Padding(
                               padding: EdgeInsets.only(left: x * .05),
                               child: SizedBox(
-                                width: x * .15,
-                                child: 
-                                     Text(
-                                   fishareket.MIKTAR!.toString(
-                                                ),
-                                  )
-                               
-                              ),
+                                  width: x * .15,
+                                  child: Text(
+                                    dekonthareket.ISLEMTIPI!.toString(),
+                                  )),
                             ),
                           ],
                         ),
@@ -299,7 +433,7 @@ class _DekontKayitListeState
                               child: SizedBox(
                                 width: x * .2,
                                 child: Text(
-                                  "Net Fiyat :",
+                                  "Borç :",
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500),
@@ -311,7 +445,7 @@ class _DekontKayitListeState
                               padding: EdgeInsets.only(left: x * .05),
                               child: SizedBox(
                                   width: x * .2,
-                                  child: Text("T.Fiyat     :",
+                                  child: Text("D.Borç     :",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500))),
@@ -321,7 +455,7 @@ class _DekontKayitListeState
                               padding: EdgeInsets.only(left: x * .05),
                               child: SizedBox(
                                   width: x * .2,
-                                  child: Text("KDV         :",
+                                  child: Text("Personel :",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500))),
@@ -336,8 +470,7 @@ class _DekontKayitListeState
                               child: SizedBox(
                                   width: x * .15,
                                   child: Text(
-                                   fishareket.MIKTAR!.toString(
-                                                ),
+                                    dekonthareket.BORC!.toString(),
                                   )),
                             ),
                             Spacer(),
@@ -346,8 +479,7 @@ class _DekontKayitListeState
                               child: SizedBox(
                                   width: x * .15,
                                   child: Text(
-                                   fishareket.MIKTAR!.toString(
-                                                ),
+                                    dekonthareket.DOVIZBORC!.toString(),
                                   )),
                             ),
                             Spacer(),
@@ -356,9 +488,8 @@ class _DekontKayitListeState
                               child: SizedBox(
                                 width: x * .15,
                                 child: Text(
-                                   fishareket.MIKTAR!.toString(
-                                                ),
-                                  ),
+                                  dekonthareket.PERSONELID!.toString(),
+                                ),
                               ),
                             ),
                           ],
@@ -378,8 +509,8 @@ class _DekontKayitListeState
     );
   }
 
-  void bottomSheetUrunListe(BuildContext context, DekontKayitHarModel fishareket,
-        int index) {
+  void bottomSheetUrunListe(
+      BuildContext context, DekontKayitHarModel dekonthareket, int index) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -403,10 +534,12 @@ class _DekontKayitListeState
               ),
               GestureDetector(
                 onTap: () async {
-                  dekontEx.dekont?.value.dekontKayitList!.removeWhere(
-                      (item) => item.UUID == fishareket.UUID!);
-                  await DekontKayitModel.empty().dekontHarSil(
-                      dekontEx.dekont!.value!.ID!,);
+                  dekontEx.dekont?.value.dekontKayitList!.removeWhere((item) {
+                    return item.CARIID == dekonthareket.CARIID! &&
+                        item.BELGE_NO == dekonthareket.BELGE_NO!;
+                  });
+                  await DekontKayitModel.empty()
+                      .dekontHarSil(dekonthareket.UUID!);
 
                   setState(() {});
                   const snackBar = SnackBar(
@@ -433,7 +566,17 @@ class _DekontKayitListeState
               ),
               GestureDetector(
                 onTap: () async {
-                
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => DekontKayitHareketGiris(
+                                secilenCari: cariEx.searchCariList
+                                    .where(
+                                        (p0) => p0.ID == dekonthareket.CARIID)
+                                    .first,
+                                index: index,
+                                duzenleme: true,
+                              ))));
                 },
                 child: ListTile(
                   title: Text("Düzenle"),

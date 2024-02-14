@@ -30,6 +30,7 @@ class genel_belge_tab_page extends StatefulWidget {
 }
 
 class _genel_belge_tab_pageState extends State<genel_belge_tab_page> {
+  
   void dispose() {
     if(Ctanim.faturaTipiDegisi){
     Fis.empty().fisEkle(fis: fisEx.fis!.value, belgeTipi: Ctanim.yeniFaturaTipi);

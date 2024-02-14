@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:opak_mobil_v2/controllers/dekontController.dart';
+import 'package:opak_mobil_v2/dekontKayit/dekontKayitCariSec.dart';
+import 'package:opak_mobil_v2/dekontKayit/dekontTab.dart';
 import 'package:opak_mobil_v2/webservis/kurModel.dart';
 import 'package:opak_mobil_v2/widget/appbar.dart';
 import 'package:opak_mobil_v2/widget/cari.dart';
@@ -11,9 +13,11 @@ import 'package:opak_mobil_v2/widget/veriler/listeler.dart';
 import 'package:intl/intl.dart';
 
 class DekontKayitHareketGiris extends StatefulWidget {
-  const DekontKayitHareketGiris({super.key, required this.secilenCari});
+  const DekontKayitHareketGiris({super.key, required this.secilenCari, required this.duzenleme, required this.index});
 
   final Cari secilenCari;
+  final bool duzenleme;
+  final int index;
 
   @override
   State<DekontKayitHareketGiris> createState() =>
@@ -47,12 +51,14 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
   TextEditingController contAcik1 = TextEditingController();
   TextEditingController contAcik2 = TextEditingController();
   TextEditingController contAcik3 = TextEditingController();
+  bool anaBirimMi = false;
 
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+  
 
     althesaplar.clear();
     List<String> altListe = widget.secilenCari.ALTHESAPLAR!.split(",");
@@ -79,12 +85,41 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
     } else {
       for (var element in listeler.listKur) {
         doviz.add(element);
-        if (element.ID == varsayilanAltHesap!.DOVIZID) {
+        if (element.ID == varsayilanAltHesap!.DOVIZID && element.ANABIRIM == "E") {
           s_doviz = element;
+          anaBirimMi = true;
           kurController.text = s_doviz!.KUR.toString();
         }
       }
     }
+          if(widget.duzenleme){
+        for(var element in listeler.listCariAltHesap){
+          if(element.ALTHESAPID == dekontEx.dekont!.value.dekontKayitList![widget.index].ALTHESAPID){
+            seciliAltHesap = element;
+            for (var element in listeler.listKur) {
+              if (element.ID == seciliAltHesap!.DOVIZID) {
+                s_doviz = element;
+                kurController.text = s_doviz!.KUR.toString();
+                if(element.ANABIRIM == "E"){
+                  anaBirimMi = true;
+                }else{
+                  anaBirimMi = false;
+                }
+              }
+              break;
+          }
+        }
+    }
+    contBelge.text = dekontEx.dekont!.value.dekontKayitList![widget.index].BELGE_NO ?? "";
+    vadeTarihi = DateTime.tryParse(dekontEx.dekont!.value.dekontKayitList![widget.index].VADETARIHI?? "")??DateTime.now();
+    contBorc.text = dekontEx.dekont!.value.dekontKayitList![widget.index].BORC.toString()?? "";
+    contDovizBorc.text = dekontEx.dekont!.value.dekontKayitList![widget.index].DOVIZBORC.toString()?? "";
+    contAlacak.text = dekontEx.dekont!.value.dekontKayitList![widget.index].ALACAK.toString()?? "";
+    contDovizAlacak.text = dekontEx.dekont!.value.dekontKayitList![widget.index].DOVIZALACAK.toString()?? "";
+    contAcik1.text = dekontEx.dekont!.value.dekontKayitList![widget.index].ACIKLAMA1?? "";
+    contAcik2.text = dekontEx.dekont!.value.dekontKayitList![widget.index].ACIKLAMA2?? "";
+    contAcik3.text = dekontEx.dekont!.value.dekontKayitList![widget.index].ACIKLAMA3?? "";
+  }
   }
 
   @override
@@ -145,6 +180,11 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                                 if (element.ID == seciliAltHesap!.DOVIZID) {
                                   s_doviz = element;
                                   kurController.text = s_doviz!.KUR.toString();
+                                  if(element.ANABIRIM == "E"){
+                                    anaBirimMi = true;
+                                  }else{
+                                    anaBirimMi = false;
+                                  }
                                 }
                               }
                             });
@@ -347,6 +387,7 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * .5,
                       child: TextFormField(
+                        enabled: anaBirimMi,
                         cursorColor: Color.fromARGB(255, 30, 38, 45),
                        controller: contBorc,
                         decoration: InputDecoration(
@@ -365,6 +406,7 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                 ),
               ),
             ),
+            anaBirimMi == false ?
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
@@ -393,12 +435,20 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                                   width: 2,
                                   color: Color.fromARGB(255, 30, 38, 45))),
                         ),
+                        onChanged: (value) {
+                          double kur = double.tryParse(kurController.text) ?? 1;
+                          double borc = double.tryParse(value) ?? 0;
+                          setState(() {
+                            contBorc.text = (kur * borc).toString();
+                          });
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+            ):Container(),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
@@ -415,6 +465,7 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * .5,
                       child: TextFormField(
+                        enabled: anaBirimMi,
                         cursorColor: Color.fromARGB(255, 30, 38, 45),
                         controller: contAlacak,
                         decoration: InputDecoration(
@@ -433,6 +484,7 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                 ),
               ),
             ),
+            anaBirimMi == false? 
              Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
@@ -461,12 +513,19 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                                   width: 2,
                                   color: Color.fromARGB(255, 30, 38, 45))),
                         ),
+                          onChanged: (value) {
+                          double kur = double.tryParse(kurController.text) ?? 1;
+                          double alacak = double.tryParse(value) ?? 0;
+                          setState(() {
+                            contAlacak.text = (kur * alacak).toString();
+                          });
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+            ):Container(),
             Divider(
               thickness: 1,
               color: Colors.black,
@@ -570,7 +629,7 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
               child: ElevatedButton.icon(
                 onPressed: () async {
                   dekontEx.dekontaHaraketEkle(
-                      UUID: dekontEx.dekont!.value.UUID!,
+                      USTUUID: dekontEx.dekont!.value.UUID!,
                       BELGENO: contBelge.text,
                       TARIH: dekontEx.dekont!.value.TARIH!,
                       CARIID: widget.secilenCari.ID!,
@@ -580,12 +639,13 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                       ACIKLAMA3: contAcik3.text,
                       DOVIZID: s_doviz!.ID!,
                       KUR: double.tryParse(kurController.text) ?? 1,
-                      BORC: double.tryParse(contBorc.text) ?? 1,
-                      ALACAK: double.tryParse(contAlacak.text) ?? 1,
-                      DOVIZBORC: double.tryParse(contDovizBorc.text) ?? 1,
-                      DOVIZALACAK:double.tryParse(contDovizAlacak.text) ?? 1,
+                      BORC: double.tryParse(contBorc.text) ?? 0.0,
+                      ALACAK: double.tryParse(contAlacak.text) ?? 0.0,
+                      DOVIZBORC: double.tryParse(contDovizBorc.text) ?? 0.0,
+                      DOVIZALACAK:double.tryParse(contDovizAlacak.text) ?? 0.0,
                       ALTHESAPID: seciliAltHesap!.ALTHESAPID!,
                       VADETARIHI: DateFormat('yyyy-MM-dd').format(vadeTarihi!));
+                      Navigator.pop(context);
                 },
                 icon: Icon(Icons.navigate_next),
                 label: Text(

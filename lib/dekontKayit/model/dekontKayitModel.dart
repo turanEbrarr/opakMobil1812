@@ -29,7 +29,7 @@ class DekontKayitModel {
   double? KUR = 0.0;
   int? KAYITTIPI = 0;
   int? ESKIID = 0;
-  String? BELGENO = "";
+  String? BELGE_NO = "";
   int? DONEM = 0;
   int? TIP = 0;
   int? ISLEMTIPI = 0;
@@ -61,7 +61,7 @@ class DekontKayitModel {
     this.KUR,
     this.KAYITTIPI,
     this.ESKIID,
-    this.BELGENO,
+    this.BELGE_NO,
     this.DONEM,
     this.TIP,
     this.ISLEMTIPI,
@@ -94,7 +94,7 @@ class DekontKayitModel {
           KUR: 0.0,
           KAYITTIPI: 0,
           ESKIID: 0,
-          BELGENO: "",
+          BELGE_NO: "",
           DONEM: 0,
           TIP: 0,
           ISLEMTIPI: 0,
@@ -126,7 +126,7 @@ class DekontKayitModel {
     KUR = double.parse(json['KUR'].toString());
     KAYITTIPI = int.parse(json['KAYITTIPI'].toString());
     ESKIID = int.parse(json['ESKIID'].toString());
-    BELGENO = json['BELGENO'];
+    BELGE_NO = json['BELGE_NO'];
     DONEM = int.parse(json['DONEM'].toString());
     TIP = int.parse(json['TIP'].toString());
     ISLEMTIPI = int.parse(json['ISLEMTIPI'].toString());
@@ -140,7 +140,7 @@ class DekontKayitModel {
       });
     }
   }
-    Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['ID'] = ID;
     data['UUID'] = UUID;
@@ -164,7 +164,7 @@ class DekontKayitModel {
     data['KUR'] = KUR;
     data['KAYITTIPI'] = KAYITTIPI;
     data['ESKIID'] = ESKIID;
-    data['BELGENO'] = BELGENO;
+    data['BELGE_NO'] = BELGE_NO;
     data['DONEM'] = DONEM;
     data['TIP'] = TIP;
     data['ISLEMTIPI'] = ISLEMTIPI;
@@ -174,6 +174,7 @@ class DekontKayitModel {
 
     return data;
   }
+
   Map<String, dynamic> toJson2() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['ID'] = ID;
@@ -198,7 +199,7 @@ class DekontKayitModel {
     data['KUR'] = KUR;
     data['KAYITTIPI'] = KAYITTIPI;
     data['ESKIID'] = ESKIID;
-    data['BELGENO'] = BELGENO;
+    data['BELGE_NO'] = BELGE_NO;
     data['DONEM'] = DONEM;
     data['TIP'] = TIP;
     data['ISLEMTIPI'] = ISLEMTIPI;
@@ -210,8 +211,10 @@ class DekontKayitModel {
     return data;
   }
 
-  Future<int?> dekontEkle(
-      {required DekontKayitModel dekont,  }) async {
+  Future<int?> dekontEkle({
+    required DekontKayitModel dekont,
+  }) async {
+    
     var result;
 
     if (dekont.ID != 0) {
@@ -234,10 +237,8 @@ class DekontKayitModel {
             print("DEKONTA EKLENEN ID : " + element.ID.toString());
           }
         }
-        /*    await VeriIslemleri().fiseAitEkParamTemizle(fis.ID!);
-        for (var element in fis.listFisEkParam) {
-          await Ctanim.db?.insert("TBLFISEKPARAM", element.toJson());
-        }*/
+
+   
 
         return result;
       } on PlatformException catch (e) {
@@ -247,9 +248,7 @@ class DekontKayitModel {
       print("else");
       try {
         dekont.ID = null;
-        if (/*dekont. != "" ||
-            (.GIDENDEPOID != 0 && fis.GIDENSUBEID != 0)*/
-            true) {
+        
           result = await Ctanim.db
               ?.insert("TBLMAHSUPSB", dekont.toJson())
               .then((value) => dekont.ID = value);
@@ -257,7 +256,6 @@ class DekontKayitModel {
           for (var element in dekont.dekontKayitList!) {
             element.MAHSUPID = result;
             element.ID = null;
-
             int gelenID = await Ctanim.db
                 ?.insert("TBLMAHSUPHARSB", element.toJson())
                 .then((value) => element.ID = value);
@@ -265,7 +263,7 @@ class DekontKayitModel {
             element.ID = gelenID;
           }
           return result;
-        }
+     
       } on PlatformException catch (e) {
         print(e);
       }
@@ -280,9 +278,9 @@ class DekontKayitModel {
     await Ctanim.db?.delete("TBLMAHSUPSB", where: "ID = ?", whereArgs: [fisId]);
   }
 
-  Future<int> dekontHarSil(int Id) async {
+  Future<int> dekontHarSil(String UUID) async {
     var result = await Ctanim.db
-        ?.delete("TBLMAHSUPHARSB", where: 'ID = ?', whereArgs: [Id]);
+        ?.delete("TBLMAHSUPHARSB", where: 'UUID= ?', whereArgs: [UUID]);
     return result;
   }
 }

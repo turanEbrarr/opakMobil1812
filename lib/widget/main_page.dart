@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:opak_mobil_v2/controllers/dekontController.dart';
 import 'package:opak_mobil_v2/dekontKayit/dekontKayitMain.dart';
 import 'package:opak_mobil_v2/stok_kart/stokEtiket.dart';
 import '../widget/customAlertDialog.dart';
@@ -54,6 +55,7 @@ class _MainPageState extends State<MainPage> {
   int len = 0;
   BaseService bs = BaseService();
   static FisController fisEx = Get.find();
+  static DekontController dekontEx = Get.find();
   static TahsilatController tahsilatEx = Get.find();
   static SayimController sayimEx = Get.find();
   bool isLoading = true;
@@ -619,9 +621,10 @@ class _MainPageState extends State<MainPage> {
               icon:   Icons.crop_sharp,
               color: 0xFFF29638)),
               GestureDetector(
-          onTap: () {
+          onTap: () async {
             if (boolController.ust.value == false) {
               int widgetListBelgeSira = 25;
+               await dekontEx.listDekontGetir();
               Get.to(() => DekontKayitMain(
                     widgetListBelgeSira: widgetListBelgeSira,
                   ));

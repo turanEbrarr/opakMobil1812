@@ -9,7 +9,9 @@ import 'package:opak_mobil_v2/controllers/dekontController.dart';
 import 'package:opak_mobil_v2/controllers/dekontController.dart';
 import 'package:opak_mobil_v2/dekontKayit/dekontKayitCariSec.dart';
 import 'package:opak_mobil_v2/dekontKayit/dekontKayitUstBilgiGiris.dart';
+import 'package:opak_mobil_v2/dekontKayit/dekontTab.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
+import 'package:opak_mobil_v2/dekontKayit/pdf/dekontKayitPdfOnizleme.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_cari_page.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_tab_page.dart';
 import 'package:opak_mobil_v2/webservis/base.dart';
@@ -167,7 +169,7 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                       .width *
                                                   .7,
                                               child: Text(
-                                                dekont.BELGENO.toString(),
+                                                dekont.BELGE_NO.toString(),
                                                 maxLines: 3,
                                                 style: TextStyle(
                                                     fontSize: 17,
@@ -220,25 +222,12 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                                         ?.value =
                                                                     dekontEx.list_dekont[
                                                                         index];
-                                                                // Get.to(() =>
-                                                                /*
-                                                                    genel_belge_tab_page(
-                                                                      stokFiyatListesi:
-                                                                          Ctanim
-                                                                              .seciliStokFiyatListesi,
-                                                                      satisTipi:
-                                                                          Ctanim
-                                                                              .seciliIslemTip!,
-                                                                      belgeTipi:
-                                                                          widget
-                                                                              .belgeTipi,
-                                                                      cariKod: dekont
-                                                                          .CARIKOD,
-                                                                      cariKart:
-                                                                          dekont.cariKart,
-                                                                    )
-                                                                    */
-                                                                //   );
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                DekontKayitTab()));
                                                               },
                                                               child: ListTile(
                                                                 title: Text(
@@ -269,18 +258,17 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                             ),
                                                             GestureDetector(
                                                               onTap: () {
-                                                                /*,
+                                                                
                                                                 Navigator.of(
                                                                         context)
                                                                     .push(
                                                                   MaterialPageRoute(
-                                                                      builder: (context) => PdfOnizleme(
-                                                                          fastReporttanMiGelsin:
-                                                                              true,
-                                                                          m: dekontEx
+                                                                      builder: (context) => DekontPDfOnizleme(
+                                                                         
+                                                                          dekont: dekontEx
                                                                               .list_dekont[index])),
                                                                 );
-                                                                */
+                                                              
                                                               },
                                                               child: ListTile(
                                                                 title:
@@ -301,56 +289,52 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                                         .dekontKayitList!
                                                                         .length !=
                                                                     0) {
-                                                                  DekontKayitModel
-                                                                      dekontTemp =
-                                                                      dekontEx.list_dekont[
-                                                                          index];
-                                                                  // e-fatura kontrolu ve fatura no ekleme işlemi
-
-                                                                  if (Ctanim
-                                                                          .kullanici!
-                                                                          .ISLEMAKTARILSIN ==
-                                                                      "H") {
-                                                                    dekontEx
-                                                                        .list_dekont[
-                                                                            index]
-                                                                        .DURUM = true;
-
+                                                                  if (dekontEx
+                                                                      .dekontKontrol(
+                                                                          dekontEx
+                                                                              .list_dekont[index])) {
                                                                     DekontKayitModel
-                                                                            .empty()
-                                                                        .dekontEkle(
-                                                                      dekont: dekontEx
-                                                                              .list_dekont[
-                                                                          index],
-                                                                    );
-                                                                    dekontEx.dekont!
-                                                                            .value =
-                                                                        DekontKayitModel
-                                                                            .empty();
-                                                                    showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) {
-                                                                          return CustomAlertDialog(
-                                                                            secondButtonText:
-                                                                                "Tamam",
-                                                                            onSecondPress:
-                                                                                () {
-                                                                              Navigator.pop(context);
-                                                                              Navigator.pop(context);
-                                                                            },
-                                                                            pdfSimgesi:
-                                                                                true,
-                                                                            align:
-                                                                                TextAlign.center,
-                                                                            title:
-                                                                                'Kayıt Başarılı',
-                                                                            message:
-                                                                                'Dekont Kaydedildi. PDF Dosyasını Görüntülemek İster misiniz?',
-                                                                            onPres:
-                                                                                () async {
-                                                                              /*
+                                                                        dekontTemp =
+                                                                        dekontEx
+                                                                            .list_dekont[index];
+                                                                    // e-fatura kontrolu ve fatura no ekleme işlemi
+
+                                                                    if (Ctanim
+                                                                            .kullanici!
+                                                                            .ISLEMAKTARILSIN ==
+                                                                        "H") {
+                                                                      dekontEx
+                                                                          .list_dekont[
+                                                                              index]
+                                                                          .DURUM = true;
+
+                                                                      DekontKayitModel
+                                                                              .empty()
+                                                                          .dekontEkle(
+                                                                        dekont:
+                                                                            dekontEx.list_dekont[index],
+                                                                      );
+                                                                      dekontEx.dekont!
+                                                                              .value =
+                                                                          DekontKayitModel
+                                                                              .empty();
+                                                                      showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (context) {
+                                                                            return CustomAlertDialog(
+                                                                              secondButtonText: "Tamam",
+                                                                              onSecondPress: () {
+                                                                                Navigator.pop(context);
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              pdfSimgesi: true,
+                                                                              align: TextAlign.center,
+                                                                              title: 'Kayıt Başarılı',
+                                                                              message: 'Dekont Kaydedildi. PDF Dosyasını Görüntülemek İster misiniz?',
+                                                                              onPres: () async {
+                                                                                /*
                                                                               Navigator.pop(context);
                                                                               Navigator.of(context).push(
                                                                                 MaterialPageRoute(
@@ -361,151 +345,6 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                                                         
                                                                               );
                                                                               */
-                                                                            },
-                                                                            buttonText:
-                                                                                'Pdf\'i\ Gör',
-                                                                          );
-                                                                        });
-                                                                    await dekontEx
-                                                                        .listDekontGetir();
-                                                                    setState(
-                                                                        () {});
-                                                                  } else {
-                                                                    dekontEx
-                                                                        .list_dekont[
-                                                                            index]
-                                                                        .DURUM = true;
-                                                                    dekontEx
-                                                                        .list_dekont[
-                                                                            index]
-                                                                        .AKTARILDIMI = true;
-
-                                                                    await DekontKayitModel
-                                                                            .empty()
-                                                                        .dekontEkle(
-                                                                      dekont: dekontEx
-                                                                              .list_dekont[
-                                                                          index],
-                                                                    );
-                                                                    int tempID =
-                                                                        dekontEx
-                                                                            .list_dekont[index]
-                                                                            .ID!;
-
-                                                                    showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      barrierDismissible:
-                                                                          false,
-                                                                      builder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                        return LoadingSpinner(
-                                                                          color:
-                                                                              Colors.black,
-                                                                          message:
-                                                                              "Online Aktarım Aktif. Dekont Merkeze Gönderiliyor..",
-                                                                        );
-                                                                      },
-                                                                    );
-                                                                    await dekontEx
-                                                                        .listGidecekTekDekontGetir(
-                                                                            fisID:
-                                                                                tempID);
-
-                                                                    Map<String,
-                                                                            dynamic>
-                                                                        jsonListesi =
-                                                                        dekontEx
-                                                                            .list_dekont_gidecek[0]
-                                                                            .toJson2();
-                                                                    setState(
-                                                                        () {});
-
-                                                                    SHataModel
-                                                                        gelenHata =
-                                                                        await b.ekleFatura(
-                                                                            jsonDataList:
-                                                                                jsonListesi,
-                                                                            sirket:
-                                                                                Ctanim.sirket!);
-                                                                    if (gelenHata
-                                                                            .Hata ==
-                                                                        "true") {
-                                                                      dekontEx
-                                                                          .list_dekont[
-                                                                              index]
-                                                                          .DURUM = false;
-                                                                      dekontEx
-                                                                          .list_dekont[
-                                                                              index]
-                                                                          .AKTARILDIMI = false;
-                                                                      await DekontKayitModel
-                                                                              .empty()
-                                                                          .dekontEkle(
-                                                                        dekont:
-                                                                            dekontEx.list_dekont[index],
-                                                                      );
-                                                                      LogModel
-                                                                          logModel =
-                                                                          LogModel(
-                                                                        TABLOADI:
-                                                                            "TBLdekontTempB",
-                                                                        FISID: dekontEx
-                                                                            .list_dekont_gidecek[0]
-                                                                            .ID,
-                                                                        HATAACIKLAMA:
-                                                                            gelenHata.HataMesaj,
-                                                                        UUID: dekontEx
-                                                                            .list_dekont_gidecek[0]
-                                                                            .UUID,
-                                                                        CARIADI: dekontEx
-                                                                            .list_dekont_gidecek[0]
-                                                                            .BELGENO,
-                                                                      );
-
-                                                                      await VeriIslemleri()
-                                                                          .logKayitEkle(
-                                                                              logModel);
-                                                                      print(
-                                                                          "GÖNDERİM HATASI");
-
-                                                                      await Ctanim.showHataDialog(
-                                                                          context,
-                                                                          gelenHata.HataMesaj
-                                                                              .toString(),
-                                                                          ikinciGeriOlsunMu:
-                                                                              true);
-                                                                    } else {
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                      showDialog(
-                                                                          context:
-                                                                              context,
-                                                                          builder:
-                                                                              (context) {
-                                                                            return CustomAlertDialog(
-                                                                              pdfSimgesi: true,
-                                                                              secondButtonText: "Geri",
-                                                                              onSecondPress: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              align: TextAlign.left,
-                                                                              title: 'Başarılı',
-                                                                              message: 'Belge merkeze başarıyla gönderildi. PDF dosyasını görmek ister misiniz ?',
-                                                                              onPres: () async {
-                                                                                Navigator.pop(context);
-                                                                                /*
-                                                                                  Navigator.of(context).push(
-                                                                                    MaterialPageRoute(
-                                                                                        builder: (context) => PdfOnizleme(
-                                                                                              m: dekontTemp,
-                                                                                              fastReporttanMiGelsin: true,
-                                                                                            )),
-                                                                                  );
-                                                                                  */
                                                                               },
                                                                               buttonText: 'Pdf\'i\ Gör',
                                                                             );
@@ -514,23 +353,173 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                                           .listDekontGetir();
                                                                       setState(
                                                                           () {});
+                                                                    } else {
                                                                       dekontEx
-                                                                          .list_dekont_gidecek
-                                                                          .clear();
+                                                                          .list_dekont[
+                                                                              index]
+                                                                          .DURUM = true;
+                                                                      dekontEx
+                                                                          .list_dekont[
+                                                                              index]
+                                                                          .AKTARILDIMI = true;
 
-                                                                      print(
-                                                                          "ONLİNE AKRARIM AKTİF EDİLECEK");
+                                                                      await DekontKayitModel
+                                                                              .empty()
+                                                                          .dekontEkle(
+                                                                        dekont:
+                                                                            dekontEx.list_dekont[index],
+                                                                      );
+                                                                      int tempID = dekontEx
+                                                                          .list_dekont[
+                                                                              index]
+                                                                          .ID!;
+
+                                                                      showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        barrierDismissible:
+                                                                            false,
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return LoadingSpinner(
+                                                                            color:
+                                                                                Colors.black,
+                                                                            message:
+                                                                                "Online Aktarım Aktif. Dekont Merkeze Gönderiliyor..",
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                      await dekontEx.listGidecekTekDekontGetir(
+                                                                          fisID:
+                                                                              tempID);
+
+                                                                      Map<String,
+                                                                              dynamic>
+                                                                          jsonListesi =
+                                                                          dekontEx
+                                                                              .list_dekont_gidecek[0]
+                                                                              .toJson2();
+                                                                      setState(
+                                                                          () {});
+
+                                                                      SHataModel
+                                                                          gelenHata =
+                                                                          await b.ekleDekont(
+                                                                              jsonDataList: jsonListesi,
+                                                                              sirket: Ctanim.sirket!);
+                                                                      if (gelenHata
+                                                                              .Hata ==
+                                                                          "true") {
+                                                                        dekontEx
+                                                                            .list_dekont[index]
+                                                                            .DURUM = false;
+                                                                        dekontEx
+                                                                            .list_dekont[index]
+                                                                            .AKTARILDIMI = false;
+                                                                        await DekontKayitModel.empty()
+                                                                            .dekontEkle(
+                                                                          dekont:
+                                                                              dekontEx.list_dekont[index],
+                                                                        );
+                                                                        LogModel
+                                                                            logModel =
+                                                                            LogModel(
+                                                                          TABLOADI:
+                                                                              "TBLdekontTempB",
+                                                                          FISID: dekontEx
+                                                                              .list_dekont_gidecek[0]
+                                                                              .ID,
+                                                                          HATAACIKLAMA:
+                                                                              gelenHata.HataMesaj,
+                                                                          UUID: dekontEx
+                                                                              .list_dekont_gidecek[0]
+                                                                              .UUID,
+                                                                          CARIADI: dekontEx
+                                                                              .list_dekont_gidecek[0]
+                                                                              .BELGE_NO,
+                                                                        );
+
+                                                                        await VeriIslemleri()
+                                                                            .logKayitEkle(logModel);
+                                                                        print(
+                                                                            "GÖNDERİM HATASI");
+
+                                                                        await Ctanim.showHataDialog(
+                                                                            context,
+                                                                            gelenHata.HataMesaj
+                                                                                .toString(),
+                                                                            ikinciGeriOlsunMu:
+                                                                                true);
+                                                                      } else {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                        showDialog(
+                                                                            context:
+                                                                                context,
+                                                                            builder:
+                                                                                (context) {
+                                                                              return CustomAlertDialog(
+                                                                                pdfSimgesi: true,
+                                                                                secondButtonText: "Geri",
+                                                                                onSecondPress: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                align: TextAlign.left,
+                                                                                title: 'Başarılı',
+                                                                                message: 'Belge merkeze başarıyla gönderildi. PDF dosyasını görmek ister misiniz ?',
+                                                                                onPres: () async {
+                                                                                  Navigator.pop(context);
+                                                                                  /*
+                                                                                  Navigator.of(context).push(
+                                                                                    MaterialPageRoute(
+                                                                                        builder: (context) => PdfOnizleme(
+                                                                                              m: dekontTemp,
+                                                                                              fastReporttanMiGelsin: true,
+                                                                                            )),
+                                                                                  );
+                                                                                  */
+                                                                                },
+                                                                                buttonText: 'Pdf\'i\ Gör',
+                                                                              );
+                                                                            });
+                                                                        await dekontEx
+                                                                            .listDekontGetir();
+                                                                        setState(
+                                                                            () {});
+                                                                        dekontEx
+                                                                            .list_dekont_gidecek
+                                                                            .clear();
+
+                                                                        print(
+                                                                            "ONLİNE AKRARIM AKTİF EDİLECEK");
+                                                                      }
                                                                     }
+                                                                  } else {
+                                                                    showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (context) {
+                                                                          return CustomAlertDialog(
+                                                                            align:
+                                                                                TextAlign.left,
+                                                                            title:
+                                                                                'Hata',
+                                                                            message:
+                                                                                'Dekonta ait borç ve alacak toplamları eşit olmalıdır.',
+                                                                            onPres:
+                                                                                () async {
+                                                                              Navigator.pop(context);
+                                                                              setState(() {});
+                                                                            },
+                                                                            buttonText:
+                                                                                'Geri',
+                                                                          );
+                                                                        });
                                                                   }
-
-                                                                  //    super.dispose();
-                                                                  // ignore: use_build_context_synchronously
-
-                                                                  ////////
-
-                                                                  /*ONLİNE AKRARIM AKTİF EDİLECEK*/
-
-                                                                  //////////
                                                                 } else {
                                                                   showDialog(
                                                                       context:
@@ -543,7 +532,7 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                                           title:
                                                                               'Hata',
                                                                           message:
-                                                                              'Faturanın Kalem Listesi Boş Olamaz',
+                                                                              'Dekontun Kalem Listesi Boş Olamaz',
                                                                           onPres:
                                                                               () async {
                                                                             Navigator.pop(context);

@@ -41,6 +41,7 @@ class Ctanim {
   String SatisIskonto = "ISK1";
   static String IP = "";
   static bool yatayDikey = false;
+  
 
   static SatisTipiModel seciliIslemTip =
       SatisTipiModel(ID: -1, TIP: "a", FIYATTIP: "", ISK1: "", ISK2: "");

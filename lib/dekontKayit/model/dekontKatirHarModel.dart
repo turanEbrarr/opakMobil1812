@@ -5,9 +5,10 @@ import '../../widget/ctanim.dart';
 class DekontKayitHarModel {
   int? ID = 0;
   String? UUID = "";
+  String? USTUUID = "";
   int? MAHSUPID = 0;
   int? SIRA = 0;
-  String? BELGENO = "";
+  String? BELGE_NO = "";
   String? TARIH = DateFormat("yyyy-MM-dd").format(DateTime.now());
   int? TIP = 0;
   int? CARIID = 0;
@@ -57,9 +58,10 @@ class DekontKayitHarModel {
   DekontKayitHarModel({
     this.ID,
     this.UUID,
+    this.USTUUID,
     this.MAHSUPID,
     this.SIRA,
-    this.BELGENO,
+    this.BELGE_NO,
     this.TARIH,
     this.TIP,
     this.CARIID,
@@ -113,7 +115,8 @@ class DekontKayitHarModel {
           UUID: "",
           MAHSUPID: 0,
           SIRA: 0,
-          BELGENO: "",
+          USTUUID: "",
+          BELGE_NO: "",
           TARIH: DateFormat("yyyy-MM-dd").format(DateTime.now()),
           TIP: 0,
           CARIID: 0,
@@ -166,7 +169,7 @@ class DekontKayitHarModel {
     UUID = json['UUID'];
     MAHSUPID = int.parse(json['MAHSUPID'].toString());
     SIRA = int.parse(json['SIRA'].toString());
-    BELGENO = json['BELGENO'];
+    BELGE_NO = json['BELGE_NO'];
     TARIH = json['TARIH'];
     TIP = int.parse(json['TIP'].toString());
     CARIID = int.parse(json['CARIID'].toString());
@@ -212,6 +215,7 @@ class DekontKayitHarModel {
     VADETARIHI = json['VADETARIHI'];
     KASAID = int.parse(json['KASAID'].toString());
     CARIKARTID = int.parse(json['CARIKARTID'].toString());
+    USTUUID = json['USTUUID'];
   }
 
   Map<String, dynamic> toJson() {
@@ -220,7 +224,7 @@ class DekontKayitHarModel {
     data['UUID'] = UUID;
     data['MAHSUPID'] = MAHSUPID;
     data['SIRA'] = SIRA;
-    data['BELGENO'] = BELGENO;
+    data['BELGE_NO'] = BELGE_NO;
     data['TARIH'] = TARIH;
     data['TIP'] = TIP;
     data['CARIID'] = CARIID;
@@ -266,7 +270,7 @@ class DekontKayitHarModel {
     data['VADETARIHI'] = VADETARIHI;
     data['KASAID'] = KASAID;
     data['CARIKARTID'] = CARIKARTID;
-
+    data['USTUUID'] = USTUUID;
     return data;
   }
 }

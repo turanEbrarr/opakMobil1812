@@ -25,11 +25,15 @@ class DekontKayitTab extends StatefulWidget {
 class _DekontKayitTabState extends State<DekontKayitTab> {
   final DekontController dekontEx = Get.find();
 
-  void dispose() {
-    DekontKayitModel.empty().dekontEkle(dekont: dekontEx.dekont!.value,);
+   void dispose() {
+    print("DİSPOSE GELDİK");
+    if(dekontEx.dekont!.value.BELGE_NO != ""){
+       DekontKayitModel.empty().dekontEkle(dekont: dekontEx.dekont!.value,);
     dekontEx.dekont!.value = DekontKayitModel.empty();
+
+    }
+   
     super.dispose();
-    //listede güncelleme yaptı ve çıktı
   }
 
   Color tab1 = Colors.amber;

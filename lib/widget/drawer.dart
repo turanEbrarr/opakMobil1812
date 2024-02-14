@@ -4,9 +4,13 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:opak_mobil_v2/controllers/dekontController.dart';
 import 'package:opak_mobil_v2/dekontKayit/dekontKayitMain.dart';
+import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
 import 'package:opak_mobil_v2/stok_kart/stokEtiket.dart';
 import 'package:opak_mobil_v2/widget/seciliVerilerGuncelle.dart';
+import 'package:opak_mobil_v2/widget/veriler/gonderilmisDekontlar.dart';
+import 'package:opak_mobil_v2/widget/veriler/kaydedilmisDekontlar.dart';
 import '../controllers/tahsilatController.dart';
 import '../genel_belge.dart/genel_belge_main_page.dart';
 import '../stok_kart/stok_kart_listesi.dart';
@@ -66,6 +70,7 @@ class _MyDrawerState extends State<MyDrawer> {
   bool perAcikmi = false;
   bool stokAcikmi = false;
   FisController fisEx = Get.find();
+  DekontController dekontEx = Get.find();
 
   CariController cariEx = Get.find(); // PUT DEĞİŞTİ
   final StokKartController stokKartEx = Get.find();
@@ -506,7 +511,8 @@ class _MyDrawerState extends State<MyDrawer> {
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
                           ),
-                          onTap: () {
+                          onTap: () async {
+                            await dekontEx.listDekontGetir();
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => DekontKayitMain(
                                       widgetListBelgeSira: 25,
@@ -1057,7 +1063,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 : Container(),
             listeler.plasiyerYetkileri[14] == true
                 ? ExpansionTile(
-                    leading: Icon(Icons.data_saver_off_sharp),
+                    leading: Icon(Icons.data_saver_on_rounded),
                     title: Text("Veri İşlemleri",
                         style: TextStyle(fontSize: 15, color: Colors.white)),
                     iconColor: Colors.white,
@@ -1066,9 +1072,9 @@ class _MyDrawerState extends State<MyDrawer> {
                         Padding(
                           padding: EdgeInsets.only(left: ekranGenisligi / 50),
                           child: ListTile(
-                            leading: Icon(Icons.storage_rounded,
+                            leading: Icon(Icons.wb_cloudy_rounded ,
                                 color: Colors.white, size: 19),
-                            title: Text("Veri Kayıt",
+                            title: Text("Veri Gönder",
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
                             onTap: () {
@@ -1471,7 +1477,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         Padding(
                           padding: EdgeInsets.only(left: ekranGenisligi / 50),
                           child: ListTile(
-                            leading: Icon(Icons.cloud_upload_rounded,
+                            leading: Icon(Icons.cloud_done_rounded,
                                 color: Colors.white, size: 19),
                             title: Text("Gönderilmiş Belgeler",
                                 style: TextStyle(
@@ -1498,7 +1504,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         Padding(
                           padding: EdgeInsets.only(left: ekranGenisligi / 50),
                           child: ListTile(
-                            leading: Icon(Icons.cloud_upload_rounded,
+                            leading: Icon(Icons.cloud_done_rounded,
                                 color: Colors.white, size: 19),
                             title: Text("Gönderilmiş Tahsilat & Ödemeler",
                                 style: TextStyle(
@@ -1525,7 +1531,7 @@ class _MyDrawerState extends State<MyDrawer> {
                         Padding(
                           padding: EdgeInsets.only(left: ekranGenisligi / 50),
                           child: ListTile(
-                            leading: Icon(Icons.cloud_upload_rounded,
+                            leading: Icon(Icons.cloud_done_rounded,
                                 color: Colors.white, size: 19),
                             title: Text("Gönderilmiş Sayımlar",
                                 style: TextStyle(
@@ -1551,9 +1557,35 @@ class _MyDrawerState extends State<MyDrawer> {
                         Padding(
                           padding: EdgeInsets.only(left: ekranGenisligi / 50),
                           child: ListTile(
+                            leading: Icon(Icons.cloud_done_rounded,
+                                color: Colors.white, size: 19),
+                            title: Text("Gönderilmiş Dekontlar",
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white)),
+                            onTap: () async {
+                              List<DekontKayitModel> gidenFisler = [];
+                              try {
+                                gidenFisler =
+                                    (await dekontEx.listGidenDekontleriGetir());
+                              } catch (e) {
+                                print(e);
+                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: ((context) =>
+                                          gonderilmisDekontlar(
+                                            gidenFisler: gidenFisler,
+                                          ))));
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: ekranGenisligi / 50),
+                          child: ListTile(
                             leading:
-                                Icon(Icons.save, color: Colors.white, size: 19),
-                            title: Text("Kaydedilmiş Faturalar",
+                                Icon(Icons.data_saver_off, color: Colors.white, size: 19),
+                            title: Text("Kaydedilmiş Belgeler",
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
                             onTap: () async {
@@ -1579,7 +1611,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           padding: EdgeInsets.only(left: ekranGenisligi / 50),
                           child: ListTile(
                             leading:
-                                Icon(Icons.save, color: Colors.white, size: 19),
+                                Icon(Icons.data_saver_off, color: Colors.white, size: 19),
                             title: Text("Kaydedilmiş Tahsilat & Ödemeler",
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
@@ -1606,7 +1638,7 @@ class _MyDrawerState extends State<MyDrawer> {
                           padding: EdgeInsets.only(left: ekranGenisligi / 50),
                           child: ListTile(
                             leading:
-                                Icon(Icons.save, color: Colors.white, size: 19),
+                                Icon(Icons.data_saver_off, color: Colors.white, size: 19),
                             title: Text("Kaydedilmiş Sayımlar",
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
@@ -1623,6 +1655,32 @@ class _MyDrawerState extends State<MyDrawer> {
                                   MaterialPageRoute(
                                       builder: ((context) =>
                                           kaydedilmisSayimlar(
+                                            gidenFisler: gidenFisler,
+                                          ))));
+                            },
+                          ),
+                        ),
+                         Padding(
+                          padding: EdgeInsets.only(left: ekranGenisligi / 50),
+                          child: ListTile(
+                            leading:
+                                Icon(Icons.data_saver_off, color: Colors.white, size: 19),
+                            title: Text("Kaydedilmiş Dekontlar",
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white)),
+                            onTap: () async {
+                              List<DekontKayitModel> gidenFisler = [];
+                              try {
+                                gidenFisler = (await dekontEx
+                                    .listKaydedilmisDekontlariGetir());
+                              } catch (e) {
+                                print(e);
+                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: ((context) =>
+                                          kaydedilmisDekontlar(
                                             gidenFisler: gidenFisler,
                                           ))));
                             },

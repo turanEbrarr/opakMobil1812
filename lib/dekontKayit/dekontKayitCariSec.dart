@@ -9,6 +9,7 @@ import 'package:opak_mobil_v2/controllers/cariController.dart';
 import 'package:opak_mobil_v2/controllers/dekontController.dart';
 import 'package:opak_mobil_v2/controllers/fisController.dart';
 import 'package:opak_mobil_v2/dekontKayit/dekontKayitHareketGiris.dart';
+import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_tab_page.dart';
 import 'package:opak_mobil_v2/webservis/base.dart';
 import 'package:opak_mobil_v2/webservis/satisTipiModel.dart';
@@ -31,6 +32,7 @@ class DekontKayitCariSec extends StatefulWidget {
 
 class _DekontKayitCariSecState extends State<DekontKayitCariSec> {
   BaseService bs = BaseService();
+ 
 
   var uuid = Uuid();
   final CariController cariEx = Get.find();
@@ -62,13 +64,6 @@ class _DekontKayitCariSecState extends State<DekontKayitCariSec> {
     } else {
       Ctanim.seciliStokFiyatListesi = StokFiyatListesiModel(ADI: "", ID: -1);
     }
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    cariEx.searchCari("");
   }
 
   @override
@@ -197,11 +192,12 @@ class _DekontKayitCariSecState extends State<DekontKayitCariSec> {
                                               cariKart.BAKIYE.toString()) +
                                           " ₺"),
                                       onTap: () {
+                                   
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: ((context) =>
-                                                    DekontKayitHareketGiris(secilenCari: cariKart,))));
+                                                    DekontKayitHareketGiris(secilenCari: cariKart,index: -1,duzenleme: false,))));
                                       }),
                                 ],
                               ),

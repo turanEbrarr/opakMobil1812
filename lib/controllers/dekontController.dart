@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKatirHarModel.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../widget/ctanim.dart';
 
@@ -11,9 +12,11 @@ class DekontController extends GetxController {
   RxList<DekontKayitModel> list_dekont_gidecek = <DekontKayitModel>[].obs;
   RxList<DekontKayitModel> list_dekont_giden = <DekontKayitModel>[].obs;
   RxList<DekontKayitModel> list_dekont_kaydedilen = <DekontKayitModel>[].obs;
+  RxList<DekontKayitModel> list_dekont_kaydedilen_tarihli = <DekontKayitModel>[].obs;
+  RxList<DekontKayitModel> list_dekont_giden_tarihli = <DekontKayitModel>[].obs;
 
   void dekontaHaraketEkle({
-    required String UUID,
+    required String USTUUID,
     required String BELGENO,
     required String TARIH,
     required int CARIID,
@@ -30,11 +33,15 @@ class DekontController extends GetxController {
     required int ALTHESAPID,
     required String VADETARIHI,
   }) {
+    var uuid = Uuid();
+    int mahsupId = dekont!.value.ID!;
     DekontKayitHarModel eklenecek = DekontKayitHarModel.empty();
-      eklenecek.UUID= UUID;
-      eklenecek.BELGENO= BELGENO;
-      eklenecek.TARIH= TARIH;
-      eklenecek.CARIID= CARIID;
+    eklenecek.MAHSUPID = mahsupId;
+     eklenecek.USTUUID= USTUUID;
+     eklenecek.UUID = uuid.v1();
+     eklenecek.BELGE_NO= BELGENO;
+     eklenecek.TARIH= TARIH;
+     eklenecek.CARIID= CARIID;
      eklenecek. PERSONELID= PERSONELID;
      eklenecek. ACIKLAMA1= ACIKLAMA1;
      eklenecek. ACIKLAMA2= ACIKLAMA2;
@@ -100,15 +107,15 @@ class DekontController extends GetxController {
     });
   }
 
-  Future<List<DekontKayitModel>> getGidecekDekont(String belgeTip) async {
+  Future<List<DekontKayitModel>> getGidecekDekont( ) async {
     List<Map<String, dynamic>> result = await Ctanim.db?.query("TBLMAHSUPSB",
         where: 'DURUM = ?  AND AKTARILDIMI = ?', whereArgs: [true, false]);
     return List<DekontKayitModel>.from(
         result.map((json) => DekontKayitModel.fromJson(json)).toList());
   }
 
-  Future<void> listGidecekDekontGetir({required String belgeTip}) async {
-    List<DekontKayitModel> tt = await getGidecekDekont(belgeTip);
+  Future<void> listGidecekDekontGetir() async {
+    List<DekontKayitModel> tt = await getGidecekDekont();
     for (var i = 0; i < tt.length; i++) {
       var element = tt[i];
       List<DekontKayitHarModel> dekontHar = await getdekontHar(element.ID!);
@@ -127,6 +134,7 @@ class DekontController extends GetxController {
         result.length, (i) => DekontKayitModel.fromJson(result[i]));
     return gidenDekont;
   }
+
 
   Future<RxList<DekontKayitModel>> listGidenDekontleriGetir() async {
     List<DekontKayitModel> tt = await getGidenDekont();
@@ -182,6 +190,68 @@ class DekontController extends GetxController {
           fisID
         ]); // doprudan fiş ıd veriyosun diğer bakılacaklara gerek yok ki
     return List<DekontKayitModel>.from(result.map((json) => DekontKayitModel.fromJson(json)).toList());
+  }
+   Future<RxList<DekontKayitModel>> listTarihliKaydedilenDekontlariGetir(
+      String basTar, String bitTar) async {
+    List<DekontKayitModel> tt = await getTarihliKaydedilenDekont(basTar, bitTar);
+    await Future.forEach(tt, (element) async {
+      List<DekontKayitHarModel> fisHarList = await getdekontHar(element.ID!);
+      element.dekontKayitList = fisHarList;
+      
+    });
+
+    list_dekont_kaydedilen_tarihli.assignAll(tt);
+    return list_dekont_kaydedilen_tarihli;
+  }
+
+  Future<List<DekontKayitModel>> getTarihliKaydedilenDekont(
+      String basTar, String bitTar) async {
+    List<Map<String, dynamic>> result = await Ctanim.db?.query("TBLMAHSUPSB",
+        where: 'AKTARILDIMI = ? AND TARIH >= ? AND TARIH <= ? AND DURUM = ?',
+        whereArgs: [false, basTar, bitTar, true],
+        orderBy: 'ID DESC');
+    List<DekontKayitModel> gidenFis =
+        List.generate(result.length, (i) => DekontKayitModel.fromJson(result[i]));
+    return gidenFis;
+  }
+    Future<RxList<DekontKayitModel>> listTarihliGidenDekontlariGetir(
+      String basTar, String bitTar) async {
+    List<DekontKayitModel> tt = await getTarihliGidenDekont(basTar, bitTar);
+
+    // FisHareketlerini alırken forEach kullanmak yerine Future.forEach kullanın
+    await Future.forEach(tt, (element) async {
+      List<DekontKayitHarModel> fisHarList = await getdekontHar(element.ID!);
+      element.dekontKayitList = fisHarList;
+    
+    });
+
+    list_dekont_giden_tarihli.assignAll(tt);
+    return list_dekont_giden_tarihli;
+  }
+
+  Future<List<DekontKayitModel>> getTarihliGidenDekont(String basTar, String bitTar) async {
+    List<Map<String, dynamic>> result = await Ctanim.db?.query("TBLMAHSUPSB",
+        where: 'AKTARILDIMI = ? AND TARIH >= ? AND TARIH <= ?',
+        whereArgs: [true, basTar, bitTar],
+        orderBy: 'ID DESC');
+    List<DekontKayitModel> gidenFis =
+        List.generate(result.length, (i) => DekontKayitModel.fromJson(result[i]));
+    return gidenFis;
+  }
+  bool dekontKontrol (DekontKayitModel dekont){
+    double alacak = 0.0;
+    double borc = 0.0;
+    for (var el in dekont.dekontKayitList!) {
+      alacak += el.ALACAK!;
+      //alacak += el.DOVIZALACAK!*el.KUR!;
+      borc += el.BORC!;
+     //borc += el.DOVIZBORC!*el.KUR!;
+    }
+    if(alacak == borc){
+      return true;
+    }else{
+    return false;
+    }
   }
 
 

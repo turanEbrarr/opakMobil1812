@@ -8,6 +8,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:opak_mobil_v2/controllers/dekontController.dart';
+import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
 import 'package:opak_mobil_v2/faturaFis/fis.dart';
 import 'package:opak_mobil_v2/stok_kart/Spinkit.dart';
 import 'package:opak_mobil_v2/tahsilatOdemeModel/tahsilat.dart';
@@ -42,6 +44,7 @@ class _veri_kayit_main_pageState extends State<veri_kayit_main_page> {
   var json;
   static FisController fisEx = Get.find();
   SayimController sayimEx = Get.find();
+  DekontController dekontEx = Get.find();
   static TahsilatController tahsilatEx = Get.find();
   List baslik = [
     ["Alınan Sipariş", false, "Alinan_Siparis"],
@@ -60,6 +63,7 @@ class _veri_kayit_main_pageState extends State<veri_kayit_main_page> {
     ["Depo Transfer", false, "Depo_Transfer"],
     ["Stok Resim Kayıt", false, "StokResim"],
     ["Sayımları Aktar", false, "Sayim"],
+    ["Dekontları Aktar",false,"Dekont"]
     
   
   ];
@@ -296,7 +300,102 @@ class _veri_kayit_main_pageState extends State<veri_kayit_main_page> {
 
         print("Liste Temizlendi : " +
             tahsilatEx.list_gidecek_tahsilat.length.toString());
-      } else if (baslik[i][1] == true) {
+      }
+      else if (baslik[i][1] == true && baslik[i][2] == "Dekont"){
+             hicTrueGeldiMi = true;
+        String hataTopla = "";
+        await dekontEx.listGidecekDekontGetir();
+
+        print(baslik[i][0] +
+            " içeren fis sayısı: " +
+            dekontEx.list_dekont_gidecek.length.toString());
+        if (dekontEx.list_dekont_gidecek.length > 0) {
+          print(baslik[i][0] + " için gönderme işlemi yapılacak.");
+          for (int j = 0; j < dekontEx.list_dekont_gidecek.length; j++) {
+            Map<String, dynamic> jsonListesi =
+                dekontEx.list_dekont_gidecek[j].toJson2();
+            dekontEx.list_dekont_gidecek[j].AKTARILDIMI = true;
+            await DekontKayitModel.empty().dekontEkle(
+              dekont: dekontEx.list_dekont_gidecek[j],
+            );
+            setState(() {});
+            SHataModel gelenHata = await bs.ekleDekont(
+                jsonDataList: jsonListesi, sirket: Ctanim.sirket!);
+            if (gelenHata.Hata == "true") {
+              dekontEx.list_dekont_gidecek[j].AKTARILDIMI = false;
+              DekontKayitModel.empty().dekontEkle(dekont: dekontEx.list_dekont_gidecek[j]);
+              hataTopla = hataTopla +
+                  "\n" +
+                  baslik[i][0] +
+                  " Belge Tipine ait " +
+                  dekontEx.list_dekont_gidecek[j].BELGE_NO.toString() +
+                  " numaralı " +
+                 
+                      "dekont işlemi gönderilemedi.\n Hata Mesajı :" +
+                  gelenHata.HataMesaj!;
+              LogModel logModel = LogModel(
+                TABLOADI: "TBLMAHSUPSB",
+                FISID: dekontEx.list_dekont_gidecek[0].ID,
+                HATAACIKLAMA: gelenHata.HataMesaj,
+                UUID: dekontEx.list_dekont_gidecek[0].UUID,
+                CARIADI: dekontEx.list_dekont_gidecek[0].TARIH,
+              );
+              await VeriIslemleri().logKayitEkle(logModel);
+            }
+          }
+          if (hataTopla != "") {
+            await showDialog(
+                context: context,
+                builder: (context) {
+                  return CustomAlertDialog(
+                    align: TextAlign.left,
+                    title: 'Hata',
+                    message:
+                        'Veri Gönderilierken Bazı Hatalar İle Karşılaşıldı:\n' +
+                            hataTopla,
+                    onPres: () async {
+                      Navigator.pop(context);
+                    },
+                    buttonText: 'Tamam',
+                  );
+                });
+          } else {
+            const snackBar1 = SnackBar(
+              content: Text(
+                'Veriler Başarılı Bir Şekilde Gönderildi',
+                style: TextStyle(fontSize: 16),
+              ),
+              showCloseIcon: true,
+              backgroundColor: Colors.blue,
+              closeIconColor: Colors.white,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar1);
+          }
+          dekontEx.list_dekont_gidecek.clear();
+
+          print("Liste Temizlendi : " +
+              dekontEx.list_dekont_gidecek.length.toString());
+        } else {
+          await showDialog(
+              context: context,
+              builder: (context) {
+                return CustomAlertDialog(
+                  align: TextAlign.left,
+                  title: 'Boş Liste',
+                  message: '${baslik[i][0]} için gönderilecek Veri Yok',
+                  onPres: () async {
+                    Navigator.pop(context);
+                  },
+                  buttonText: 'Tamam',
+                );
+              });
+        }
+        dekontEx.list_dekont_gidecek.clear();
+        print("Liste Temizlendi : " +
+            dekontEx.list_dekont_gidecek.length.toString());
+
+      }
+       else if (baslik[i][1] == true) {
         hicTrueGeldiMi = true;
         String hataTopla = "";
         
