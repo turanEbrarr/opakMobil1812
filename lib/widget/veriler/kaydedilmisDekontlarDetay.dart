@@ -5,6 +5,7 @@ import 'package:opak_mobil_v2/controllers/dekontController.dart';
 import 'package:opak_mobil_v2/controllers/fisController.dart';
 import 'package:opak_mobil_v2/dekontKayit/dekontTab.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
+import 'package:opak_mobil_v2/dekontKayit/pdf/dekontKayitPdfOnizleme.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_tab_page.dart';
 import '../../faturaFis/fisHareket.dart';
 import '../../faturaFis/fis.dart';
@@ -48,14 +49,10 @@ class kaydedilmisDekontlarDetay extends StatelessWidget {
               ),
               label: "PDF Görüntüle",
               onTap: () async {
-             
-              /*
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (context) => DepoTransferPdfOnizleme(m: fis)),
+                        builder: (context) => DekontPDfOnizleme(m: fis, fastReporttanMiGelsin: false,)),
                   );
-                  */
-              
               }),
         ],
       ),

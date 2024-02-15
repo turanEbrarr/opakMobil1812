@@ -69,6 +69,7 @@ class _MyDrawerState extends State<MyDrawer> {
   bool sipAcikmi = false;
   bool perAcikmi = false;
   bool stokAcikmi = false;
+  bool cariAcikmi = false;
   FisController fisEx = Get.find();
   DekontController dekontEx = Get.find();
 
@@ -465,8 +466,21 @@ class _MyDrawerState extends State<MyDrawer> {
               ),
             ),
             listeler.plasiyerYetkileri[0] == true || listeler.plasiyerYetkileri[25] == true
+
                 ? ExpansionTile(
-                    leading: Icon(Icons.group),
+                   onExpansionChanged: (value) {
+                      cariAcikmi = value;
+                    },
+                    leading:
+                    cariAcikmi == false
+                        ? creatBadge(
+                            child: Icon(Icons.group),
+                            belgeTipi: "cariToplam",
+                            top: -10,
+                            end: -12,
+                            size: 10)
+                        :
+                    Icon(Icons.group),
                     title: Text(
                       "Cari İşlemler",
                       style: TextStyle(fontSize: 15, color: Colors.white),
@@ -500,11 +514,16 @@ class _MyDrawerState extends State<MyDrawer> {
                        listeler.plasiyerYetkileri[25] == true ?  Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: ListTile(
-                          leading: Icon(
-                            Icons.swap_calls_outlined,
-                            color: Colors.white,
-                            size: 19,
-                          ),
+                          leading: creatBadge(
+                                      top: -10,
+                                      end: -12,
+                                      size: 10,
+                                      child: Icon(
+                                        Icons.swap_calls_outlined,
+                                        color: Colors.white,
+                                        size: 19,
+                                      ),
+                                      belgeTipi: "dekont"),
                           title: Padding(
                             padding: EdgeInsets.only(left: ekranGenisligi / 50),
                             child: Text("Dekont Kayıt",

@@ -259,15 +259,17 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                             GestureDetector(
                                                               onTap: () {
                                                                 
+                                                                
                                                                 Navigator.of(
                                                                         context)
                                                                     .push(
                                                                   MaterialPageRoute(
                                                                       builder: (context) => DekontPDfOnizleme(
-                                                                         
-                                                                          dekont: dekontEx
+                                                                        fastReporttanMiGelsin: false,
+                                                                          m: dekontEx
                                                                               .list_dekont[index])),
                                                                 );
+                                                                
                                                               
                                                               },
                                                               child: ListTile(
@@ -334,17 +336,17 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                                               title: 'Kayıt Başarılı',
                                                                               message: 'Dekont Kaydedildi. PDF Dosyasını Görüntülemek İster misiniz?',
                                                                               onPres: () async {
-                                                                                /*
+                                                                                
                                                                               Navigator.pop(context);
                                                                               Navigator.of(context).push(
                                                                                 MaterialPageRoute(
-                                                                                    builder: (context) => PdfOnizleme(
+                                                                                    builder: (context) => DekontPDfOnizleme(
                                                                                           m: dekontTemp,
                                                                                           fastReporttanMiGelsin: false,
                                                                                         )),
                                                                                         
                                                                               );
-                                                                              */
+                                                                              
                                                                               },
                                                                               buttonText: 'Pdf\'i\ Gör',
                                                                             );
@@ -472,15 +474,15 @@ class _DekontKayitMainState extends State<DekontKayitMain> {
                                                                                 message: 'Belge merkeze başarıyla gönderildi. PDF dosyasını görmek ister misiniz ?',
                                                                                 onPres: () async {
                                                                                   Navigator.pop(context);
-                                                                                  /*
+                                                                                  
                                                                                   Navigator.of(context).push(
                                                                                     MaterialPageRoute(
-                                                                                        builder: (context) => PdfOnizleme(
+                                                                                        builder: (context) => DekontPDfOnizleme(
                                                                                               m: dekontTemp,
                                                                                               fastReporttanMiGelsin: true,
                                                                                             )),
                                                                                   );
-                                                                                  */
+                                                                                  
                                                                                 },
                                                                                 buttonText: 'Pdf\'i\ Gör',
                                                                               );

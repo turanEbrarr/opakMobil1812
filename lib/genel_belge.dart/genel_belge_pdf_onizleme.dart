@@ -48,12 +48,13 @@ class _PdfOnizlemeState extends State<PdfOnizleme> {
   }
 
   Future<Uint8List> pdfGetirFastReport() async {
+      Ctanim.kullanici!.KOD;
     var donecek;
     // https://apkwebservis.nativeb4b.com/DIZAYNLAR/099e42b0-83b5-11ee-82a7-23141fef2870.pdf
     String url = Ctanim.IP.replaceAll("/MobilService.asmx", "") + "/DIZAYNLAR/" + widget.m.UUID! + ".pdf";
     print(url);
     Uri uri = Uri.parse(url);
-    http.Response response = await http.get(uri);
+    try{http.Response response = await http.get(uri);
     var pdfData = response.bodyBytes;
     donecek = pdfData;
     if(response.statusCode != 200){
@@ -61,6 +62,13 @@ class _PdfOnizlemeState extends State<PdfOnizleme> {
       donecek = await makePdf(widget.m, _imageData!);
     }
     return donecek;
+
+    }catch(e){
+     await _loadImage();
+      donecek = await makePdf(widget.m, _imageData!);
+      return donecek;
+    }
+
   }
   @override
   Widget build(BuildContext context) {

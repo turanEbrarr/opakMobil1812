@@ -253,6 +253,15 @@ class DekontController extends GetxController {
     return false;
     }
   }
+    Future<int> getDekontSayisi() async {
+    List<Map<String, dynamic>> result = await Ctanim.db?.query(
+      "TBLMAHSUPSB",
+      columns: ["ID"],
+      where: 'DURUM = ?',
+      whereArgs: [false],
+    );
+    return result.length;
+  }
 
 
 

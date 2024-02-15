@@ -8,6 +8,7 @@ import 'package:opak_mobil_v2/controllers/stokKartController.dart';
 import 'package:opak_mobil_v2/dekontKayit/dekontKayitHareketGiris.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKatirHarModel.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
+import 'package:opak_mobil_v2/dekontKayit/pdf/dekontKayitPdfOnizleme.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_stok_kart_guncelleme.dart';
 import 'package:opak_mobil_v2/stok_kart/Spinkit.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_tanim.dart';
@@ -69,11 +70,14 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
           onPressed: () async {
             DekontKayitModel fiss = dekontEx.dekont!.value;
             if(dekontEx.dekontKontrol(fiss)){
-            if (Ctanim.kullanici!.ISLEMAKTARILSIN == "H") {
+            if (Ctanim.kullanici!.ISLEMAKTARILSIN == "E") {
               dekontEx.dekont!.value.DURUM = true;
               await DekontKayitModel.empty()
                   .dekontEkle(dekont: dekontEx.dekont!.value);
               dekontEx.dekont!.value = DekontKayitModel.empty();
+            Navigator.pop(context);
+            Navigator.pop(context);
+
               showDialog(
                   context: context,
                   builder: (context) {
@@ -89,16 +93,15 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
                       message:
                           'Dekont Kaydedildi. PDF Dosyasını Görüntülemek İster misiniz?',
                       onPres: () async {
-                        /*
                           Navigator.pop(context);
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => PdfOnizleme(
-                                      m: dekonts,
+                                builder: (context) => DekontPDfOnizleme(
+                                      m: fiss,
                                       fastReporttanMiGelsin: false,
                                     )),
                           );
-                          */
+                          
                       },
                       buttonText: 'Pdf\'i\ Gör',
                     );
@@ -173,16 +176,16 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
                         message:
                             'Dekont merkeze başarıyla gönderildi. PDF dosyasını görmek ister misiniz ?',
                         onPres: () async {
-                          /*xczc1 <1<1<
+                
                               Navigator.pop(context);
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                    builder: (context) => PdfOnizleme(
-                                          m: dekonts,
+                                    builder: (context) => DekontPDfOnizleme(
+                                          m: fiss,
                                           fastReporttanMiGelsin: true,
                                         )),
                               );
-                              */
+                              
                         },
                         buttonText: 'Pdf\'i\ Gör',
                       );

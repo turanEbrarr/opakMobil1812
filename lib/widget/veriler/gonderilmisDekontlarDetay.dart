@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:opak_mobil_v2/dekontKayit/model/dekontKayitModel.dart';
+import 'package:opak_mobil_v2/dekontKayit/pdf/dekontKayitPdfOnizleme.dart';
 import '../../tahsilatOdemeModel/tahsilat.dart';
 import '../../tahsilatOdemeModel/tahsilatHaraket.dart';
 import '../../tahsilatOdemeModel/tahsilat_pdf_onizleme.dart';
@@ -18,15 +19,15 @@ class gonderilmisDekontlarDetay extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.picture_as_pdf),
         onPressed: () {
-          /*
+          
           Navigator.of(context).push(
             MaterialPageRoute(
-                builder: (context) => TahsilatPdfOnizleme(
+                builder: (context) => DekontPDfOnizleme(
                       m: fis,
-                      belgeTipi: Ctanim().MapIlslemTipTers[fis.TIP].toString(),
+                      fastReporttanMiGelsin: false,
                     )),
           );
-          */
+          
         },
       ),
       body: ListView(

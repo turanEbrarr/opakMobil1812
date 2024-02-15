@@ -632,6 +632,7 @@ class _MainPageState extends State<MainPage> {
           },
           child: widgetTasarim(
             title: "Dekont Kayıt",
+            belgeTipi: "dekont",
             icon: Icons.swap_calls_outlined,
             color: 0xFF4D6275,
             widgetBelgeSira: 25,

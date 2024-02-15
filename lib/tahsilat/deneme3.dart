@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:opak_mobil_v2/controllers/dekontController.dart';
 import 'package:opak_mobil_v2/widget/ctanim.dart';
 
 import '../controllers/depoController.dart';
@@ -31,6 +32,7 @@ class _creatBadgeState extends State<creatBadge> {
   static FisController fisEx = Get.find();
   static TahsilatController tahsilatEx = Get.find();
   static SayimController sayimEx = Get.find();
+  static DekontController dekontEx = Get.find();
   Future<void> loadData() async {
     bool belgeVarmi = false;
     await Future.delayed(Duration(milliseconds: 500));
@@ -50,7 +52,28 @@ class _creatBadgeState extends State<creatBadge> {
         sayi = a;
         isLoading = false;
       });
-    } else if (widget.belgeTipi == "faturaToplam") {
+    } 
+    else if(widget.belgeTipi == "cariToplam"){
+    
+      int a = await dekontEx.getDekontSayisi();
+
+      setState(() {
+        sayi = a;
+        isLoading = false;
+      });
+
+    }
+       else if(widget.belgeTipi == "dekont"){
+    
+      int a = await dekontEx.getDekontSayisi();
+
+      setState(() {
+        sayi = a;
+        isLoading = false;
+      });
+
+    }
+    else if (widget.belgeTipi == "faturaToplam") {
       int a = await fisEx.getFislerSayisi(
           belgeTipi1: "Satis_Fatura",
           belgeTipi2: "Satis_Irsaliye",
