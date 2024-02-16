@@ -126,7 +126,7 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: "Dekont Kayıt",
+        title: "Hareket Girişi",
         height: 50,
       ),
       body: SingleChildScrollView(

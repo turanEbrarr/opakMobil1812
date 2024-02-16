@@ -569,7 +569,7 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
               ),
               GestureDetector(
                 onTap: () async {
-                  Navigator.push(
+                 Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: ((context) => DekontKayitHareketGiris(
@@ -579,7 +579,14 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
                                     .first,
                                 index: index,
                                 duzenleme: true,
-                              ))));
+                              )))).then((value) async {
+                    dekontEx.dekont?.value.dekontKayitList!.removeWhere((item) {
+                      return item.UUID == dekonthareket.UUID!;
+                    });
+                    await DekontKayitModel.empty()
+                        .dekontHarSil(dekonthareket.UUID!);
+                    setState(() {});
+                  });
                 },
                 child: ListTile(
                   title: Text("Düzenle"),

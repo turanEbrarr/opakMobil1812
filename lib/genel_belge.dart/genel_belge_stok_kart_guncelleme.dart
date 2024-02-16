@@ -125,7 +125,7 @@ class _genel_belge_stok_kart_guncellemeDialogState
   String geciciFiyatTut = "";
   KurModel? anaBirim;
   KurModel? stokKur;
-    KUSURAT? Kfiyat;
+  KUSURAT? Kfiyat;
   KUSURAT? Kmiktar;
   KUSURAT? Kkur;
   KUSURAT? KdovizFiyat;
@@ -134,8 +134,7 @@ class _genel_belge_stok_kart_guncellemeDialogState
   @override
   void initState() {
     print(widget.cariKod);
-    int tip = Ctanim().MapFisTip[widget.belgeTipi]??0;
-    super.initState();
+    int tip = Ctanim().MapFisTip[widget.belgeTipi]??0;    super.initState();
     seciliDovizAdi = widget.stokKartKurAdi;
     seciliParaBirimi = widget.stokKartKurAdi;
         if (tip == 3 ||
