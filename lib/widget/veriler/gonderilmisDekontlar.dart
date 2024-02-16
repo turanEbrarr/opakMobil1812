@@ -137,7 +137,7 @@ class _gonderilmisDekontlarState
                                     ),
                                     title:
                                         Text(
-                                            fis.BELGE_NO!,
+                                          "Belge No: "+  fis.BELGE_NO!,
                                             style: TextStyle(fontSize: 14),
                                           ),
                                        

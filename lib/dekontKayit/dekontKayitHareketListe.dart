@@ -70,7 +70,7 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
           onPressed: () async {
             DekontKayitModel fiss = dekontEx.dekont!.value;
             if(dekontEx.dekontKontrol(fiss)){
-            if (Ctanim.kullanici!.ISLEMAKTARILSIN == "E") {
+            if (Ctanim.kullanici!.ISLEMAKTARILSIN == "H") {
               dekontEx.dekont!.value.DURUM = true;
               await DekontKayitModel.empty()
                   .dekontEkle(dekont: dekontEx.dekont!.value);
@@ -84,7 +84,6 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
                     return CustomAlertDialog(
                       secondButtonText: "Tamam",
                       onSecondPress: () {
-                        Navigator.pop(context);
                         Navigator.pop(context);
                       },
                       pdfSimgesi: true,
@@ -385,7 +384,7 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
                               padding: EdgeInsets.only(left: x * .05),
                               child: SizedBox(
                                   width: x * .15,
-                                  child: Text("İ.Tipi:",
+                                  child: Text("Kur:",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500))),
@@ -418,7 +417,7 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
                               child: SizedBox(
                                   width: x * .15,
                                   child: Text(
-                                    dekonthareket.ISLEMTIPI!.toString(),
+                                    dekonthareket.KUR!.toString(),
                                   )),
                             ),
                           ],
@@ -458,7 +457,7 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
                               padding: EdgeInsets.only(left: x * .05),
                               child: SizedBox(
                                   width: x * .2,
-                                  child: Text("Personel :",
+                                  child: Text("Belge No :",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500))),
@@ -491,7 +490,9 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
                               child: SizedBox(
                                 width: x * .15,
                                 child: Text(
-                                  dekonthareket.PERSONELID!.toString(),
+                                  dekonthareket.BELGE_NO!.toString(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ),
@@ -538,8 +539,7 @@ class _DekontKayitListeState extends State<DekontKayitListe> {
               GestureDetector(
                 onTap: () async {
                   dekontEx.dekont?.value.dekontKayitList!.removeWhere((item) {
-                    return item.CARIID == dekonthareket.CARIID! &&
-                        item.BELGE_NO == dekonthareket.BELGE_NO!;
+                    return item.UUID == dekonthareket.UUID!;
                   });
                   await DekontKayitModel.empty()
                       .dekontHarSil(dekonthareket.UUID!);

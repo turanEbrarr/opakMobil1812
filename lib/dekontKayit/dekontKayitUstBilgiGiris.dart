@@ -137,7 +137,7 @@ class _DekontKayitUstBilgiState extends State<DekontKayitUstBilgi> {
                       width: MediaQuery.of(context).size.width * .5,
                       child: ElevatedButton(
                           child: Text(
-                              "${DateFormat("yyyy-MM-dd").format(DateTime.now())}"),
+                              "${DateFormat("yyyy-MM-dd").format(dekontTarihi!)}"),
                           onPressed: () async {
                             DateTime? date = await pickDate();
                             if (date == null) {
@@ -331,7 +331,7 @@ class _DekontKayitUstBilgiState extends State<DekontKayitUstBilgi> {
                     dekontEx.dekont!.value.ACIKLAMA1 = contAcik1.text;
                     dekontEx.dekont!.value.ACIKLAMA2 = contAcik2.text;
                     dekontEx.dekont!.value.ACIKLAMA3 = contAcik3.text;
-                    dekontEx.dekont!.value.PLASIYERID = -1; //  DEĞİŞECEK KOD!
+                    dekontEx.dekont!.value.PLASIYERID = int.tryParse(Ctanim.kullanici!.KOD!) ?? 0; //  DEĞİŞ
                     dekontEx.dekont!.value.SUBEID =
                         int.parse(Ctanim.kullanici!.YERELSUBEID!.toString());
                     dekontEx.dekont!.value.UUID = uuid.v1();

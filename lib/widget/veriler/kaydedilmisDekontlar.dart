@@ -132,12 +132,8 @@ class _kaydedilmisDekontlarState extends State<kaydedilmisDekontlar> {
                                     ),
                                     title: 
                                         Text(
-                                            fis.BELGE_NO! +
-                                                " (" +
-                                                Ctanim()
-                                                    .MapFisTipTers[fis.TIP]
-                                                    .toString() +
-                                                ")",
+                                         "Belge No: "+fis.BELGE_NO!,
+                                              
                                             style: TextStyle(fontSize: 14),
                                           ),
                                       

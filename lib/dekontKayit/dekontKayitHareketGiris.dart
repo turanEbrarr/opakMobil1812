@@ -248,6 +248,12 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                           controller: kurController,
                           cursorColor: Color.fromARGB(255, 60, 59, 59),
                           keyboardType: TextInputType.number,
+                          onTap: () {
+                               kurController.selection = TextSelection(
+                                                  baseOffset: 0,
+                                                  extentOffset:
+                                                      kurController.value.text.length);
+                          },
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(
                                 RegExp(r'^\d*\.?\d*'))
@@ -337,7 +343,7 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                       width: MediaQuery.of(context).size.width * .5,
                       child: ElevatedButton(
                           child: Text(
-                              "${DateFormat("yyyy-MM-dd").format(DateTime.now())}"),
+                              "${DateFormat("yyyy-MM-dd").format(vadeTarihi!)}"),
                           onPressed: () async {
                             DateTime? date = await pickDate();
                             if (date == null) {
@@ -388,8 +394,19 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                       width: MediaQuery.of(context).size.width * .5,
                       child: TextFormField(
                         enabled: anaBirimMi,
+                        onTap: () {
+                               contBorc.selection = TextSelection(
+                                                  baseOffset: 0,
+                                                  extentOffset:
+                                                      contBorc.value.text.length);
+                          },
                         cursorColor: Color.fromARGB(255, 30, 38, 45),
                        controller: contBorc,
+                        keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d*\.?\d*'))
+                                    ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderSide:
@@ -425,6 +442,18 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                       child: TextFormField(
                         cursorColor: Color.fromARGB(255, 30, 38, 45),
                         controller: contDovizBorc,
+                         keyboardType: TextInputType.number,
+                         onTap: () {
+                                contDovizBorc.selection = TextSelection(
+                                                    baseOffset: 0,
+                                                    extentOffset:
+                                                        contDovizBorc.value.text.length);
+                            
+                         },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d*\.?\d*'))
+                                    ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderSide:
@@ -468,6 +497,18 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                         enabled: anaBirimMi,
                         cursorColor: Color.fromARGB(255, 30, 38, 45),
                         controller: contAlacak,
+                         onTap: () {
+                                contAlacak.selection = TextSelection(
+                                                    baseOffset: 0,
+                                                    extentOffset:
+                                                        contAlacak.value.text.length);
+                            
+                         },
+                          keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d*\.?\d*'))
+                                    ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderSide:
@@ -503,6 +544,18 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
                       child: TextFormField(
                         cursorColor: Color.fromARGB(255, 30, 38, 45),
                         controller: contDovizAlacak,
+                         onTap: () {
+                                contDovizAlacak.selection = TextSelection(
+                                                    baseOffset: 0,
+                                                    extentOffset:
+                                                        contDovizAlacak.value.text.length);
+                            
+                         },
+                          keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'^\d*\.?\d*'))
+                                    ],
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderSide:
@@ -628,12 +681,17 @@ class _DekontKayitHareketGirisState extends State<DekontKayitHareketGiris> {
               width: MediaQuery.of(context).size.width * .8,
               child: ElevatedButton.icon(
                 onPressed: () async {
+                  if(contBorc.text == "" && contAlacak.text == "" && contDovizBorc.text == "" && contDovizAlacak.text == ""){
+                    Get.snackbar("Hata", "Borç veya Alacak Alanlarından Birini Doldurunuz",backgroundColor: Colors.red);
+                    return;
+                  }
+                  
                   dekontEx.dekontaHaraketEkle(
                       USTUUID: dekontEx.dekont!.value.UUID!,
                       BELGENO: contBelge.text,
                       TARIH: dekontEx.dekont!.value.TARIH!,
                       CARIID: widget.secilenCari.ID!,
-                      PERSONELID: int.tryParse(Ctanim.kullanici!.KOD!) ?? 1,
+                      PERSONELID: int.tryParse(Ctanim.kullanici!.KOD!) ?? 0,
                       ACIKLAMA1: contAcik1.text,
                       ACIKLAMA2: contAcik2.text,
                       ACIKLAMA3: contAcik3.text,

@@ -458,7 +458,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       //  "Versiyon: 1.0.2" ,// gönderilen fiş tekrar gönder hata logla
                       // "Versiyon : 1.0.3", // pdf görüntüleme null hatası (FASTEN ÇEKİNCE NULL DI YA)
                      // "Versiyon: 1.0.4", // fise açıklama eklendi
-                      "Versiyon: 1.0.5", // cari koşul artık stoklara eklenmiyor sadece genelş iske ekleniyopr oda parametreli
+                    //  "Versiyon: 1.0.5", // cari koşul artık stoklara eklenmiyor sadece genelş iske ekleniyopr oda parametreli
+                      "Versiyon: 1.0.6", // pdf de internet yoksa localden çekme (try catch) ,DEKONT
                       style: TextStyle(color: Colors.green,fontSize: 12),
                     ),
                   ],
