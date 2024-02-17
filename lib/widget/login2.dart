@@ -407,28 +407,7 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => MainPage()),
                       (route) => false,
                     );
-                    /*
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return CustomAlertDialog(
-                            align: TextAlign.left,
-                            title: 'Hata',
-                            message:
-                                'Web Servisten Veri Alınırken Bazı Hatalar İle Karşılaşıldı:\n' +
-                                    genelHata,
-                            onPres: () async {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MainPage()),
-                                (route) => false,
-                              );
-                            },
-                            buttonText: 'Devam Et',
-                          );
-                        });
-                        */
+                   
                   } else {
                     hataGoster(
                         mesajVarMi: true,
@@ -444,22 +423,6 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 }
               }
-
-              // BaseService bs = BaseService();
-              //bool hasInternet = await checkInternetConnectivity();
-              //if (!hasInternet) {
-
-              // } else {
-              ///////print("GİRİŞ İNTERNET VAR LİSTE DURUMU: " +
-              // listeler.listKur.length.toString());
-              //listeler.listKur.clear();
-              //await bs.getirKur();
-              //print("GİRİŞ İNTERNET VAR LİSTE TEMİZLENİP GÜNCELLENDİ: " +
-              //  listeler.listKur.length.toString());
-              //}
-
-              //  Get.to(() => MainPage());
-              //Navigator.pop(context);
             } else {
               if (Ctanim.kullanici!.ONLINE == "H") {
                 if (paremetreHatasiVarMi == true) {
@@ -472,12 +435,23 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 }
               } else {
-                showAlertDialogLogin(context, "Kullanıcının Ofline Giriş İzni Yok");
+                String servisKontrol = await bs.getirKur(sirket: Ctanim.sirket);
+                if(servisKontrol != ""){
+                    showAlertDialogLogin(context, "Kullanıcının Ofline Giriş İzni Yok");
+                }else{
+                   Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainPage()),
+                    (route) => false,
+                  );
+
+                }
+                
+
+              
               }
             }
           });
-
-          // Şifre doğru, giriş yapılıyor
         } else {
           showDialog(
               context: context,
