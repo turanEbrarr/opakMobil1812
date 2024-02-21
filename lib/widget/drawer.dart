@@ -196,7 +196,7 @@ class _MyDrawerState extends State<MyDrawer> {
             SizedBox(
               height: ekranYuksekligi / 3.5,
               child: DrawerHeader(
-                child: //
+                child: 
                     Column(
                   children: [
                     Row(
@@ -459,7 +459,8 @@ class _MyDrawerState extends State<MyDrawer> {
                       // "Versiyon : 1.0.3", // pdf görüntüleme null hatası (FASTEN ÇEKİNCE NULL DI YA)
                      // "Versiyon: 1.0.4", // fise açıklama eklendi
                     //  "Versiyon: 1.0.5", // cari koşul artık stoklara eklenmiyor sadece genelş iske ekleniyopr oda parametreli
-                      "Versiyon: 1.0.6", // pdf de internet yoksa localden çekme (try catch) ,DEKONT
+                   //   "Versiyon: 1.0.6", // pdf de internet yoksa localden çekme (try catch) ,DEKONT
+                      "Versiyon: 1.0.7", // kullanıcı sadece online
                       style: TextStyle(color: Colors.green,fontSize: 12),
                     ),
                   ],
