@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:money_formatter/money_formatter.dart';
 import 'package:opak_mobil_v2/widget/modeller/ondalikModel.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../widget/kullaniciModel.dart';
 import '../faturaFis/fisHareket.dart';
 import '../controllers/fisController.dart';
@@ -34,6 +35,9 @@ enum KUSURAT {
 }
 
 class Ctanim {
+  static String mobilversiyon =
+      "1.0.8"; //! Web servisi güncellemeyi unutma // Yeni versiyonu Github a yükle
+  // Todo 1.0.8 Versiyonu Güncelleme geldi
   static OndalikModel? ondalikModel;
   static bool faturaTipiDegisi = false;
   static String yeniFaturaTipi = "";
@@ -93,6 +97,14 @@ class Ctanim {
       return '';
     }
   }
+
+  static Future<void> launchURL() async {
+  final Uri url = Uri.parse(
+      'https://github.com/opakMobile/ApkMobil/raw/main/opakmobil.apk');
+  if (!await launchUrl(url)) {
+    throw Exception('Could not launch');
+  }
+}
 
   static dynamic noktadanSonraAlinacakParametreli(KUSURAT kusurat, double veri,
       {bool doubleMiDonsun = false}) {

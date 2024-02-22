@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
+import 'package:opak_mobil_v2/widget/modeller/sHataModel.dart';
 import '../widget/main_page.dart';
 import '../widget/settings_page.dart';
 import '../widget/veriler/listeler.dart';
@@ -119,7 +120,6 @@ class _LoginPageState extends State<LoginPage> {
   bool paremetreHatasiVarMi = false;
   Future<void> click() async {
     _formKey.currentState!.save();
-
     if (Ctanim.kullanici != null) {
       await SharedPrefsHelper.sirketGetir();
       if (Ctanim.sirket == null || Ctanim.sirket == "") {
@@ -129,27 +129,6 @@ class _LoginPageState extends State<LoginPage> {
             ikinciGeriOlsunMu: false);
       } else {
         await SharedPrefsHelper.IpGetir();
-        /*
-        int a = await fisEx.getFislerSayisi(
-            belgeTipi1: "Satis_Fatura",
-            belgeTipi2: "Satis_Irsaliye",
-            belgeTipi3: "Alis_Irsaliye");
-        int b = await fisEx.getFislerSayisi(
-            belgeTipi1: "Alinan_Siparis",
-            belgeTipi2: "Musteri_Siparis",
-            belgeTipi3: "Satis_Teklif");
-        int c = await fisEx.getFisSayisi(belgeTipi: "Perakende_Satis");
-        int d = await fisEx.getFisSayisi(belgeTipi: "Depo_Transfer");
-        int e = await tahsilatEx.getTahsilatlarSayisi(
-            belgeTipi1: "Tahsilat", belgeTipi2: "Odeme");
-        if (a > 0 || b > 0 || c > 0 || d > 0 || e > 0) {
-          Ctanim.bekleyenBelgeVarMi = true;
-        }
-        */
-        String bankaHata = "";
-        String bankaSozlesmeHata = "";
-        
-        String islemTipiHata = "";
         if (_passwordController.text == Ctanim.kullanici?.SIFRE &&
             _userNameController.text == Ctanim.kullanici!.KOD) {
           int value = await SharedPrefsHelper.faturaNumarasiGetir();
@@ -258,8 +237,7 @@ class _LoginPageState extends State<LoginPage> {
             Ctanim.acikFaturaNumrasi = value8;
           } else {
             if (Ctanim.kullanici!.FATACIKNO == "0" &&
-                Ctanim.kullanici!.FATURAACIKSERI_SERINO != ""
-                ) {
+                Ctanim.kullanici!.FATURAACIKSERI_SERINO != "") {
               paremetreHatasiVarMi = true;
               print("acikFatura");
             } else {
@@ -332,9 +310,55 @@ class _LoginPageState extends State<LoginPage> {
             }
           });
           await SharedPrefsHelper.saveList(listeler.sayfaDurum);
+
+          // interver var ve versiyonn var. gir
+          // inbternet yok gir
+          // internet var verso yanlış gimme
+
+          //! internet kontrolü
+
+          bool versoInternetVarMi = false;
+          bool versiyon = false;
+           SHataModel? sonuc ;
+          if (await Connectivity().checkConnectivity() ==
+              ConnectivityResult.none) {
+            versoInternetVarMi = false;
+
+          } else {
+            versoInternetVarMi = true;
+             sonuc =
+            await bs.VersiyonGuncelle(Versiyon: Ctanim.mobilversiyon);
+            if(sonuc.HataMesaj == ""){
+              versiyon = true;
+            }
+
+          }
+          if(versiyon == false && versoInternetVarMi == true){
+            Navigator.pop(context);
+            showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) {
+              return CustomAlertDialog(
+                align: TextAlign.left,
+                title: 'Hata',
+                textColor: Colors.red,
+                message: sonuc!.HataMesaj!,
+                onPres: () async {
+                  Navigator.pop(context);
+                },
+                buttonText: 'Tamam',
+              );
+            }).then((value) async => await Ctanim.launchURL());
+            
+            return ;
+          }
+
+
           veriislemi.veriGetir().then((value) async {
             if (value == 0) {
               print("Veri Tabanı yok.");
+              // kontrol
 
               const snackBar1 = SnackBar(
                 content: Text(
@@ -364,11 +388,19 @@ class _LoginPageState extends State<LoginPage> {
                 String genelHata = "";
                 List<String?> hatalar = [];
                 hatalar.add(await bs.getirFisEkParam(sirket: Ctanim.sirket!));
-                hatalar.add(await bs.getirOndalikParam(subeId: int.parse(Ctanim.kullanici!.YERELSUBEID!), sirket: Ctanim.sirket!));
+                hatalar.add(await bs.getirOndalikParam(
+                    subeId: int.parse(Ctanim.kullanici!.YERELSUBEID!),
+                    sirket: Ctanim.sirket!));
                 //hatalar.add(await bs.getirPlasiyerYetki(sirket: Ctanim.sirket!, kullaniciKodu:  Ctanim.kullanici!.KOD!,IP: Ctanim.IP));
-                hatalar.add(await bs.getirPlasiyerBanka(sirket: Ctanim.sirket!, kullaniciKodu:  Ctanim.kullanici!.KOD!));
-                hatalar.add(await bs.getirPlasiyerBankaSozlesme(sirket: Ctanim.sirket!, kullaniciKodu:  Ctanim.kullanici!.KOD!));
-                hatalar.add(await bs.getirIslemTip(sirket: Ctanim.sirket!, kullaniciKodu:  Ctanim.kullanici!.KOD!));
+                hatalar.add(await bs.getirPlasiyerBanka(
+                    sirket: Ctanim.sirket!,
+                    kullaniciKodu: Ctanim.kullanici!.KOD!));
+                hatalar.add(await bs.getirPlasiyerBankaSozlesme(
+                    sirket: Ctanim.sirket!,
+                    kullaniciKodu: Ctanim.kullanici!.KOD!));
+                hatalar.add(await bs.getirIslemTip(
+                    sirket: Ctanim.sirket!,
+                    kullaniciKodu: Ctanim.kullanici!.KOD!));
                 hatalar.add(await bs.getirRaf(sirket: Ctanim.sirket!));
                 hatalar.add(await bs.getirOlcuBirim(sirket: Ctanim.sirket!));
                 hatalar.add(await stokKartEx.servisStokGetir());
@@ -386,9 +418,10 @@ class _LoginPageState extends State<LoginPage> {
                 hatalar.add(await bs.getirDahaFazlaBarkod(
                     sirket: Ctanim.sirket!,
                     kullaniciKodu: Ctanim.kullanici!.KOD!));
-                      hatalar.add(
-                    await bs.getirStokDepo(sirket: Ctanim.sirket!, plasiyerKod: Ctanim.kullanici!.KOD!));
-                if (hatalar.   length > 0) {
+                hatalar.add(await bs.getirStokDepo(
+                    sirket: Ctanim.sirket!,
+                    plasiyerKod: Ctanim.kullanici!.KOD!));
+                if (hatalar.length > 0) {
                   for (var element in hatalar) {
                     if (element != "") {
                       genelHata = genelHata + "\n" + element!;
@@ -407,7 +440,6 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => MainPage()),
                       (route) => false,
                     );
-                   
                   } else {
                     hataGoster(
                         mesajVarMi: true,
@@ -436,19 +468,16 @@ class _LoginPageState extends State<LoginPage> {
                 }
               } else {
                 String servisKontrol = await bs.getirKur(sirket: Ctanim.sirket);
-                if(servisKontrol != ""){
-                    showAlertDialogLogin(context, "Kullanıcının Ofline Giriş İzni Yok");
-                }else{
-                   Navigator.pushAndRemoveUntil(
+                if (servisKontrol != "") {
+                  showAlertDialogLogin(
+                      context, "Kullanıcının Ofline Giriş İzni Yok");
+                } else {
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => MainPage()),
                     (route) => false,
                   );
-
                 }
-                
-
-              
               }
             }
           });

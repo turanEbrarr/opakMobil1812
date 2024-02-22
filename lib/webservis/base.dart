@@ -4617,4 +4617,55 @@ c
       return hata;
     }
   }
+  Future<SHataModel> VersiyonGuncelle({
+    required String Versiyon,
+  }) async {
+    SHataModel hata =
+        SHataModel(Hata: "true", HataMesaj: "İstek Gönderilemedi");
+
+    var url = Uri.parse(Ctanim.IP);
+    // dış ve iç denecek;
+
+    var headers = {
+      'Content-Type': 'text/xml; charset=utf-8',
+      'SOAPAction': 'http://tempuri.org/VersiyonGuncelleMobil',
+    };
+    String body = '''
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <VersiyonGuncelleMobil xmlns="http://tempuri.org/">
+      <Version>$Versiyon</Version>
+    </VersiyonGuncelleMobil>
+  </soap:Body>
+</soap:Envelope>
+
+
+''';
+    //printWrapped(base64EncodedString);
+    try {
+      http.Response response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        var rawXmlResponse = response.body;
+        xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
+
+        Map<String, dynamic> jsonData = jsonDecode(parsedXml.innerText);
+        SHataModel gelenHata = SHataModel.fromJson(jsonData);
+
+        return gelenHata;
+      } else {
+        Exception(
+            'Güncelleme İsteği gönderilemedi. StatusCode: ${response.statusCode}');
+        return hata;
+      }
+    } catch (e) {
+      Exception('Hata: $e');
+      return hata;
+    }
+  }
 }

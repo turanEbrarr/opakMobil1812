@@ -411,6 +411,20 @@ class _MyDrawerState extends State<MyDrawer> {
                                       ),
                                       GestureDetector(
                                         onTap: () async {
+                                         await Ctanim.launchURL();
+                                        },
+                                        child: ListTile(
+                                          title: Text("Uygulamayı Güncelle",
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          leading: Icon(
+                                            Icons.new_releases_outlined,
+                                            color: Colors.orange,
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () async {
                                           //KullaniciModel.clearUser();
                                           // Ctanim.kullanici = null;
                                           await SharedPrefsHelper.saveList(
@@ -460,7 +474,8 @@ class _MyDrawerState extends State<MyDrawer> {
                      // "Versiyon: 1.0.4", // fise açıklama eklendi
                     //  "Versiyon: 1.0.5", // cari koşul artık stoklara eklenmiyor sadece genelş iske ekleniyopr oda parametreli
                    //   "Versiyon: 1.0.6", // pdf de internet yoksa localden çekme (try catch) ,DEKONT
-                      "Versiyon: 1.0.7", // kullanıcı sadece online
+                   //   "Versiyon: 1.0.7", // kullanıcı sadece online
+                   "Versiyon:${Ctanim.mobilversiyon}", // kullanıcı sadece online
                       style: TextStyle(color: Colors.green,fontSize: 12),
                     ),
                   ],
