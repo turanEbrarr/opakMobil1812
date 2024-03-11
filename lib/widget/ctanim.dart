@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -80,6 +82,19 @@ class Ctanim {
     String basTar = DateFormat('yyyy-MM-dd').format(basTarTemp);
     return [basTar, bitTar];
   }
+  static List<String> yilinIlkVeSonGunleri() {
+  var simdikiZaman = DateTime.now();
+  var simdikiYil = simdikiZaman.year;
+
+
+  var yilinIlkGun = DateTime(simdikiYil, 1, 1);
+  String basTar = DateFormat('yyyy-MM-dd').format(yilinIlkGun);
+
+
+  String bitTar = DateFormat('yyyy-MM-dd').format(simdikiZaman);
+
+  return [basTar, bitTar];
+}
 
   static Future<String> pickDate(BuildContext context) async {
     DateTime? selectedDate = await showDatePicker(
@@ -99,8 +114,15 @@ class Ctanim {
   }
 
   static Future<void> launchURL() async {
-  final Uri url = Uri.parse(
+      final Uri url ;
+    if(Platform.isAndroid){
+    url = Uri.parse(
       'https://github.com/opakMobile/ApkMobil/raw/main/opakmobil.apk');
+    }else{
+      url = Uri.parse(
+      'https://apps.apple.com/tr/app/opak-erp/id6473782802?l=tr');
+    }
+ 
   if (!await launchUrl(url)) {
     throw Exception('Could not launch');
   }

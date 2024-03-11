@@ -4397,6 +4397,7 @@ c
       <Sirket>$sirket</Sirket>
       <Kodlar>$kodlar</Kodlar>
       <DizaynAdi>$dizaynAdi</DizaynAdi>
+      <BarkodSira>$sira</BarkodSira>
     </YazdirEtiketDizayn>
   </soap:Body>
 </soap:Envelope>
@@ -4668,4 +4669,5 @@ c
       return hata;
     }
   }
+
 }

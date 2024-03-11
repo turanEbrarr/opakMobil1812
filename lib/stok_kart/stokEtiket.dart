@@ -54,7 +54,7 @@ List<barkodlar> barkodlarList=[
      barkodlar(adi: "Barkod3",sira: 3),
       barkodlar(adi: "Barkod4",sira: 4),
        barkodlar(adi: "Barkod5",sira: 5),
-        barkodlar(adi: "Barkod5",sira: 6),
+        barkodlar(adi: "Barkod6",sira: 6),
    
 ];
 

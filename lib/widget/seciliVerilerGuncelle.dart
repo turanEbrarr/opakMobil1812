@@ -41,7 +41,7 @@ class _seciliVerilerWidgetState extends State<seciliVerilerWidget> {
     "Stok Fiyat Listesi", // 12
     "Stok Fiyat Har Listesi", // 13
     "Plasiyer Yetkileri \n(Yeniden başlatma gerekir.)", // 14
-    "İşlem Tipleri", // 15
+    "İşlem Tipleri", // 15 
     "Noktadan Sonra Haneler", // 16
     "Şube Depo Bilgileri", // 17
     "Stok Depo Bakiyeler", // 18

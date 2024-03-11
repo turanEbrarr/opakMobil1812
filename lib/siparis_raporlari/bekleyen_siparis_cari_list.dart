@@ -198,13 +198,14 @@ class _bekleyen_siparis_cari_list_pageState
                                       List<bool> cek =
                                           await SharedPrefsHelper.filtreCek(
                                               "raporBekleyenSiparisFiltre");
+                              
 
                                       List<List<dynamic>> gelen =
                                           await bs.getirBekleyenSiparisRapor(
                                               sirket: Ctanim.sirket!,
                                               cariKodu: cariKart.KOD!,
-                                              basTar: Ctanim.son10GunDon()[0],
-                                              bitTar: Ctanim.son10GunDon()[1]);
+                                              basTar: Ctanim.yilinIlkVeSonGunleri()[0],
+                                              bitTar: Ctanim.yilinIlkVeSonGunleri()[1]);
 
                                       if (gelen[0].length == 1 &&
                                           gelen[1].length == 0) {
