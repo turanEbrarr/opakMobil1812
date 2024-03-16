@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:opak_mobil_v2/controllers/fisController.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_gecmis_satis_bilgileri.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_stok_kart_guncelleme.dart';
+import 'package:opak_mobil_v2/stok_kart/Spinkit.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_tanim.dart';
+import 'package:opak_mobil_v2/webservis/base.dart';
 import 'package:opak_mobil_v2/widget/ctanim.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../controllers/cariController.dart';
@@ -32,6 +34,7 @@ class depo_transfer_urun_ara extends StatefulWidget {
 
 class _depo_transfer_urun_araState extends State<depo_transfer_urun_ara> {
   List<TextEditingController> conList = [];
+  BaseService bs = BaseService();
 
   TextEditingController editingController = TextEditingController(text: "");
   late String alinanString;
@@ -197,8 +200,6 @@ class _depo_transfer_urun_araState extends State<depo_transfer_urun_ara> {
                                 Spacer(),
                                 IconButton(
                                     onPressed: () {
-                                      fisEx.listFisStokHareketGetir(
-                                          stokKartEx.searchList[index].KOD!);
                                       showModalBottomSheet(
                                         context: context,
                                         isScrollControlled: true,
@@ -216,11 +217,11 @@ class _depo_transfer_urun_araState extends State<depo_transfer_urun_ara> {
                                                     .height *
                                                 0.24,
                                                 */
-                                              
+
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.min,
+                                              mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Divider(
                                                   thickness: 3,
@@ -274,7 +275,30 @@ class _depo_transfer_urun_araState extends State<depo_transfer_urun_ara> {
                                                 ),
                                                 */
                                                 GestureDetector(
-                                                  onTap: () {
+                                                  onTap: () async {
+                                                    showDialog(
+                                                      context: context,
+                                                      barrierDismissible: false,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return LoadingSpinner(
+                                                          color: Colors.black,
+                                                          message:
+                                                              "Geçmiş Satışlar Getiriliyor...",
+                                                        );
+                                                      },
+                                                    );
+                                                    Ctanim.gecmisSatisHataKontrol =
+                                                        await bs
+                                                            .getirGecmisSatis(
+                                                                sirket: Ctanim
+                                                                    .sirket,
+                                                                stokKodu:
+                                                                    stokKart
+                                                                        .KOD!);
+                                                    Ctanim.seciliStokKodu =
+                                                        stokKart.KOD!;
+                                                    Navigator.pop(context);
                                                     Future.delayed(
                                                         Duration.zero,
                                                         () => showDialog(
@@ -472,8 +496,10 @@ class _depo_transfer_urun_araState extends State<depo_transfer_urun_ara> {
                                                               .SATIS_KDV!));
                                                   {
                                                     fisEx.fiseStokEkle(
-                                                      belgeTipi: "Depo_Transfer",
-                                                      urunListedenMiGeldin: false,
+                                                        belgeTipi:
+                                                            "Depo_Transfer",
+                                                        urunListedenMiGeldin:
+                                                            false,
                                                         stokAdi: stokKart.ADI!,
                                                         KDVOrani: double.parse(
                                                             stokKart.SATIS_KDV

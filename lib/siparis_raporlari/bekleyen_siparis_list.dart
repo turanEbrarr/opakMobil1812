@@ -37,9 +37,10 @@ class _bekleyen_siparis_rapor_pageState
   List<String> kolonIsimleri = [];
   List<DataColumn> filtreliBakiyeRaporKolonlar = [];
 
-  List<DataRow> satirOlustur(
-      {required List<DataColumn> gelenDurumKolonlar,
-      required List<String> gelenDurumSatirlar}) {
+  List<DataRow> satirOlustur({
+    required List<DataColumn> gelenDurumKolonlar,
+    required List<String> gelenDurumSatirlar,
+  }) {
     int genelcolsayisi = widget.gelenBakiyeRapor[1].length;
     int fark = widget.gelenBakiyeRapor[1].length - gelenDurumKolonlar.length;
     int enSonEklenen = 0;
@@ -55,7 +56,9 @@ class _bekleyen_siparis_rapor_pageState
             if (labelText == labelText1) {
               DataCell newValue = DataCell(Text(
                 gelenDurumSatirlar[enSonEklenen],
-                style: TextStyle(fontWeight: FontWeight.w400),
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: labelText1 == "SGUID" ? 0 : 14),
               ));
               donecekDataCell.add(newValue);
             }
@@ -64,46 +67,71 @@ class _bekleyen_siparis_rapor_pageState
         enSonEklenen++;
       }
 
-      /*
-      for (int j = 0; j < gelenDurumKolonlar.length; j++) {
-        DataCell newValue = DataCell(Text(
-          gelenDurumSatirlar[enSonEklenen],
-          style: TextStyle(fontWeight: FontWeight.w400),
-        ));
-        donecekDataCell.add(newValue);
-     
-      }*/
+      DataRow dataRowWithInkWell = DataRow(
+        cells: donecekDataCell,
+        onLongPress: () async {
+          String fatID = (donecekDataCell[0].child as Text).data!;
+          print("Satıra tıklandı: ${(donecekDataCell[0].child as Text).data}");
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return LoadingSpinner(
+                color: Colors.black,
+                message: "Bekleyen Sipariş Detayları Hazırlanıyor...",
+              );
+            },
+          );
 
-      donecek.add(DataRow(cells: donecekDataCell));
-    }
+          await bs.raporPdfOlustur(
+              sirket: Ctanim.sirket!, uuid: fatID, tip: 16);
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: ((context) => kapatilmamisFaturalarPdfOnizleme(
+                    uuid: fatID,
+                    tip: 16,
+                  )),
+            ),
+          );
 
-    return donecek;
-  }
+/*
+          List<bool> cek = await SharedPrefsHelper.filtreCek(
+              "raporBekleyenSiparisListesiDetay");
+          List<List<dynamic>> gelen = await bs.getirBekleyenSiparisDetayRapor(
+              sirket: Ctanim.sirket!,
+              faturaID: (donecekDataCell[0].child as Text).data!);
 
-  List<List<String>> satirOlusturforPDF(
-      {required List<DataColumn> gelenDurumKolonlar,
-      required List<String> gelenDurumSatirlar}) {
-    int genelcolsayisi = widget.gelenBakiyeRapor[1].length;
-    int fark = widget.gelenBakiyeRapor[1].length - gelenDurumKolonlar.length;
-    int enSonEklenen = 0;
-    List<List<String>> donecek = [];
-    for (int i = 0; i < gelenDurumSatirlar.length / genelcolsayisi; i++) {
-      List<String> donecekDataCell = [];
-
-      for (DataColumn element in widget.gelenBakiyeRapor[1]) {
-        if (element.label is Text) {
-          String labelText = (element.label as Text).data ?? '';
-          for (DataColumn element1 in gelenDurumKolonlar) {
-            String labelText1 = (element1.label as Text).data ?? '';
-            if (labelText == labelText1) {
-              donecekDataCell.add(gelenDurumSatirlar[enSonEklenen]);
+          if (gelen[0].length == 1 && gelen[1].length == 0) {
+            await Ctanim.hata_popup(gelen, context)
+                .then((value) => Navigator.pop(context));
+          } else {
+            // gelenlerden colon kaldırıldıysa veya eklendiyse favorileri temizle
+            if (gelen[1].length != cek.length) {
+              cek.clear();
+              for (var i = 0; i < gelen[1].length; i++) {
+                cek.add(true);
+              }
             }
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: ((context) => bekleyen_siparis_detay_rapor(
+                      gelenFiltre: cek,
+                      gelenBakiyeRapor: gelen,
+                      carikart: widget.cariKart,
+                      faturaID: fatID,
+                    )),
+              ),
+            );
           }
-        }
-        enSonEklenen++;
-      }
+          */
+        },
+      );
 
-      donecek.add(donecekDataCell);
+      donecek.add(dataRowWithInkWell);
     }
 
     return donecek;
@@ -156,38 +184,46 @@ class _bekleyen_siparis_rapor_pageState
 
   bool ustfiltre = false;
   String aramaTerimi = '';
-  bool isLoading = false;
-
   String basTar = "";
   String bitTar = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /*
       floatingActionButton: FloatingActionButton.extended(
         label: Icon(Icons.picture_as_pdf),
         onPressed: () {
-          List<String> sj = [];
-          for (var element in filtreliBakiyeRaporKolonlar) {
-            sj.add((element.label as Text).data ?? '');
+          List<String> temp = [];
+          List<List<String>> parcali = [];
+          List<List<String>> son = [];
+
+          for (int i = 0;
+              i < bakiyeRaporSatirlar.length;
+              i = i + bakiyeRaporKolonlar.length) {
+            temp = [];
+            for (int j = i; j <= i + (bakiyeRaporKolonlar.length - 1); j++) {
+              temp.add(bakiyeRaporSatirlar[j]);
+            }
+            parcali.add(List.from(temp));
           }
+
           Navigator.pop(context);
           Navigator.of(context).push(
             MaterialPageRoute(
                 builder: (context) => kapatilmamisFaturalarPdfOnizleme(
                       carikart: widget.cariKart,
-                      baslik: "Bekleyen Sipariş Raporu",
-                      kolonlar: sj,
-                      satirlar: satirOlusturforPDF(
-                          gelenDurumKolonlar: filtreliBakiyeRaporKolonlar,
-                          gelenDurumSatirlar: aramaliBakiyeRaporSatirlar),
+                      baslik: "Müsteri Sipariş Raporu",
+                      kolonlar: kolonIsimleri,
+                      satirlar: parcali,
                     )),
           );
         },
       ),
+      */
       appBar: MyAppBar(
         height: 50,
-        title: 'Bekleyen Siparişler Raporu',
+        title: 'Bekleyen Sipariş Raporu',
       ),
       body: Column(
         children: [
@@ -224,7 +260,7 @@ class _bekleyen_siparis_rapor_pageState
                             bitTar = date;
                             print(bitTar);
                             print("bitti ara");
-                            isLoading = true;
+
                             showDialog(
                               context: context,
                               barrierDismissible: false,
@@ -232,18 +268,17 @@ class _bekleyen_siparis_rapor_pageState
                                 return LoadingSpinner(
                                   color: Colors.black,
                                   message:
-                                      "Bekleyen Sipariş Raporu Hazırlanıyor...",
+                                      "Müşteri Sipariş Raporu Hazırlanıyor...",
                                 );
                               },
                             );
 
                             List<bool> cek = await SharedPrefsHelper.filtreCek(
-                                "raporBekleyenSiparisFiltre");
-
+                                "raporbekleyenSiparisFiltre");
                             List<List<dynamic>> gelen =
                                 await bs.getirBekleyenSiparisRapor(
                                     sirket: Ctanim.sirket!,
-                                    cariKodu: widget.cariKart.KOD!,
+                                    cariKodu: widget.cariKart!.KOD!,
                                     basTar: basTar,
                                     bitTar: bitTar);
 
@@ -288,7 +323,7 @@ class _bekleyen_siparis_rapor_pageState
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: "Aranacak kelime(Kod/Cari Adı)",
+                      hintText: "Tabloda Arama Yapın",
                       prefixIcon: Icon(Icons.search, color: Colors.grey),
                       iconColor: Colors.white,
                       border: OutlineInputBorder(
@@ -296,61 +331,7 @@ class _bekleyen_siparis_rapor_pageState
                       ),
                     ),
                     onChanged: (value) {
-                      setState(() {
-                        aramaTerimi = value;
-                        if (aramaTerimi != "") {
-                          aramaliBakiyeRaporSatirlar.clear();
-                          for (int i = 0;
-                              i < bakiyeRaporSatirlar.length;
-                              i = i + bakiyeRaporKolonlar.length) {
-                            if (bakiyeRaporSatirlar[i]
-                                .toLowerCase()
-                                .contains(aramaTerimi.toLowerCase())) {
-                              int kacDefaArtacak = 0;
-                              while (
-                                  kacDefaArtacak < bakiyeRaporKolonlar.length) {
-                                aramaliBakiyeRaporSatirlar.add(
-                                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
-                                kacDefaArtacak++;
-                              }
-                            } else if (bakiyeRaporSatirlar[i + 1]
-                                .toLowerCase()
-                                .contains(aramaTerimi.toLowerCase())) {
-                              int kacDefaArtacak = 0;
-                              while (
-                                  kacDefaArtacak < bakiyeRaporKolonlar.length) {
-                                aramaliBakiyeRaporSatirlar.add(
-                                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
-                                kacDefaArtacak++;
-                              }
-                            } else if (bakiyeRaporSatirlar[i + 2]
-                                .toLowerCase()
-                                .contains(aramaTerimi.toLowerCase())) {
-                              int kacDefaArtacak = 0;
-                              while (
-                                  kacDefaArtacak < bakiyeRaporKolonlar.length) {
-                                aramaliBakiyeRaporSatirlar.add(
-                                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
-                                kacDefaArtacak++;
-                              }
-                            } else if (bakiyeRaporSatirlar[i + 3]
-                                .toLowerCase()
-                                .contains(aramaTerimi.toLowerCase())) {
-                              int kacDefaArtacak = 0;
-                              while (
-                                  kacDefaArtacak < bakiyeRaporKolonlar.length) {
-                                aramaliBakiyeRaporSatirlar.add(
-                                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
-                                kacDefaArtacak++;
-                              }
-                            }
-                          }
-                        } else {
-                          aramaliBakiyeRaporSatirlar.clear();
-                          aramaliBakiyeRaporSatirlar
-                              .addAll(bakiyeRaporSatirlar);
-                        }
-                      });
+                      raporGenelArama(value);
                     },
                   ),
                 ),
@@ -378,15 +359,18 @@ class _bekleyen_siparis_rapor_pageState
                         child: ListView.builder(
                           itemCount: kolonIsimleri.length,
                           itemBuilder: (context, index) {
-                            return CheckboxListTile(
-                              title: Text(kolonIsimleri[index]),
-                              value: secilenKolonlar[index],
-                              onChanged: (newValue) {
-                                setState(() {
-                                  secilenKolonlar[index] = newValue ?? false;
-                                });
-                              },
-                            );
+                            return index > 0
+                                ? CheckboxListTile(
+                                    title: Text(kolonIsimleri[index]),
+                                    value: secilenKolonlar[index],
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        secilenKolonlar[index] =
+                                            newValue ?? false;
+                                      });
+                                    },
+                                  )
+                                : Container();
                           },
                         ),
                       ),
@@ -402,7 +386,7 @@ class _bekleyen_siparis_rapor_pageState
 
                             setState(() {});
                             await SharedPrefsHelper.filtreKaydet(
-                                secilenKolonlar, "raporBekleyenSiparisFiltre");
+                                secilenKolonlar, "raporbekleyenSiparisFiltre");
                             ustfiltre = false;
                             setState(() {});
                           },
@@ -418,6 +402,39 @@ class _bekleyen_siparis_rapor_pageState
         ],
       ),
     );
+  }
+
+  void raporGenelArama(String value) {
+    setState(() {
+      aramaTerimi = value;
+      if (aramaTerimi != "") {
+        aramaliBakiyeRaporSatirlar.clear();
+        for (int i = 0;
+            i < bakiyeRaporSatirlar.length;
+            i = i + bakiyeRaporKolonlar.length) {
+          int k = 1;
+          while (k < bakiyeRaporKolonlar.length) {
+            if (bakiyeRaporSatirlar[i + k]
+                .toLowerCase()
+                .contains(aramaTerimi.toLowerCase())) {
+              int kacDefaArtacak = 0;
+              while (kacDefaArtacak <
+                  bakiyeRaporKolonlar.length) {
+                aramaliBakiyeRaporSatirlar.add(
+                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
+                kacDefaArtacak++;
+              }
+               break;
+            }
+            k++;
+          }
+        }
+      } else {
+        aramaliBakiyeRaporSatirlar.clear();
+        aramaliBakiyeRaporSatirlar
+            .addAll(bakiyeRaporSatirlar);
+      }
+    });
   }
 } 
 

@@ -2,6 +2,7 @@ import 'package:opak_mobil_v2/faturaFis/fisEkParam.dart';
 import 'package:opak_mobil_v2/stok_kart/stokDepoMode.dart';
 import 'package:opak_mobil_v2/webservis/stokFiyatListesiHar.dart';
 import 'package:opak_mobil_v2/webservis/stokFiyatListesiModel.dart';
+import 'package:opak_mobil_v2/widget/modeller/gecmisSatisModel.dart';
 
 import '../../faturaFis/fis.dart';
 import '../../webservis/kurModel.dart';
@@ -48,6 +49,7 @@ class listeler {
   static List<StokDepoModel> listStokDepo = [];
   static List<FisEkParam> listFisEkParam = [];
   static List<int> listFisEkParamZorunluID = [];
+  static List<GecmisSatisModel> listGecmisSatisModel = [];
   static List<bool> plasiyerYetkileri = [
     false,
     false,

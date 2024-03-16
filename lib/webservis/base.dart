@@ -25,6 +25,7 @@ import 'package:opak_mobil_v2/widget/ctanim.dart';
 import 'package:opak_mobil_v2/widget/kullaniciModel.dart';
 import 'package:opak_mobil_v2/widget/modeller/cariKosulModel.dart';
 import 'package:opak_mobil_v2/widget/modeller/cariStokKosulModel.dart';
+import 'package:opak_mobil_v2/widget/modeller/gecmisSatisModel.dart';
 import 'package:opak_mobil_v2/widget/modeller/ondalikModel.dart';
 import 'package:opak_mobil_v2/widget/modeller/rafModel.dart';
 import 'package:opak_mobil_v2/widget/modeller/stokKosulModel.dart';
@@ -159,7 +160,7 @@ class BaseService {
 
 ////webservisteki carileri getirir
   Future<String> getirCariler({required sirket, required kullaniciKodu}) async {
-     SHataModel gelenHata  = SHataModel();
+    SHataModel gelenHata = SHataModel();
     var url = Uri.parse(Ctanim.IP);
     var headers = {
       'Content-Type': 'text/xml; charset=utf-8',
@@ -188,19 +189,15 @@ class BaseService {
       if (response.statusCode == 200) {
         var rawXmlResponse = response.body;
         xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
-        
-            try{
-              Map<String, dynamic> jsonData =
-            jsonDecode(temizleKontrolKarakterleri(parsedXml.innerText));
-             gelenHata = SHataModel.fromJson(jsonData);
 
-            }catch(e){
-              await ekleHata(sirket: Ctanim.sirket!, hata: parsedXml.innerText);
-              
+        try {
+          Map<String, dynamic> jsonData =
+              jsonDecode(temizleKontrolKarakterleri(parsedXml.innerText));
+          gelenHata = SHataModel.fromJson(jsonData);
+        } catch (e) {
+          await ekleHata(sirket: Ctanim.sirket!, hata: parsedXml.innerText);
+        }
 
-
-            }
-    
         if (gelenHata.Hata == "true") {
           return gelenHata.HataMesaj!;
         } else {
@@ -2357,7 +2354,6 @@ c
   </soap:Body>
 </soap:Envelope>
 ''';
-
     try {
       http.Response response = await http.post(
         url,
@@ -4569,6 +4565,7 @@ c
           e.toString();
     }
   }
+
   Future<SHataModel> ekleDekont(
       {required String sirket,
       required Map<String, dynamic> jsonDataList}) async {
@@ -4618,6 +4615,7 @@ c
       return hata;
     }
   }
+
   Future<SHataModel> VersiyonGuncelle({
     required String Versiyon,
   }) async {
@@ -4670,4 +4668,134 @@ c
     }
   }
 
+  Future<SHataModel> raporPdfOlustur({
+    required String sirket,
+    required String uuid,
+    required int tip,
+  }) async {
+    SHataModel hata =
+        SHataModel(Hata: "true", HataMesaj: "İstek Gönderilemedi");
+
+    var url = Uri.parse(Ctanim.IP);
+    // dış ve iç denecek;
+
+    var headers = {
+      'Content-Type': 'text/xml; charset=utf-8',
+      'SOAPAction': 'http://tempuri.org/PdfGoster',
+    };
+    String body = '''
+<?xml version="1.0" encoding="utf-8"?>
+ <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> 
+ <soap:Body> <PdfGoster xmlns="http://tempuri.org/">
+  <Sirket>$sirket</Sirket> 
+  <Uuid>$uuid</Uuid>
+   <_Tip>$tip</_Tip> 
+   </PdfGoster> 
+   </soap:Body> 
+   </soap:Envelope>
+
+''';
+    try {
+      http.Response response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        hata.Hata = "false";
+        hata.HataMesaj = "";
+        return hata;
+      } else {
+        Exception(
+            'PDF oluşturma isteği gönderilemedi. StatusCode: ${response.statusCode}');
+        hata.HataMesaj =
+            "PDF oluşturma isteği gönderilemedi. StatusCode: ${response.statusCode}";
+        return hata;
+      }
+    } catch (e) {
+      Exception('Hata: $e');
+      hata.HataMesaj =
+          "PDF oluşturma isteği gönderilemedi. Hata Mesajı : " + e.toString();
+      return hata;
+    }
+  }
+
+
+  Future<String> getirGecmisSatis({required sirket, required stokKodu}) async {
+    listeler.listGecmisSatisModel.clear();
+    SHataModel gelenHata = SHataModel();
+    var url = Uri.parse(Ctanim.IP);
+    var headers = {
+      'Content-Type': 'text/xml; charset=utf-8',
+      'SOAPAction': 'http://tempuri.org/RaporStokGecmisSatisDetay'
+    };
+    String body = '''
+<?xml version="1.0" encoding="utf-8"?>
+ <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> 
+ <soap:Body> <RaporStokGecmisSatisDetay 
+ xmlns="http://tempuri.org/">
+  <Sirket>$sirket</Sirket>
+   <StokKodu>$stokKodu</StokKodu> 
+   </RaporStokGecmisSatisDetay> 
+   </soap:Body> 
+   </soap:Envelope>
+
+''';
+
+    if (await Connectivity().checkConnectivity() == ConnectivityResult.none) {
+      //listeler.listCari = [];
+      return "İnternet Yok";
+    }
+    
+    try {
+      http.Response response =
+          await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        var rawXmlResponse = response.body;
+        xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
+
+        try {
+          Map<String, dynamic> jsonData =
+              jsonDecode(temizleKontrolKarakterleri(parsedXml.innerText));
+          gelenHata = SHataModel.fromJson(jsonData);
+        } catch (e) {
+          print(e);
+          return "Geçmiş Satışlar Getirilirken Hata Oluştu. (Json decode error.)";
+        }
+
+        if (gelenHata.Hata == "true") {
+          return gelenHata.HataMesaj!;
+        } else {
+          String modelNode = gelenHata.HataMesaj!;
+          Iterable? l;
+          try {
+            String temizJson = temizleKontrolKarakterleri(modelNode);
+
+            l = json.decode(temizJson);
+          } catch (e) {
+            print(e);
+          return "Geçmiş Satışlar Getirilirken Hata Oluştu. (Json decode error.)";
+          }
+
+          listeler.listGecmisSatisModel.clear();
+          listeler.listGecmisSatisModel =
+              List<GecmisSatisModel>.from(l!.map((model) => GecmisSatisModel.fromJson(model)));
+
+          return "";
+        }
+      } else {
+        return " Geçmiş Satışlar için istek oluşturulamadı. " +
+            response.statusCode.toString();
+      }
+
+      // databaseden veri getirir
+    } on Exception catch (e) {
+   
+      return "Geçmiş Satışlar için Webservisten veri çekilemedi. Hata Mesajı : " +
+          e.toString();
+    }
+  }
 }

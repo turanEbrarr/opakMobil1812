@@ -52,7 +52,6 @@ class _PdfOnizlemeState extends State<PdfOnizleme> {
     var donecek;
     // https://apkwebservis.nativeb4b.com/DIZAYNLAR/099e42b0-83b5-11ee-82a7-23141fef2870.pdf
     String url = Ctanim.IP.replaceAll("/MobilService.asmx", "") + "/DIZAYNLAR/" + widget.m.UUID! + ".pdf";
-    print(url);
     Uri uri = Uri.parse(url);
     try{http.Response response = await http.get(uri);
     var pdfData = response.bodyBytes;

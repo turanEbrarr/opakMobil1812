@@ -137,8 +137,11 @@ Future<Uint8List> faturalar_make_pdf(
 }
 
 List<List<String>> buildTableRows(List<List<String>> parca,
-    {int start = 0, int end = 0}) {
+  {int start = 0, int end = 0}) {
+
   List<List<String>> rows = [];
+
+
 
   for (var j = start; j < end; j++) {
     rows.add(parca[start]);

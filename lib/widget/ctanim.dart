@@ -38,7 +38,8 @@ enum KUSURAT {
 
 class Ctanim {
   static String mobilversiyon =
-      "1.0.8"; //! Web servisi güncellemeyi unutma // Yeni versiyonu Github a yükle
+      //"1.0.8"; //! Web servisi güncellemeyi unutma // Yeni versiyonu Github a yükle
+      "1.0.9"; // bir çok şey eklendi sipariş raporları netten geçmiş satış netten vs vs
   // Todo 1.0.8 Versiyonu Güncelleme geldi
   static OndalikModel? ondalikModel;
   static bool faturaTipiDegisi = false;
@@ -71,6 +72,9 @@ class Ctanim {
   static int eFaturaNumarasi = 0;
   static int eArsivNumarasi = 0;
   static int acikFaturaNumrasi = 0;
+  static String seciliStokKodu = "";
+  static String gecmisSatisHataKontrol = "";
+  
   static List<String> secililiMarkalarFiltre = [];
   static List<Map<bool, String>> seciliMarkalarFiltreMap = [];
 //  static bool KDVDahilMiDefault = false;
@@ -358,11 +362,11 @@ class Ctanim {
 
     List<DataColumn> guncellenmisKolon = [];
     for (var element in kolonlar) {
-      if ((element.label as Text).data == "Id") {
+      if ((element.label as Text).data == "SGUID") {
         guncellenmisKolon.add(DataColumn(
             label: SizedBox(
           width: 0,
-          child: Text("Id"),
+          child: Text("SGUID"),
         )));
       } else {
         guncellenmisKolon.add(DataColumn(

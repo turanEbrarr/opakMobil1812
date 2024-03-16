@@ -57,7 +57,8 @@ class _musteri_siparis_rapor_pageState
             if (labelText == labelText1) {
               DataCell newValue = DataCell(Text(
                 gelenDurumSatirlar[enSonEklenen],
-                style: TextStyle(fontWeight: FontWeight.w400),
+                style: TextStyle(fontWeight: FontWeight.w400,fontSize: labelText1 == "SGUID" ? 0 : 14),
+                
               ));
 
               donecekDataCell.add(newValue);
@@ -82,7 +83,23 @@ class _musteri_siparis_rapor_pageState
               );
             },
           );
+            await bs.raporPdfOlustur(sirket: Ctanim.sirket!, uuid: fatID, tip: 16);
+ Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: ((context) => kapatilmamisFaturalarPdfOnizleme(
+                      uuid: fatID,
+                      tip: 16,
+                      
+                    )),
+              ),
+            );
 
+
+
+
+/*
           List<bool> cek = await SharedPrefsHelper.filtreCek(
               "raporMusteriSiparisListesiDetay");
           List<List<dynamic>> gelen = await bs.getirMusteriSiparisDetayRapor(
@@ -113,6 +130,7 @@ class _musteri_siparis_rapor_pageState
               ),
             );
           }
+          */
         },
       );
 
@@ -175,6 +193,7 @@ class _musteri_siparis_rapor_pageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /*
       floatingActionButton: FloatingActionButton.extended(
         label: Icon(Icons.picture_as_pdf),
         onPressed: () {
@@ -204,6 +223,7 @@ class _musteri_siparis_rapor_pageState
           );
         },
       ),
+      */
       appBar: MyAppBar(
         height: 50,
         title: 'Müsteri Sipariş Raporu',
@@ -306,7 +326,7 @@ class _musteri_siparis_rapor_pageState
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: "Aranacak kelime(Kod/Cari Adı)",
+                      hintText: "Tabloda Arama Yapın",
                       prefixIcon: Icon(Icons.search, color: Colors.grey),
                       iconColor: Colors.white,
                       border: OutlineInputBorder(
@@ -314,48 +334,7 @@ class _musteri_siparis_rapor_pageState
                       ),
                     ),
                     onChanged: (value) {
-                      setState(() {
-                        aramaTerimi = value;
-                        if (aramaTerimi != "") {
-                          aramaliBakiyeRaporSatirlar.clear();
-                          for (int i = 0;
-                              i < bakiyeRaporSatirlar.length;
-                              i = i + 5) {
-                            if (bakiyeRaporSatirlar[i + 1]
-                                .toLowerCase()
-                                .contains(aramaTerimi.toLowerCase())) {
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i]);
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i + 1]);
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i + 2]);
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i + 3]);
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i + 4]);
-                            }
-                            if (bakiyeRaporSatirlar[i]
-                                .toLowerCase()
-                                .contains(aramaTerimi.toLowerCase())) {
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i]);
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i + 1]);
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i + 2]);
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i + 3]);
-                              aramaliBakiyeRaporSatirlar
-                                  .add(bakiyeRaporSatirlar[i + 4]);
-                            }
-                          }
-                        } else {
-                          aramaliBakiyeRaporSatirlar.clear();
-                          aramaliBakiyeRaporSatirlar
-                              .addAll(bakiyeRaporSatirlar);
-                        }
-                      });
+                      raporGenelArama(value);
                     },
                   ),
                 ),
@@ -383,7 +362,8 @@ class _musteri_siparis_rapor_pageState
                         child: ListView.builder(
                           itemCount: kolonIsimleri.length,
                           itemBuilder: (context, index) {
-                            return CheckboxListTile(
+                            return index > 0
+                                ?  CheckboxListTile(
                               title: Text(kolonIsimleri[index]),
                               value: secilenKolonlar[index],
                               onChanged: (newValue) {
@@ -391,7 +371,7 @@ class _musteri_siparis_rapor_pageState
                                   secilenKolonlar[index] = newValue ?? false;
                                 });
                               },
-                            );
+                            ):Container();
                           },
                         ),
                       ),
@@ -423,6 +403,38 @@ class _musteri_siparis_rapor_pageState
         ],
       ),
     );
+  }
+    void raporGenelArama(String value) {
+    setState(() {
+      aramaTerimi = value;
+      if (aramaTerimi != "") {
+        aramaliBakiyeRaporSatirlar.clear();
+        for (int i = 0;
+            i < bakiyeRaporSatirlar.length;
+            i = i + bakiyeRaporKolonlar.length) {
+          int k = 1;
+          while (k < bakiyeRaporKolonlar.length) {
+            if (bakiyeRaporSatirlar[i + k]
+                .toLowerCase()
+                .contains(aramaTerimi.toLowerCase())) {
+              int kacDefaArtacak = 0;
+              while (kacDefaArtacak <
+                  bakiyeRaporKolonlar.length) {
+                aramaliBakiyeRaporSatirlar.add(
+                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
+                kacDefaArtacak++;
+              }
+              break;
+            }
+            k++;
+          }
+        }
+      } else {
+        aramaliBakiyeRaporSatirlar.clear();
+        aramaliBakiyeRaporSatirlar
+            .addAll(bakiyeRaporSatirlar);
+      }
+    });
   }
 } 
 

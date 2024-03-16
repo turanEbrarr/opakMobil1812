@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:opak_mobil_v2/controllers/fisController.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_gecmis_satis_bilgileri.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_stok_kart_guncelleme.dart';
+import 'package:opak_mobil_v2/stok_kart/Spinkit.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_tanim.dart';
+import 'package:opak_mobil_v2/webservis/base.dart';
 import 'package:opak_mobil_v2/webservis/satisTipiModel.dart';
 import 'package:opak_mobil_v2/widget/String_tanim.dart';
 import 'package:opak_mobil_v2/widget/ctanim.dart';
@@ -39,6 +41,7 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
   TextEditingController editingController = TextEditingController(text: "");
   TextEditingController sabitMiktarController = TextEditingController(text: "");
   late String alinanString;
+  BaseService bs = BaseService();
 
   DateTime now = DateTime.now();
   final StokKartController stokKartEx = Get.find();
@@ -71,9 +74,8 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
       conList.add(TextEditingController(text: "1"));
     });
 
-      stokKartEx.tempList.clear();
-      stokKartEx.tempList.addAll(stokKartEx.searchList);
-
+    stokKartEx.tempList.clear();
+    stokKartEx.tempList.addAll(stokKartEx.searchList);
   }
 
   @override
@@ -268,7 +270,7 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
                                     padding: const EdgeInsets.only(
                                         top: 8, left: 20.0),
                                     child: Text(
-                                    stokKart.ADI!,
+                                      stokKart.ADI!,
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -281,9 +283,7 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
                                 Spacer(),
                                 IconButton(
                                     onPressed: () {
-                                      fisExFisControllerOlan
-                                          .listFisStokHareketGetir(
-                                              stokKartEx.tempList[index].KOD!);
+                                  
                                       showModalBottomSheet(
                                         context: context,
                                         isScrollControlled: true,
@@ -365,7 +365,30 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
                                                   ),
                                                 ),
                                                 GestureDetector(
-                                                  onTap: () {
+                                                  onTap: () async {
+                                                    showDialog(
+                                                      context: context,
+                                                      barrierDismissible: false,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return LoadingSpinner(
+                                                          color: Colors.black,
+                                                          message:
+                                                              "Geçmiş Satışlar Getiriliyor...",
+                                                        );
+                                                      },
+                                                    );
+                                                    Ctanim.gecmisSatisHataKontrol =
+                                                        await bs
+                                                            .getirGecmisSatis(
+                                                                sirket: Ctanim
+                                                                    .sirket,
+                                                                stokKodu:
+                                                                    stokKart
+                                                                        .KOD!);
+                                                                        Ctanim.seciliStokKodu =
+                                                        stokKart.KOD!;
+                                                    Navigator.pop(context);
                                                     Future.delayed(
                                                         Duration.zero,
                                                         () => showDialog(
@@ -553,41 +576,38 @@ class _sayim_kayit_urun_araState extends State<sayim_kayit_urun_ara> {
                                                         int.parse(olcuAdet);
                                                   }
 
-                                           
-                                                 
-                                                    fisEx.DepoaHareketEkle(
-                                                      ACIKLAMA: fisEx.sayim!
-                                                              .value.ACIKLAMA ??
-                                                          "",
-                                                      BIRIM: pu!,
-                                                      BIRIMID: birimID,
-                                                      FIYAT: 0.0,
-                                                      MIKTAR: sonMiktar,
-                                                      RAF: flag == false
-                                                          ? rafYok!
-                                                          : seciliRaf!,
-                                                      SAYIMID: fisEx
-                                                          .sayim!.value.ID!,
-                                                      STOKADI: stokKart.ADI!,
-                                                      STOKKOD: stokKart.KOD!,
-                                                      UUID: fisEx
-                                                          .sayim!.value.UUID!,
-                                                    );
-                                                    pu = stokKart.OLCUBIRIM1;
-                                                    Get.snackbar(
-                                                      "Stok eklendi",
-                                                      "${sonMiktar} adet ürün sepete eklendi ! ",
-                                                      //sepette ${sepettekiStok.length} adet stok var",
-                                                      snackPosition:
-                                                          SnackPosition.BOTTOM,
-                                                      duration: Duration(
-                                                          milliseconds: 800),
-                                                      backgroundColor:
-                                                          Colors.blue,
-                                                      colorText: Colors.white,
-                                                    );
-                                                    conList[index].text = "1";
-                                                  
+                                                  fisEx.DepoaHareketEkle(
+                                                    ACIKLAMA: fisEx.sayim!.value
+                                                            .ACIKLAMA ??
+                                                        "",
+                                                    BIRIM: pu!,
+                                                    BIRIMID: birimID,
+                                                    FIYAT: 0.0,
+                                                    MIKTAR: sonMiktar,
+                                                    RAF: flag == false
+                                                        ? rafYok!
+                                                        : seciliRaf!,
+                                                    SAYIMID:
+                                                        fisEx.sayim!.value.ID!,
+                                                    STOKADI: stokKart.ADI!,
+                                                    STOKKOD: stokKart.KOD!,
+                                                    UUID: fisEx
+                                                        .sayim!.value.UUID!,
+                                                  );
+                                                  pu = stokKart.OLCUBIRIM1;
+                                                  Get.snackbar(
+                                                    "Stok eklendi",
+                                                    "${sonMiktar} adet ürün sepete eklendi ! ",
+                                                    //sepette ${sepettekiStok.length} adet stok var",
+                                                    snackPosition:
+                                                        SnackPosition.BOTTOM,
+                                                    duration: Duration(
+                                                        milliseconds: 800),
+                                                    backgroundColor:
+                                                        Colors.blue,
+                                                    colorText: Colors.white,
+                                                  );
+                                                  conList[index].text = "1";
                                                 },
                                               )),
                                         ),

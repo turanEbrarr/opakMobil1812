@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:opak_mobil_v2/cari_raporlari/kapatilmamis_faturalar/kapatilmamis_faturalar_pdf_onizleme.dart';
 import 'package:opak_mobil_v2/cari_raporlari/pdf/cari_rapor_pdf_onizleme.dart';
 import 'package:opak_mobil_v2/fatura_raporlari/faturalar_pdf_onizleme.dart';
 import 'package:opak_mobil_v2/fatura_raporlari/satisFatura/satis_fatura_rapor_detay.dart';
@@ -59,7 +60,7 @@ class _satis_fatura_rapor_pageState extends State<satis_fatura_rapor_page> {
                 gelenDurumSatirlar[enSonEklenen],
                 style: TextStyle(
                     fontWeight: FontWeight.w400,
-                    color: deneme == 0 ? Colors.transparent : Colors.black),
+                    fontSize: labelText1 == "SGUID" ? 0 : 14),
               ));
 
               donecekDataCell.add(newValue);
@@ -86,8 +87,21 @@ class _satis_fatura_rapor_pageState extends State<satis_fatura_rapor_page> {
             },
           );
 
+          await bs.raporPdfOlustur(sirket: Ctanim.sirket!, uuid: fatID, tip: 2);
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: ((context) => kapatilmamisFaturalarPdfOnizleme(
+                    uuid: fatID,
+                    tip: 2,
+                  )),
+            ),
+          );
+          /*
           List<bool> cek =
               await SharedPrefsHelper.filtreCek("satisFaturaRaporuDetayFiltre");
+
           List<List<dynamic>> gelen = await bs.getirFaturaDetayRapor(
               sirket: Ctanim.sirket!,
               faturaID: (donecekDataCell[0].child as Text).data!);
@@ -116,6 +130,7 @@ class _satis_fatura_rapor_pageState extends State<satis_fatura_rapor_page> {
               ),
             );
           }
+          */
         },
       );
 
@@ -332,7 +347,7 @@ class _satis_fatura_rapor_pageState extends State<satis_fatura_rapor_page> {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: "Aranacak kelime(Kod/Cari Adı)",
+                      hintText: "Tabloda Arama Yapın",
                       prefixIcon: Icon(Icons.search, color: Colors.grey),
                       iconColor: Colors.white,
                       border: OutlineInputBorder(
@@ -340,40 +355,7 @@ class _satis_fatura_rapor_pageState extends State<satis_fatura_rapor_page> {
                       ),
                     ),
                     onChanged: (value) {
-                      setState(() {
-                        aramaTerimi = value;
-                        if (aramaTerimi != "") {
-                          aramaliBakiyeRaporSatirlar.clear();
-                          for (int i = 0;
-                              i < bakiyeRaporSatirlar.length;
-                              i = i + bakiyeRaporKolonlar.length) {
-                            if (bakiyeRaporSatirlar[i + 1]
-                                .toLowerCase()
-                                .contains(aramaTerimi.toLowerCase())) {
-                              int kacDefaArtacak = 0;
-                              while (
-                                  kacDefaArtacak < bakiyeRaporKolonlar.length) {
-                                aramaliBakiyeRaporSatirlar.add(
-                                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
-                                kacDefaArtacak++;
-                              }
-                            } else if (bakiyeRaporSatirlar[i + 6]
-                                .contains(aramaTerimi)) {
-                              int kacDefaArtacak = 0;
-                              while (
-                                  kacDefaArtacak < bakiyeRaporKolonlar.length) {
-                                aramaliBakiyeRaporSatirlar.add(
-                                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
-                                kacDefaArtacak++;
-                              }
-                            }
-                          }
-                        } else {
-                          aramaliBakiyeRaporSatirlar.clear();
-                          aramaliBakiyeRaporSatirlar
-                              .addAll(bakiyeRaporSatirlar);
-                        }
-                      });
+                      raporGenelArama(value);
                     },
                   ),
                 ),
@@ -408,15 +390,18 @@ class _satis_fatura_rapor_pageState extends State<satis_fatura_rapor_page> {
                         child: ListView.builder(
                           itemCount: kolonIsimleri.length,
                           itemBuilder: (context, index) {
-                            return CheckboxListTile(
-                              title: Text(kolonIsimleri[index]),
-                              value: secilenKolonlar[index],
-                              onChanged: (newValue) {
-                                setState(() {
-                                  secilenKolonlar[index] = newValue ?? false;
-                                });
-                              },
-                            );
+                            return index > 0
+                                ? CheckboxListTile(
+                                    title: Text(kolonIsimleri[index]),
+                                    value: secilenKolonlar[index],
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        secilenKolonlar[index] =
+                                            newValue ?? false;
+                                      });
+                                    },
+                                  )
+                                : Container();
                           },
                         ),
                       ),
@@ -449,6 +434,39 @@ class _satis_fatura_rapor_pageState extends State<satis_fatura_rapor_page> {
       ),
     );
   }
+    void raporGenelArama(String value) {
+    setState(() {
+      aramaTerimi = value;
+      if (aramaTerimi != "") {
+        aramaliBakiyeRaporSatirlar.clear();
+        for (int i = 0;
+            i < bakiyeRaporSatirlar.length;
+            i = i + bakiyeRaporKolonlar.length) {
+          int k = 1;
+          while (k < bakiyeRaporKolonlar.length) {
+            if (bakiyeRaporSatirlar[i + k]
+                .toLowerCase()
+                .contains(aramaTerimi.toLowerCase())) {
+              int kacDefaArtacak = 0;
+              while (kacDefaArtacak <
+                  bakiyeRaporKolonlar.length) {
+                aramaliBakiyeRaporSatirlar.add(
+                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
+                kacDefaArtacak++;
+              }
+               break;
+            }
+            k++;
+          }
+        }
+      } else {
+        aramaliBakiyeRaporSatirlar.clear();
+        aramaliBakiyeRaporSatirlar
+            .addAll(bakiyeRaporSatirlar);
+      }
+    });
+  }
+
 } 
 
 /*

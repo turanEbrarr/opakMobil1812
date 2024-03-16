@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:opak_mobil_v2/localDB/veritabaniIslemleri.dart';
+import 'package:opak_mobil_v2/widget/ctanim.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:printing/printing.dart';
 
@@ -12,16 +14,13 @@ import '../../widget/cari.dart';
 import 'kapatilmamis_faturalar_make_pdf.dart';
 
 class kapatilmamisFaturalarPdfOnizleme extends StatefulWidget {
-  List<List<String>>? satirlar;
-  List<String>? kolonlar;
-  final Cari? carikart;
-  final String? baslik;
+ final String uuid;
+ final int tip;
 
   kapatilmamisFaturalarPdfOnizleme({
-    required this.satirlar,
-    required this.kolonlar,
-    required this.carikart,
-    required this.baslik,
+    required this.uuid,
+    required this.tip,
+    
   });
 
   @override
@@ -48,6 +47,32 @@ class _kapatilmamisFaturalarPdfOnizlemeState
       _imageData = assetData.buffer.asUint8List();
     }
   }
+    Future<Uint8List> pdfGetirFastReport() async {
+      Ctanim.kullanici!.KOD;
+    var donecek;
+    // https://apkwebservis.nativeb4b.com/DIZAYNLAR/099e42b0-83b5-11ee-82a7-23141fef2870.pdf
+    String url = Ctanim.IP.replaceAll("/MobilService.asmx", "") + "/DIZAYNLAR/" + widget.uuid + ".pdf";
+    Uri uri = Uri.parse(url);
+    try{http.Response response = await http.get(uri);
+    var pdfData = response.bodyBytes;
+    donecek = pdfData;
+    if(response.statusCode != 200){
+      await _loadImage();
+         Navigator.pop(context);
+          Navigator.pop(context);
+    
+    }
+
+    return donecek;
+
+    }catch(e){
+      Navigator.pop(context);
+       Navigator.pop(context);
+
+     return donecek;
+    }
+
+  }
 
 
 
@@ -69,13 +94,8 @@ class _kapatilmamisFaturalarPdfOnizlemeState
         ),
         body: PdfPreview(
           build: (context) async {
-             await _loadImage();
-            return kapatilmamis_faturalar_make_pdf(
-              baslik: widget.baslik!,
-              carikart: widget.carikart!,
-              imagePath: _imageData!,
-              kolon: widget.kolonlar!,
-              satir: widget.satirlar!);
+  
+            return pdfGetirFastReport();
           },
         ),
       ),

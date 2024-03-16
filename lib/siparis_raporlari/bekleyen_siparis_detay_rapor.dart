@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:opak_mobil_v2/cari_raporlari/kapatilmamis_faturalar/kapatilmamis_faturalar_pdf_onizleme.dart';
 import 'package:opak_mobil_v2/cari_raporlari/pdf/cari_rapor_pdf_onizleme.dart';
+import 'package:opak_mobil_v2/fatura_raporlari/faturalar_pdf_onizleme.dart';
 import 'package:opak_mobil_v2/widget/appbar.dart';
 import 'package:opak_mobil_v2/widget/ctanim.dart';
 
 import '../../widget/cari.dart';
 import '../../widget/modeller/sharedPreferences.dart';
 
-class kapatilmamis_fatura_rapor_page extends StatefulWidget {
+class bekleyen_siparis_detay_rapor extends StatefulWidget {
   final List<List<dynamic>> gelenBakiyeRapor;
   final List<bool> gelenFiltre;
-  final Cari? cariKart;
+  final String? faturaID;
+  final Cari? carikart;
+
   //final String titletemp;
-  const kapatilmamis_fatura_rapor_page(
+  const bekleyen_siparis_detay_rapor(
       {super.key,
       required this.gelenBakiyeRapor,
       required this.gelenFiltre,
-      required this.cariKart});
+      required this.faturaID,
+      required this.carikart});
 
   @override
-  State<kapatilmamis_fatura_rapor_page> createState() =>
-      _kapatilmamis_fatura_rapor_pageState();
+  State<bekleyen_siparis_detay_rapor> createState() =>
+      _bekleyen_siparis_detay_raporState();
 }
 
-class _kapatilmamis_fatura_rapor_pageState
-    extends State<kapatilmamis_fatura_rapor_page> {
+class _bekleyen_siparis_detay_raporState
+    extends State<bekleyen_siparis_detay_rapor> {
   List<String> bakiyeRaporSatirlar = [];
   List<DataColumn> bakiyeRaporKolonlar = [];
   List<String> aramaliBakiyeRaporSatirlar = [];
@@ -75,8 +78,7 @@ class _kapatilmamis_fatura_rapor_pageState
 
     return donecek;
   }
-
-  List<List<String>> satirOlusturforPDF(
+    List<List<String>> satirOlusturforPDF(
       {required List<DataColumn> gelenDurumKolonlar,
       required List<String> gelenDurumSatirlar}) {
     int genelcolsayisi = widget.gelenBakiyeRapor[1].length;
@@ -152,37 +154,35 @@ class _kapatilmamis_fatura_rapor_pageState
 
   bool ustfiltre = false;
   String aramaTerimi = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*
       floatingActionButton: FloatingActionButton.extended(
         label: Icon(Icons.picture_as_pdf),
         onPressed: () {
-          List<String> isimList = [];
+        List<String> sj = [];
           for (var element in filtreliBakiyeRaporKolonlar) {
-            isimList.add((element.label as Text).data ?? '');
+            sj.add((element.label as Text).data ?? '');
           }
 
           Navigator.pop(context);
           Navigator.of(context).push(
             MaterialPageRoute(
-                builder: (context) => kapatilmamisFaturalarPdfOnizleme(
-                      baslik: "Kapatılmamaış Faturalar",
-                      carikart: widget.cariKart,
-                      kolonlar: isimList,
+                builder: (context) => faturalarPdfOnizleme(
+                      kolonlar: sj,
                       satirlar: satirOlusturforPDF(
-                        gelenDurumKolonlar: filtreliBakiyeRaporKolonlar,
-                        gelenDurumSatirlar: aramaliBakiyeRaporSatirlar,
-                      ),
+                          gelenDurumKolonlar: filtreliBakiyeRaporKolonlar,
+                          gelenDurumSatirlar: aramaliBakiyeRaporSatirlar),
+                      caraiKart: widget.carikart,
+                      faturaID: widget.faturaID, baslik: 'Bekleyen Sipariş Detay',
                     )),
           );
         },
       ),
-      */
       appBar: MyAppBar(
         height: 50,
-        title: 'Kapatılmamış Faturalar',
+        title: 'Bekleyen Sipariş Raporu',
       ),
       body: Column(
         children: [
@@ -207,21 +207,37 @@ class _kapatilmamis_fatura_rapor_pageState
                           aramaliBakiyeRaporSatirlar.clear();
                           for (int i = 0;
                               i < bakiyeRaporSatirlar.length;
-                              i = i + bakiyeRaporKolonlar.length) {
-                            if (bakiyeRaporSatirlar[i + 2]
+                              i = i + 5) {
+                            if (bakiyeRaporSatirlar[i + 1]
                                 .toLowerCase()
                                 .contains(aramaTerimi.toLowerCase())) {
-                              int kacDefaArtacak = 0;
-                              while (
-                                  kacDefaArtacak < bakiyeRaporKolonlar.length) {
-                                aramaliBakiyeRaporSatirlar.add(
-                                    bakiyeRaporSatirlar[i + kacDefaArtacak]);
-                                kacDefaArtacak++;
-                              }
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i]);
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i + 1]);
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i + 2]);
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i + 3]);
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i + 4]);
+                            }
+                            if (bakiyeRaporSatirlar[i]
+                                .toLowerCase()
+                                .contains(aramaTerimi.toLowerCase())) {
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i]);
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i + 1]);
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i + 2]);
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i + 3]);
+                              aramaliBakiyeRaporSatirlar
+                                  .add(bakiyeRaporSatirlar[i + 4]);
                             }
                           }
-                        }
-                         else {
+                        } else {
                                 aramaliBakiyeRaporSatirlar.clear();
                           aramaliBakiyeRaporSatirlar
                               .addAll(bakiyeRaporSatirlar);
@@ -278,23 +294,33 @@ class _kapatilmamis_fatura_rapor_pageState
 
                             setState(() {});
                             await SharedPrefsHelper.filtreKaydet(
-                                secilenKolonlar,
-                                "raporKapatilmamisFaturalarFiltre");
-                            ustfiltre = false;
+                                secilenKolonlar, "raporBekleyenSiparisListesiDetay");
+                                   ustfiltre = false;
                             setState(() {});
                           },
                           child: Text("Filtreyi Uygula"))
                     ],
                   ))
               : Container(),
-          SizedBox(
-            height: 30,
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columnSpacing: 10,
+                  dataRowHeight: 50,
+                  headingRowHeight: 60,
+                  horizontalMargin: 16,
+                  columns: filtreliBakiyeRaporKolonlar,
+                  rows: satirOlustur(
+                    gelenDurumKolonlar: filtreliBakiyeRaporKolonlar,
+                    gelenDurumSatirlar: aramaliBakiyeRaporSatirlar,
+                  ),
+                ),
+              ),
+            ),
           ),
-          Ctanim.dataTableOlustur(
-              satirOlustur(
-                  gelenDurumKolonlar: filtreliBakiyeRaporKolonlar,
-                  gelenDurumSatirlar: aramaliBakiyeRaporSatirlar),
-              filtreliBakiyeRaporKolonlar)
         ],
       ),
     );

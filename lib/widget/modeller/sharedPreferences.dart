@@ -350,4 +350,18 @@ class SharedPrefsHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('ip');
   }
+    static Future<void> stokAraFiltreKaydet(int number) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('stokAraFiltre', number);
+  }
+
+  static Future<int> stokAraFiltreGetir() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? storedNumber = prefs.getInt('stokAraFiltre');
+    if (storedNumber != null) {
+      return storedNumber;
+    } else {
+      return -1;
+    }
+  }
 }

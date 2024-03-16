@@ -1,6 +1,5 @@
-
-
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,12 +12,15 @@ import 'package:opak_mobil_v2/controllers/fisController.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_gecmis_satis_bilgileri.dart';
 import 'package:opak_mobil_v2/genel_belge.dart/genel_belge_stok_kart_guncelleme.dart';
 import 'package:opak_mobil_v2/localDB/veritabaniIslemleri.dart';
+import 'package:opak_mobil_v2/stok_kart/Spinkit.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_tanim.dart';
+import 'package:opak_mobil_v2/webservis/base.dart';
 import 'package:opak_mobil_v2/webservis/kurModel.dart';
 import 'package:opak_mobil_v2/webservis/satisTipiModel.dart';
 import 'package:opak_mobil_v2/webservis/stokFiyatListesiModel.dart';
 import 'package:opak_mobil_v2/widget/String_tanim.dart';
 import 'package:opak_mobil_v2/widget/ctanim.dart';
+import 'package:opak_mobil_v2/widget/modeller/sharedPreferences.dart';
 import 'package:opak_mobil_v2/widget/veriler/listeler.dart';
 import 'package:path/path.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
@@ -62,6 +64,7 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
   List<String> fiyatListesi = [];
   List<StokKart> tempTempStok = [];
   TextEditingController aramaCont = TextEditingController();
+  BaseService bs = BaseService();
 
   String seciliFiyat =
       Ctanim.satisFiyatListesi.isNotEmpty ? Ctanim.satisFiyatListesi[0] : "-";
@@ -80,6 +83,34 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
   var keyboardVisibilityController = KeyboardVisibilityController();
   String? texIci;
   int kont = 0;
+
+  Future<void> stokAramaFiltreCek() async {
+    int value = await SharedPrefsHelper.stokAraFiltreGetir();
+    print("VALUE" + value.toString());
+    if (value != -1) {
+      if (value == 1) {
+        selectedMenu = SampleItem.itemOne;
+        stokKartEx.tempList.sort((a, b) => b.BAKIYE!.compareTo(a.BAKIYE!));
+        tempListFiltre();
+      } else if (value == 2) {
+        selectedMenu = SampleItem.itemTwo;
+        stokKartEx.tempList..sort((a, b) => a.BAKIYE!.compareTo(b.BAKIYE!));
+        tempListFiltre();
+      } else if (value == 3) {
+        selectedMenu = SampleItem.itemThere;
+        stokKartEx.tempList.clear();
+        stokKartEx.tempList.addAll(tempTempStok);
+        stokKartEx.tempList.removeWhere((cari) => cari.BAKIYE! >= 0);
+        tempListFiltre();
+      } else if (value == 4) {
+        selectedMenu = SampleItem.itemFour;
+        stokKartEx.tempList.clear();
+        stokKartEx.tempList.addAll(tempTempStok);
+        stokKartEx.tempList.removeWhere((cari) => cari.BAKIYE! < 0);
+        tempListFiltre();
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -234,6 +265,7 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
         Ctanim.seciliMarkalarFiltreMap.add({false: element.MARKA!});
       }
     }
+    stokAramaFiltreCek();
   }
 
   @override
@@ -301,10 +333,23 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                 ),
                 PopupMenuButton<SampleItem>(
                   icon: Icon(Icons.filter_list),
-                  onOpened: () {},
+                  onOpened: () async {
+                    print("OPEN");
+                  },
                   initialValue: selectedMenu,
                   // Callback that sets the selected popup menu item.
-                  onSelected: (SampleItem item) {
+                  onSelected: (SampleItem item) async {
+                    if (item == SampleItem.itemOne) {
+                      print("BAKİYE AZALAN KAYDEDİLDİ");
+                      await SharedPrefsHelper.stokAraFiltreKaydet(1);
+                    } else if (item == SampleItem.itemTwo) {
+                      await SharedPrefsHelper.stokAraFiltreKaydet(2);
+                    } else if (item == SampleItem.itemThere) {
+                      await SharedPrefsHelper.stokAraFiltreKaydet(3);
+                    } else if (item == SampleItem.itemFour) {
+                      await SharedPrefsHelper.stokAraFiltreKaydet(4);
+                    }
+
                     setState(() {
                       selectedMenu = item;
                     });
@@ -319,11 +364,27 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                         tempListFiltre();
                         setState(() {});
                       },
-                      child: Text('Bakiye Azalan'),
+                      child: Row(
+                        children: [
+                          Text('Bakiye Azalan'),
+                          Spacer(),
+                          selectedMenu == SampleItem.itemOne
+                              ? Icon(Icons.check, color: Colors.blue)
+                              : Container()
+                        ],
+                      ),
                     ),
                     PopupMenuItem<SampleItem>(
                       value: SampleItem.itemTwo,
-                      child: Text('Bakiye Artan'),
+                      child: Row(
+                        children: [
+                          Text('Bakiye Artan'),
+                          Spacer(),
+                          selectedMenu == SampleItem.itemTwo
+                              ? Icon(Icons.check, color: Colors.blue)
+                              : Container()
+                        ],
+                      ),
                       onTap: () {
                         stokKartEx.tempList
                           ..sort((a, b) => a.BAKIYE!.compareTo(b.BAKIYE!));
@@ -332,7 +393,15 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                     ),
                     PopupMenuItem<SampleItem>(
                       value: SampleItem.itemThere,
-                      child: Text('Bakiyesi Eksi Olanlar'),
+                      child: Row(
+                        children: [
+                          Text('Bakiyesi Eksi Olanlar'),
+                          Spacer(),
+                          selectedMenu == SampleItem.itemThere
+                              ? Icon(Icons.check, color: Colors.blue)
+                              : Container()
+                        ],
+                      ),
                       onTap: () {
                         stokKartEx.tempList.clear();
                         stokKartEx.tempList.addAll(tempTempStok);
@@ -344,7 +413,15 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                     ),
                     PopupMenuItem<SampleItem>(
                       value: SampleItem.itemFour,
-                      child: Text('Bakiyesi Artı Olanlar'),
+                      child: Row(
+                        children: [
+                          Text('Bakiyesi Artı Olanlar'),
+                          Spacer(),
+                          selectedMenu == SampleItem.itemFour
+                              ? Icon(Icons.check, color: Colors.blue)
+                              : Container()
+                        ],
+                      ),
                       onTap: () {
                         stokKartEx.tempList.clear();
                         stokKartEx.tempList.addAll(tempTempStok);
@@ -801,14 +878,14 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height * .70,
       child: Obx(() => ListView.builder(
-          controller: _scrollController, 
+          controller: _scrollController,
           itemCount: stokKartEx.tempList.length,
           itemBuilder: (context, index) {
             StokKart stokKart = stokKartEx.tempList[index];
-           TextEditingController t1 = TextEditingController();
-         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!aaaaaaaaaaa
+            TextEditingController t1 = TextEditingController();
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!aaaaaaaaaaa
             var miktar = stokKart.guncelDegerler!.carpan.obs;
-               t1.text = stokKart.guncelDegerler!.carpan.toString();
+            t1.text = stokKart.guncelDegerler!.carpan.toString();
             KurModel stokKartKur =
                 KurModel(ID: -1, ACIKLAMA: "-", KUR: 1, ANABIRIM: "H");
             if (Ctanim.seciliStokFiyatListesi.ID == -1) {
@@ -1021,33 +1098,31 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                             ],
                           ),
                         ),
-                        stokKartEx.tempList.length > 1
-                            ? Padding(
-                                padding: EdgeInsets.only(
-                                  left: x * .07,
-                                  top: y * .03,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                        width: x * .25,
-                                        child: Text("Bakiye:",
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500))),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: x * .1),
-                                      child: SizedBox(
-                                          width: x * .5,
-                                          child: Text(Ctanim
-                                              .noktadanSonraAlinacakParametreli(
-                                                  Kmiktar!, stokKart.BAKIYE!))),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Container(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: x * .07,
+                            top: y * .03,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                  width: x * .25,
+                                  child: Text("Bakiye:",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500))),
+                              Padding(
+                                padding: EdgeInsets.only(left: x * .1),
+                                child: SizedBox(
+                                    width: x * .5,
+                                    child: Text(
+                                        Ctanim.noktadanSonraAlinacakParametreli(
+                                            Kmiktar!, stokKart.BAKIYE!))),
+                              ),
+                            ],
+                          ),
+                        ),
                         Padding(
                           padding: EdgeInsets.only(
                             top: x * .03,
@@ -1200,16 +1275,13 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                                                   baseOffset: 0,
                                                   extentOffset:
                                                       t1.value.text.length);
-                                                   
+
                                               _scrollController.animateTo(
                                                 _scrollController.offset + 50,
                                                 duration:
                                                     Duration(milliseconds: 500),
                                                 curve: Curves.easeInOut,
-                                               
                                               );
-                                        
-                                               
                                             },
                                             textAlign: TextAlign.right,
                                             decoration: InputDecoration(
@@ -1279,7 +1351,6 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
 
   void genelBelgeBottomSheet(int index, BuildContext context,
       KurModel stokKartKur, StokKart stokKart, Rx<double?> miktar) {
-    fisEx.listFisStokHareketGetir(stokKartEx.tempList[index].KOD!);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1336,7 +1407,21 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return LoadingSpinner(
+                        color: Colors.black,
+                        message: "Geçmiş Satışlar Getiriliyor...",
+                      );
+                    },
+                  );
+                  Ctanim.gecmisSatisHataKontrol = await bs.getirGecmisSatis(
+                      sirket: Ctanim.sirket, stokKodu: stokKart.KOD!);
+                      Ctanim.seciliStokKodu = stokKart.KOD!;
+                  Navigator.pop(context);
                   Future.delayed(
                       Duration.zero,
                       () => showDialog(
@@ -1767,5 +1852,3 @@ class _markaFiltreState extends State<markaFiltre> {
     );
   }
 }
-
-

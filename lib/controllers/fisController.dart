@@ -537,31 +537,11 @@ class FisController extends GetxController {
     return tt1;
   }
 
-//
-  /*  Future<void> listFisStokHareketGetir(String Kod) async
- { 
-  gecmisFisHareket.clear();
-  sonListem.clear();
-  
-    List<Map<String, dynamic>> result = await Ctanim.db?.query("TBLFISHAR",where: 'STOKKOD = ?', whereArgs: [Kod]); 
-    List<FisHareket> yy=   List.generate(result.length, (i) => FisHareket.fromJson(result[i]));
-    yy.forEach((element) async{    
-     List<Map<String, dynamic>> donus = await Ctanim.db?.query("TBLFISSB",where: 'ID = ?', whereArgs: [element.FIS_ID]); 
-    Fis fis=   List.generate(donus.length, (i) => Fis.fromJson(donus[i])).first;
-    if(element.STOKKOD == Kod){
-      gecmisFisHareket.add(element);
-
-    }
-    
-//    fis.fisStokListesi=gecmisFisHareket;
-    sonListem.add(Fis.fromFis(fis, gecmisFisHareket)); 
-   });
-//    list_fis.assignAll(yy); 
- } */
   Widget gecmisSatisYok() {
     return Center(child: Text("Geçmiş Satış Bilgisi Bulunamadı."));
   }
 
+/*
   Future<void> listFisStokHareketGetir(String Kod) async {
     gecmisFisHareket.clear();
     sonListem.clear();
@@ -593,6 +573,7 @@ class FisController extends GetxController {
       sonListem.add(Fis.fromFis(fis, fisHareketleri));
     }
   }
+  */
 /*
  Future<void> FisGetir(int id) async
  { 

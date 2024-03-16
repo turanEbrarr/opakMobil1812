@@ -341,10 +341,14 @@ class _stok_kart_listesiState extends State<stok_kart_listesi> {
                             result = res;
                             editingController.text = result;
                           }
-                              SatisTipiModel m = SatisTipiModel(
-                            ID: -1, TIP: "", FIYATTIP: "", ISK1: "", ISK2: "");
-                        stokKartEx.searchC(result, "", "Fiyat1", m,
-                            Ctanim.seciliStokFiyatListesi);
+                          SatisTipiModel m = SatisTipiModel(
+                              ID: -1,
+                              TIP: "",
+                              FIYATTIP: "",
+                              ISK1: "",
+                              ISK2: "");
+                          stokKartEx.searchC(result, "", "Fiyat1", m,
+                              Ctanim.seciliStokFiyatListesi);
                         });
                       },
                       icon: Icon(Icons.camera_alt)
@@ -473,12 +477,12 @@ class _stok_kart_listesiState extends State<stok_kart_listesi> {
                                           builder: (BuildContext context) {
                                             return Container(
                                               padding: EdgeInsets.all(16.0),
-                                            /*  height: MediaQuery.of(context)
+                                              /*  height: MediaQuery.of(context)
                                                       .size
                                                       .height *
                                                   0.3,*/
                                               child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
@@ -490,12 +494,30 @@ class _stok_kart_listesiState extends State<stok_kart_listesi> {
                                                   ),
                                                   GestureDetector(
                                                     onTap: () async {
-                                                      await fisEx
-                                                          .listFisStokHareketGetir(
-                                                              stokKartEx
-                                                                  .tempList[
-                                                                      index]
-                                                                  .KOD!);
+                                                      showDialog(
+                                                        context: context,
+                                                        barrierDismissible:
+                                                            false,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return LoadingSpinner(
+                                                            color: Colors.black,
+                                                            message:
+                                                                "Geçmiş Satışlar Getiriliyor...",
+                                                          );
+                                                        },
+                                                      );
+                                                      Ctanim.gecmisSatisHataKontrol =
+                                                          await bs
+                                                              .getirGecmisSatis(
+                                                                  sirket: Ctanim
+                                                                      .sirket,
+                                                                  stokKodu:
+                                                                      stokKart
+                                                                          .KOD!);
+                                                      Ctanim.seciliStokKodu =
+                                                          stokKart.KOD!;
+                                                      Navigator.pop(context);
                                                       Future.delayed(
                                                           Duration.zero,
                                                           () => showDialog(

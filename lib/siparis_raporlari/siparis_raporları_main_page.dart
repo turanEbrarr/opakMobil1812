@@ -119,8 +119,8 @@ class _siparis_raporlari_main_pageState
                           await bs.getirBekleyenSiparisRapor(
                               sirket: Ctanim.sirket!,
                               cariKodu: widget.cariKart!.KOD!,
-                              basTar: Ctanim.son10GunDon()[0],
-                              bitTar: Ctanim.son10GunDon()[1]);
+                              basTar: Ctanim.yilinIlkVeSonGunleri()[0],
+                              bitTar: Ctanim.yilinIlkVeSonGunleri()[1]);
 
                       if (gelen[0].length == 1 && gelen[1].length == 0) {
                         await Ctanim.hata_popup(gelen, context)

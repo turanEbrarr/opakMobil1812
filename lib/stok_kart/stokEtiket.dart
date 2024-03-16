@@ -32,10 +32,11 @@ import 'Spinkit.dart';
 enum SampleItem1 { itemOne, itemTwo, itemThere, itemFour, itemFife, itemSix }
 
 enum SampleItem { itemOne, itemTwo, itemThere }
-class barkodlar{
+
+class barkodlar {
   String? adi;
   int? sira;
-  barkodlar({this.adi,this.sira});
+  barkodlar({this.adi, this.sira});
 }
 
 class stokEtiket extends StatefulWidget {
@@ -47,16 +48,15 @@ class stokEtiket extends StatefulWidget {
 }
 
 class _stokEtiketState extends State<stokEtiket> {
-List<barkodlar> barkodlarList=[
-  barkodlar(adi: "Stok Kodu",sira: 0),
-   barkodlar(adi: "Barkod1",sira: 1),
-    barkodlar(adi: "Barkod2",sira: 2),
-     barkodlar(adi: "Barkod3",sira: 3),
-      barkodlar(adi: "Barkod4",sira: 4),
-       barkodlar(adi: "Barkod5",sira: 5),
-        barkodlar(adi: "Barkod6",sira: 6),
-   
-];
+  List<barkodlar> barkodlarList = [
+    barkodlar(adi: "Stok Kodu", sira: 0),
+    barkodlar(adi: "Barkod1", sira: 1),
+    barkodlar(adi: "Barkod2", sira: 2),
+    barkodlar(adi: "Barkod3", sira: 3),
+    barkodlar(adi: "Barkod4", sira: 4),
+    barkodlar(adi: "Barkod5", sira: 5),
+    barkodlar(adi: "Barkod6", sira: 6),
+  ];
 
   Future<void> _showImageDialog(BuildContext context, Uint8List bytes) {
     return showDialog<void>(
@@ -308,37 +308,37 @@ List<barkodlar> barkodlarList=[
                 ),
                 label: "Etiket Yazır",
                 onTap: () async {
-                  if(yazdirilacakStokKodlari.isEmpty){
-                    hataGosterEtiket(context1: context, mesaj: "Lütfen en az bir stok seçiniz.",ikinciGeriOlsunMu: false);
-
-                  }else{
-                       showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return LoadingSpinner(
-                        color: Colors.black,
-                        message: "Etiket Dizaynları Getiriliyor...",
-                      );
-                    },
-                  );
-                  List<String> dizaynlar = await bs.getirEtiketDizayn(
-                      subeId: int.parse(Ctanim.kullanici!.YERELSUBEID!),
-                      sirket: Ctanim.sirket!);
-                  if (dizaynlar[0] == "false") {
-                    hataGosterEtiket(context1: context, mesaj: dizaynlar[1]);
+                  if (yazdirilacakStokKodlari.isEmpty) {
+                    hataGosterEtiket(
+                        context1: context,
+                        mesaj: "Lütfen en az bir stok seçiniz.",
+                        ikinciGeriOlsunMu: false);
                   } else {
-                    String seciliDizayn = dizaynlar.first;
-                    barkodlar seciliBarkod=barkodlarList.first;
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return LoadingSpinner(
+                          color: Colors.black,
+                          message: "Etiket Dizaynları Getiriliyor...",
+                        );
+                      },
+                    );
+                    List<String> dizaynlar = await bs.getirEtiketDizayn(
+                        subeId: int.parse(Ctanim.kullanici!.YERELSUBEID!),
+                        sirket: Ctanim.sirket!);
+                    if (dizaynlar[0] == "false") {
+                      hataGosterEtiket(context1: context, mesaj: dizaynlar[1]);
+                    } else {
+                      String seciliDizayn = dizaynlar.first;
+                      barkodlar seciliBarkod = barkodlarList.first;
 
-                    Navigator.pop(context);
-                    dizaynSor(context, seciliDizayn, dizaynlar,barkodlarList,seciliBarkod);
+                      Navigator.pop(context);
+                      dizaynSor(context, seciliDizayn, dizaynlar, barkodlarList,
+                          seciliBarkod);
+                    }
                   }
-
-                  }
-               
-                }
-                )
+                })
           ],
         ),
         body: SafeArea(
@@ -384,12 +384,19 @@ List<barkodlar> barkodlarList=[
                                 builder: (context) =>
                                     const SimpleBarcodeScannerPage(),
                               ));
+                              SatisTipiModel m = SatisTipiModel(
+                              ID: -1,
+                              TIP: "",
+                              FIYATTIP: "",
+                              ISK1: "",
+                              ISK2: "");
                           setState(() {
                             if (res is String) {
                               result = res;
                               editingController.text = result;
                             }
-                            stokKartEx.searchB(result);
+                            stokKartEx.searchC(result, "", "Fiyat1", m,
+                              Ctanim.seciliStokFiyatListesi);
                           });
                         },
                         icon: Icon(Icons.camera_alt)
@@ -569,11 +576,33 @@ List<barkodlar> barkodlarList=[
                                                           ),
                                                           GestureDetector(
                                                             onTap: () async {
-                                                              await fisEx.listFisStokHareketGetir(
-                                                                  stokKartEx
-                                                                      .tempList[
-                                                                          index]
-                                                                      .KOD!);
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                barrierDismissible:
+                                                                    false,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return LoadingSpinner(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    message:
+                                                                        "Geçmiş Satışlar Getiriliyor...",
+                                                                  );
+                                                                },
+                                                              );
+                                                              Ctanim.gecmisSatisHataKontrol =
+                                                                  await bs.getirGecmisSatis(
+                                                                      sirket: Ctanim
+                                                                          .sirket,
+                                                                      stokKodu:
+                                                                          stokKart
+                                                                              .KOD!);
+                                                              Ctanim.seciliStokKodu =
+                                                                  stokKart.KOD!;
+                                                              Navigator.pop(
+                                                                  context);
                                                               Future.delayed(
                                                                   Duration.zero,
                                                                   () => showDialog(
@@ -775,7 +804,11 @@ List<barkodlar> barkodlarList=[
   }
 
   void dizaynSor(
-      BuildContext context, String seciliDizayn, List<String> dizaynlar,List<barkodlar> barkodlarList,barkodlar seciliBarkod) {
+      BuildContext context,
+      String seciliDizayn,
+      List<String> dizaynlar,
+      List<barkodlar> barkodlarList,
+      barkodlar seciliBarkod) {
     showDialog(
         context: context,
         builder: (context) {
@@ -797,7 +830,7 @@ List<barkodlar> barkodlarList=[
                   Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width *.6,
+                      width: MediaQuery.of(context).size.width * .6,
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: seciliDizayn,
@@ -822,12 +855,10 @@ List<barkodlar> barkodlarList=[
                   Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width *.6,
+                      width: MediaQuery.of(context).size.width * .6,
                       child: DropdownButtonHideUnderline(
-                        
                         child: DropdownButton<barkodlar>(
                           value: seciliBarkod,
-                          
                           items: barkodlarList.map((barkodlar banka) {
                             return DropdownMenuItem<barkodlar>(
                               value: banka,
