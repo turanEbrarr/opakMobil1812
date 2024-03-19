@@ -13,6 +13,7 @@ import 'package:opak_mobil_v2/localDB/veritabaniIslemleri.dart';
 import 'package:opak_mobil_v2/stok_kart/resim.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_kart_detay_guncel.dart';
 import 'package:opak_mobil_v2/stok_kart/stok_kart_ekle.dart';
+import 'package:opak_mobil_v2/stok_kart/stok_kart_fiyat_guncelleme.dart';
 import 'package:opak_mobil_v2/webservis/satisTipiModel.dart';
 import 'package:opak_mobil_v2/widget/ctanim.dart';
 import 'package:opak_mobil_v2/widget/customAlertDialog.dart';
@@ -553,6 +554,28 @@ class _stok_kart_listesiState extends State<stok_kart_listesi> {
                                                       leading: Icon(
                                                         Icons.search,
                                                         color: Colors.blue,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      Future.delayed(
+                                                          Duration.zero,
+                                                          () => showDialog(
+                                                              context: context,
+                                                              builder: (_) {
+                                                                return stok_kart_fiyat_guncelle(
+                                                                  stokKart:
+                                                                      stokKart,
+                                                                );
+                                                              }));
+                                                      
+                                                    },
+                                                    child: ListTile(
+                                                      title: Text("Fiyat Güncelle"),
+                                                      leading: Icon(
+                                                        Icons.price_change,
+                                                        color: Colors.red,
                                                       ),
                                                     ),
                                                   ),

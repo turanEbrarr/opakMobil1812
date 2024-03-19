@@ -4798,4 +4798,64 @@ c
           e.toString();
     }
   }
+    Future<SHataModel> stokFiyatGuncelle(
+      {required String sirket,
+      required String plasiyerKod,
+      required String stokKod,
+      required int FiyatSira,
+      required double yeniDeger,
+      required double eskiDeger
+     }) async {
+    SHataModel hata = SHataModel(Hata: "true", HataMesaj: "Veri Gönderilemedi");
+
+
+    var url = Uri.parse(Ctanim.IP); // dış ve iç denecek;
+
+ 
+
+    var headers = {
+      'Content-Type': 'text/xml; charset=utf-8',
+      'SOAPAction': 'http://tempuri.org/StokFiyatGuncelle',
+    };
+    String body = '''
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <StokFiyatGuncelle xmlns="http://tempuri.org/">
+      <Sirket>$sirket</Sirket>
+      <plasiyerKod>$plasiyerKod</plasiyerKod>
+      <stokKod>$stokKod</stokKod>
+      <FiyatSira>$FiyatSira</FiyatSira>
+      <yeniDeger>$yeniDeger</yeniDeger>
+      <eskiDeger>$eskiDeger</eskiDeger>
+    </StokFiyatGuncelle>
+  </soap:Body>
+</soap:Envelope>
+''';
+
+    try {
+      http.Response response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        var rawXmlResponse = response.body;
+        xml.XmlDocument parsedXml = xml.XmlDocument.parse(rawXmlResponse);
+
+        Map<String, dynamic> jsonData = jsonDecode(parsedXml.innerText);
+        SHataModel gelenHata = SHataModel.fromJson(jsonData);
+        printWrapped(gelenHata.HataMesaj!);
+        return gelenHata;
+      } else {
+        Exception(
+            'Fatura Verisi Gönderilemedi. StatusCode: ${response.statusCode}');
+        return hata;
+      }
+    } catch (e) {
+      Exception('Hata: $e');
+      return hata;
+    }
+  }
 }

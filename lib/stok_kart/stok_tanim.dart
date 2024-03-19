@@ -31,6 +31,7 @@ double hesaplaNetFiyat() {
 class StokKart {
   int? ID;
   bool etiketIcin = false;
+  bool gizliMi = false;
   String? KOD;
   String? ADI;
   String? SATDOVIZ;

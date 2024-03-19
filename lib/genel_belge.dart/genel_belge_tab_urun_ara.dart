@@ -32,7 +32,7 @@ import '../faturaFis/fisHareket.dart';
 import '../stok_kart/stok_kart_detay_guncel.dart';
 import '../widget/cari.dart';
 
-enum SampleItem { itemOne, itemTwo, itemThere, itemFour, itemFife }
+enum SampleItem { itemOne, itemTwo, itemThere, itemFour, itemFife , itemSix}
 
 class genel_belge_tab_urun_ara extends StatefulWidget {
   const genel_belge_tab_urun_ara({
@@ -279,6 +279,7 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
 
   @override
   Widget build(BuildContext context) {
+    print("SETSTATEEEEEE");
     double x = MediaQuery.of(context).size.width;
     double y = MediaQuery.of(context).size.height;
 
@@ -448,6 +449,18 @@ class _genel_belge_tab_urun_araState extends State<genel_belge_tab_urun_ara> {
                                 }));
                       },
                     ),
+                        PopupMenuItem<SampleItem>(
+                      value: SampleItem.itemSix,
+                      child: Text('Tüm filtreleri kaldır'),
+                      onTap: () async {
+                        await SharedPrefsHelper.stokAraFiltreKaydet(-1);
+                        stokKartEx.tempList.clear();
+                        stokKartEx.tempList.addAll(tempTempStok);
+                        tempListFiltre();
+                        setState(() {});
+                        
+                      },
+                    )
                   ],
                 ),
               ],

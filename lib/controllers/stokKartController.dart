@@ -6,6 +6,7 @@ import 'package:opak_mobil_v2/webservis/satisTipiModel.dart';
 import 'package:opak_mobil_v2/webservis/stokFiyatListesiModel.dart';
 import 'package:opak_mobil_v2/widget/cari.dart';
 import 'package:opak_mobil_v2/widget/ctanim.dart';
+import 'package:opak_mobil_v2/widget/modeller/sharedPreferences.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../localDB/veritabaniIslemleri.dart';
@@ -446,6 +447,16 @@ class StokKartController extends GetxController {
     return ff.SATISISK;
   }
   */
+    Future<int> stokAramaFiltreCek() async {
+    int value = await SharedPrefsHelper.stokAraFiltreGetir();
+    print("VALUE" + value.toString());
+    if (value != -1) {
+     return value;
+    }
+    else{
+      return -1;
+    }
+  }
 
   void searchB(String query) {
     if (query.isEmpty) {
@@ -457,11 +468,12 @@ class StokKartController extends GetxController {
               value.KOD!.toLowerCase().contains(query.toLowerCase()))
           .toList();
       searchList.assignAll(results);
+      
     }
   }
 
-  void searchC(String query, String cariKod, String fiyatTip,
-      SatisTipiModel satisTipi, StokFiyatListesiModel stokFiyatListesiModel) {
+  Future<void> searchC(String query, String cariKod, String fiyatTip,
+      SatisTipiModel satisTipi, StokFiyatListesiModel stokFiyatListesiModel) async {
     // QUERY BOŞSA    
     if (query.isEmpty) {
       tempList.clear();
@@ -650,6 +662,7 @@ class StokKartController extends GetxController {
           }
         }
       }
+
     } 
     // QUERY DOLUYSA
     else {
@@ -1258,12 +1271,35 @@ class StokKartController extends GetxController {
                     .add(result2[i].guncelDegerler!.seciliFiyati!);
               }
             }
-
             tempList.assignAll(result2);
           }
         }
       }
     }
+    List<StokKart> tempTempStok = [];
+    tempTempStok.addAll(tempList); 
+    int sonuc = await stokAramaFiltreCek();  
+    
+          if (sonuc == 1) {
+    
+        stokKartEx.tempList.sort((a, b) => b.BAKIYE!.compareTo(a.BAKIYE!));
+      
+      } else if (sonuc == 2) {
+        stokKartEx.tempList..sort((a, b) => a.BAKIYE!.compareTo(b.BAKIYE!));
+      } else if (sonuc == 3) {
+   
+  stokKartEx.tempList.clear();
+                        stokKartEx.tempList.addAll(tempTempStok);
+                        stokKartEx.tempList
+                            .removeWhere((cari) => cari.BAKIYE! >= 0);
+      } else if (sonuc == 4) {
+  stokKartEx.tempList.clear();
+                        stokKartEx.tempList.addAll(tempTempStok);
+                        stokKartEx.tempList
+                            .removeWhere((cari) => cari.BAKIYE! < 0);
+      }else{
+        print("-1 GELDİ FİLTRELEMEDE"+tempList.length.toString());
+      }
   }
 
   Future aToZSort() async {

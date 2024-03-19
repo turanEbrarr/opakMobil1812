@@ -72,6 +72,7 @@ class _alis_fatura_rapor_pageState extends State<alis_fatura_rapor_page> {
       }
 
       DataRow dataRowWithInkWell = DataRow(
+        
         cells: donecekDataCell,
         onLongPress: () async {
           String fatID = (donecekDataCell[0].child as Text).data!;
